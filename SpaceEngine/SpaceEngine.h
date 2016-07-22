@@ -35,6 +35,8 @@ protected:
     EEvents *SpaceEngineEvents;//obrobotcik sobitii
     virtual QPoint matrix(const EKord&);//dlya udobstva
     virtual QSize matrixs(const EKord&);
+protected slots:
+    virtual void resize(QResizeEvent*);
 public:
     explicit SpaceEngine(const char* Patch="./setings.cfg",const short &key=_Key_value);//konstruktor s putem k failu nastroek
     virtual EConfig *GlobalSetings();//vernyot nastroiki dvigka
@@ -81,6 +83,7 @@ public:
     virtual void sync();// sinhotniziruet razmeri vseh objectov dvigka s razmerom glovnogo okna
     virtual void FullScrin();//ustonovit polnoekrannii regim
     virtual void setCursor(const QString &url);//ustonovit cursor
+    virtual void setColorWindow(const QColor& color);
     virtual ~SpaceEngine();
 };
 #endif // SpaceEngine_H

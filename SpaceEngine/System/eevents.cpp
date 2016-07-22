@@ -4,7 +4,7 @@ EEvents::EEvents(EConfig*cfg, QWidget *parent) :
     QWidget(parent)
 {
     setings=cfg;
-    this->setPalette(QPalette(QColor(0,0,0,0)));
+    this->setPalette(QPalette(QColor(0,0,0,255)));
     timer=new QTimer;
     timer->start(10000);
     connect(timer,SIGNAL(timeout()),this,SLOT(_update()));
@@ -54,6 +54,9 @@ void EEvents::mousePressEvent(QMouseEvent *Event)
 void EEvents::mouseDoubleClickEvent(QMouseEvent*)
 {
 
+}
+void EEvents::resizeEvent(QResizeEvent *event){
+    emit Resize(event);
 }
 void EEvents::wheelEvent(QWheelEvent * event)
 {

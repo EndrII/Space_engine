@@ -28,6 +28,7 @@ protected:
     void keyPressEvent(QKeyEvent*);//nagati
     void keyReleaseEvent(QKeyEvent *);//otgatie klavish
     void wheelEvent(QWheelEvent * event);
+    void resizeEvent(QResizeEvent *event);
 public:
     explicit EEvents(EConfig*,QWidget *parent = 0);
     void setSetings(EConfig* c);
@@ -39,6 +40,7 @@ signals:
     void Press(short);//signal o nagatie klavishi
     void Release(short);//signal o nagatie klavishi
     void Mousemov(EKord); //signal o dvigenii mishi
+    void Resize(QResizeEvent*);// signalit esli razmer izmenyon
 };
 
 #endif // EEVENTS_H

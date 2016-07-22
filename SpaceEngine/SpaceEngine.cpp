@@ -11,7 +11,11 @@ SpaceEngine::SpaceEngine(const char* Patch,const short &key)
     }
     SpaceEngineEvents=new EEvents(setings);
     SpaceEngineEvents->setGeometry(300,300,setings->windows_skrinn.X,setings->windows_skrinn.Y);
+    connect(SpaceEngineEvents,SIGNAL(Resize(QResizeEvent*)),this,SLOT(resize(QResizeEvent*)));
     SpaceEngineEvents->show();
+}
+void SpaceEngine::resize(QResizeEvent *){
+    this->sync();
 }
 EConfig* SpaceEngine::GlobalSetings()
 {
@@ -448,6 +452,9 @@ void SpaceEngine::FullScrin()
 void SpaceEngine::setCursor(const QString &url)
 {
     SpaceEngineEvents->setCursor(QCursor(QPixmap(url)));
+}
+void SpaceEngine::setColorWindow(const QColor &color){
+    SpaceEngineEvents->setPalette(QPalette(color));
 }
 SpaceEngine::~SpaceEngine()
 {
