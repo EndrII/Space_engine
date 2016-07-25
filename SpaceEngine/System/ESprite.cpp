@@ -1,9 +1,10 @@
 #include "ESprite.h"
 ESprite::ESprite(const QString &patch,draw_mode mode_)
 {
+    QString tempPatch=patch;
     if(patch!="none"){
         if(patch.mid(patch.size()-3)!="spr")
-            throw EError("is not sprite","ESprite::ESprite(const QString &patch,draw_mode mode_)");
+            tempPatch+=".spr";
     }
     file=new QFile(patch);
     stream=new QDataStream(file);
@@ -51,6 +52,10 @@ void ESprite::WriteToFile(){
                    (*stream)<<*SourceVector[j]<<longFrame[j];
                }
         }
+        *stream<<(us)AnimationsName.size();
+        for(QString str:AnimationsName){
+            (*stream)<<str;
+        }
     }else{
         throw EError("sprite mode = Game Mode","void ESprite::WriteToFile(const QString &patch)");
     }
@@ -60,6 +65,7 @@ void ESprite::Clear(){
     base.clear();
     longFrame.clear();
     nameAdress.clear();
+    AnimationsName.clear();
     longAnimationsVector.clear();
     IndexBeginAnimationsVector.clear();
 }
@@ -117,6 +123,13 @@ void ESprite::ReadInFile(){
                 base.push_back(0);
             }
         }
+        us longNames;
+        *stream>>longNames;
+        QString tempString;
+        for(ui i =0;i<longNames;i++){
+            (*stream)>>tempString;
+            AnimationsName.push_back(tempString);
+        }
         if(mode==Game_mode)
             delete tempI;
     }
@@ -132,22 +145,6 @@ QOpenGLTexture* ESprite::Read_(const ui &addres){
     }
 }
 int ESprite::Append(const ui &indexAnimatoin, const QString &img, const ui position){
-   /* if(this->mode==Game_mode){
-        throw EError("Sprite mode = Game","void ESprite::Append(const QString &gif_img)");
-        return -1;
-    }
-    if(indexAnimatoin>longAnimationsVector.size()||position>longAnimationsVector[indexAnimation])
-        return -1;
-    if(position<0){
-        SourceVector.insert(SourceVector.begin()+IndexBeginAnimationsVector[indexAnimatoin]+longAnimationsVector[indexAnimatoin],new QImage(img));
-        base.insert(SourceVector.begin()+IndexBeginAnimationsVector[indexAnimatoin]+longAnimationsVector[indexAnimatoin],LASTFRAMEPOOLINDEX);
-        return IndexBeginAnimationsVector[indexAnimatoin]+longAnimationsVector[indexAnimatoin];
-    }
-    else{
-        SourceVector.insert(SourceVector.begin()+IndexBeginAnimationsVector[indexAnimatoin]+position,new QImage(img));
-        base.insert(SourceVector.begin()+IndexBeginAnimationsVector[indexAnimatoin]+position,LASTFRAMEPOOLINDEX);
-        return IndexBeginAnimationsVector[indexAnimatoin]+position;
-    }*/
        return Append(indexAnimatoin,QImage(img),position);
 }
 int ESprite::Append(const ui &indexAnimatoin, const QImage &img, const ui position){
@@ -174,7 +171,7 @@ int ESprite::Append(const ui &indexAnimatoin, const QImage &img, const ui positi
         return IndexBeginAnimationsVector[indexAnimatoin]+position;
     }
 }
-int ESprite::Append(const QString &gif_img){
+int ESprite::Append(const QString &gif_img,const QString&name){
     if(this->mode==Game_mode){
         throw EError("Sprite mode = Game","void ESprite::Append(const QString &gif_img)");
         return -1;
@@ -197,6 +194,19 @@ int ESprite::Append(const QString &gif_img){
             temp.jumpToNextFrame();
         }
     }
+    if(name.isEmpty()){
+        if(AnimationsName.size())
+            AnimationsName.push_back(temp.fileName());
+        else
+            AnimationsName.push_back("System");
+    }
+    else{
+        if(AnimationsName.size())
+            AnimationsName.push_back(name);
+        else
+            AnimationsName.push_back("System");
+    }
+
     return longAnimationsVector.size()-1;
 }
 void ESprite::Edit(const us &index, const us &time){
@@ -269,6 +279,7 @@ void ESprite::Remove_Animation(const ui &index){
     }
     else{// утечка памяти по адреску image Source vector
         nameAdress.erase(nameAdress.begin()+IndexBeginAnimationsVector[index],nameAdress.begin()+IndexBeginAnimationsVector[index]+longAnimationsVector[index]);
+        AnimationsName.erase(AnimationsName.begin()+index);
         longFrame.erase(longFrame.begin()+IndexBeginAnimationsVector[index],longFrame.begin()+IndexBeginAnimationsVector[index]+longAnimationsVector[index]);
         SourceVector.erase(SourceVector.begin()+IndexBeginAnimationsVector[index],SourceVector.begin()+IndexBeginAnimationsVector[index]+longAnimationsVector[index]);
         for(int i=0;i<longAnimationsVector[index];i++)
@@ -383,6 +394,9 @@ QOpenGLTexture* ESprite::Bind(ui VideoAdressFrame){
         else
             return Read_(0);
 }
+QString& ESprite::getNameAnimation(const int &indexAnimation){
+    return AnimationsName[indexAnimation];
+}
 ui ESprite::getIdFrame(){
     return nameAdress[DrawFrame]+ID_fileSprite;
 }
@@ -404,6 +418,13 @@ us ESprite::getLongSprite(us indexAnimation)const{
 }
 us ESprite::getValueSprite()const{
     return IndexBeginAnimationsVector.size();
+}
+bool ESprite::renameAnimation(const int &indexAnimation,const QString &newName){
+    if(indexAnimation<=0||indexAnimation>=AnimationsName.size()){
+        return false;
+    }else{
+        AnimationsName[indexAnimation]=newName;
+    }
 }
 bool ESprite::moveFrame(const ui&indexAnimation,const ui &indexPasteAnimation,const ui& indexFrame,const ui& indexPasteFrame){
     if(mode!=Edit_Mode)

@@ -115,7 +115,7 @@ public:
    virtual bool mov_to(const EKord&,const int& _speed); //+skorost
    virtual void saveObject(QString patch);//sohronit sebya v fail
    EObject(QObject *ptr=0);
-   EObject(const EKord& size, const EKord& kord, const QString& name_image, EContur *cont, QObject *ptr=0);
+   EObject(const EKord& size, const EKord& kord, const QString& name_image, EContur *cont,draw_mode mode=Game_mode, QObject *ptr=0);
     EObject(const QString&patch, QObject *ptr=0);
     ~EObject();
 public slots:

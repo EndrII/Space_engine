@@ -55,8 +55,8 @@ EObject::EObject(const QString &str, QObject *ptr):
      QDataStream stream(&f);
      stream>>*this;
 }
-EObject::EObject(const EKord& size, const EKord& kord_, const QString &str,EContur *cont, QObject *ptr):
-    QObject(ptr), ESprite(str)
+EObject::EObject(const EKord& size, const EKord& kord_, const QString &str,EContur *cont, draw_mode mode, QObject *ptr):
+    QObject(ptr), ESprite(str,mode)
 {
      keys=new bool[_Key_value];
      for(int i(0);i<_Key_value;i++)

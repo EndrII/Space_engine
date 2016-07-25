@@ -78,6 +78,7 @@ private:
     QOpenGLTexture* Read_(const ui& addres);//chteniye izobrageniy po adresu vernyot uge hotovuyu teksturu.
     bool stopedFlag;// flag ostonovki
     int staticTimeLongFrameAnimation;// dlina animazii v statichiskom regime
+    std::vector<QString> AnimationsName;//imena animazii
     std::vector<QImage*> SourceVector;// izobragenie i dlina kadra
     std::vector<ui> nameAdress;// adresa kadrov v faile
     std::vector<us> longFrame;//dlina proigrovaniya kagdogo kadra
@@ -125,7 +126,7 @@ public:
      * @return вернёт индекс добавленной анимации.
      * -1 если анимация не была добавленна
      */
-    int Append(const QString &gif_img );
+    int Append(const QString &gif_img , const QString &name="");
     /**
      * @brief Append добавит в анимацию кадр
      * @param indexAnimatoin индекс анимации куда будет добавлен кадр
@@ -248,6 +249,12 @@ public:
      */
     QOpenGLTexture* Bind(ui VideoAdressFrame);
     /**
+     * @brief getNameAnimation вернет имя анимации
+     * @param indexAnimation индекс анимации для которого запрашиваеться имя
+     * @return вернет строку с именем анимации
+     */
+    QString& getNameAnimation(const int&indexAnimation);
+    /**
      * @brief getIdFrame
      * @return вернет уникальный адресс рисуемого кадра
      */
@@ -272,6 +279,12 @@ public:
      * @return вернет количество анимаций в спрайтевф
      */
     us getValueSprite() const;
+    /**
+     * @brief renameAnimation перейменует анимацию
+     * @param indexAnimation индекс анимации которая будет перейменована
+     * @return  вернет true в случее успеха или false правала.
+     */
+    bool renameAnimation(const int& indexAnimation,const QString&newName);
     /**
      * @brief moveFrame передвинет кадр
      * @param indexAnimation индекс анимации

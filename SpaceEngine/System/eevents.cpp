@@ -4,7 +4,12 @@ EEvents::EEvents(EConfig*cfg, QWidget *parent) :
     QWidget(parent)
 {
     setings=cfg;
-    this->setPalette(QPalette(QColor(0,0,0,255)));
+    this->setObjectName("Main");
+    //this->setPalette(QPalette(QColor(0,0,0,255)));
+    this->setStyleSheet("#Main{"
+                                "background-color:#000000;"
+                             "}"
+                                 );
     timer=new QTimer;
     timer->start(10000);
     connect(timer,SIGNAL(timeout()),this,SLOT(_update()));
