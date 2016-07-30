@@ -5,17 +5,30 @@ EPool::EPool(const unsigned int &sizePool){
     poolLastIndex=poolFirstIndex=0;
     poolMemorySizeLemit=sizePool;
     poolMemorySize=0;
+    emptyTexture=new QOpenGLTexture(QImage(1,1,QImage::Format_RGB16));
+    //bool tempTest=emptyTexture->isCreated();
     pool=new poolElement[poolSize];
+
 }
-QOpenGLTexture* EPool::operator [](const unsigned int &i){
+QOpenGLTexture* EPool::operator [](const int &i){
     return pool[i].textureID;
+}
+QOpenGLTexture* EPool::call(ESprite *object){
+    int temp =object->getFrame();
+    if(temp>=0){
+        if((ui)temp>=poolSize||!pool[temp].textureID)
+            poolRender(object);
+        return pool[object->getFrame()].textureID;
+    }else{
+        return emptyTexture;
+    }
 }
 unsigned int EPool::getSize()const{
     return poolMemorySizeLemit;
 }
-unsigned int EPool::find(const unsigned int &idFrame){
+int EPool::find(const unsigned int &idFrame){
     int i=poolLastIndex;
-    while(i!=-1||pool[i].textureID!=NULL||pool[i].FrameID!=idFrame){
+    while(!(i<0||pool[i].textureID==NULL)&&pool[i].FrameID!=idFrame){
         i--;
     }
     if(pool[i].textureID==NULL)
@@ -47,6 +60,10 @@ void EPool::poolRender(ESprite *sprite){
     }
     sprite->stop(false);
 }
+/*void EPool::CreateEmptyTexture(){
+    if(emptyTexture==NULL)
+         emptyTexture=new QOpenGLTexture(QImage(1,1,QImage::Format_RGB16));
+}*/
 void EPool::clear(){
     while(poolMemorySize>0)
     {

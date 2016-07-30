@@ -3,6 +3,7 @@ ECamera::ECamera(const EKord &kord, const EKord &size,EConfig *cfg,EPool*pool_, 
     QOpenGLWidget(ptr)
 {
       pool=pool_;
+     // pool->CreateEmptyTexture();
       event=true;
       //setings=new EConfig(cfg);
       setings=cfg;
@@ -57,9 +58,10 @@ void ECamera::initializeGL()
     glEnableClientState(GL_VERTEX_ARRAY);
     glEnableClientState(GL_TEXTURE_COORD_ARRAY);
     glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);// функция прозрачности
+    glEnable(GL_DEPTH_TEST);
+    glShadeModel(GL_FLAT);
     glEnable(GL_ALPHA_TEST);
     glEnable(GL_BLEND);
-    glEnable(GL_DEPTH_TEST);
     glMatrixMode(GL_MODELVIEW);
 }
 void ECamera::Off()
@@ -184,11 +186,15 @@ void ECamera::draw_Object(EObject * Object)
 {
     switch(Object->getEObjectNameClass()){
     case EOBJECT:{
-        try{
+        /*try{
             (*pool)[Object->getFrame()]->bind();
         }catch(...){
             pool->poolRender(Object);
-        }
+        }*/
+        tempTexture=pool->call(Object);
+        if(!tempTexture->isCreated())
+            tempTexture->create();
+        tempTexture->bind();
         glPushMatrix();
         glTranslatef(Object->x(),Object->y(),Object->getSloi());
         glRotatef(Object->getUgol(),0,0,1);
@@ -199,11 +205,10 @@ void ECamera::draw_Object(EObject * Object)
         break;
     }
     case E_FON:{
-        try{
-            (*pool)[Object->getFrame()]->bind();
-        }catch(...){
-            pool->poolRender(Object);
-        }
+        tempTexture=pool->call(Object);
+        if(!tempTexture->isCreated())
+            tempTexture->create();
+        tempTexture->bind();
         glPushMatrix();
         //glTranslatef(krai->X,krai->Y,Object->getSloi());
         Object->getMatrix()[0][0]=krai->X;
@@ -323,8 +328,12 @@ EMaps* ECamera::getMap(){
     return map;
 }
 void ECamera::set_maps(EMaps *m){
+    bool temp=status;
+    status=false;
     map=m;
     map->Load(krai);
+    draw_list=m->getDrawList();
+    status=temp;
 }
 void ECamera::setVirtualKord(const EKord &kord){
     Vkord=kord;

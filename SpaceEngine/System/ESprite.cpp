@@ -6,7 +6,7 @@ ESprite::ESprite(const QString &patch,draw_mode mode_)
         if(patch.mid(patch.size()-3)!="spr")
             tempPatch+=".spr";
     }
-    file=new QFile(patch);
+    file=new QFile(tempPatch);
     stream=new QDataStream(file);
     mode =mode_;
     ID_fileSprite=-1;
@@ -370,11 +370,14 @@ std::vector<ui>* ESprite::getBase(){
 std::vector<QImage *> *ESprite::getSource(){
     return &SourceVector;
 }
-ui ESprite::getFrame(){
-    return base[DrawFrame];
+int ESprite::getFrame(){
+    if(base.empty())
+        return -1;
+    else
+        return base[DrawFrame];
 }
-bool ESprite::newAdresFromFrame(const ui&u_i){
-    if(!u_i)
+bool ESprite::newAdresFromFrame(const int&u_i){
+    if(u_i<0)
         return false;
     else{
         base[DrawFrame]=u_i;

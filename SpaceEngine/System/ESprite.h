@@ -14,7 +14,7 @@
 //#include "EPictureCore.h"
 #include <QOpenGLTexture>
 #define minFrameTime 16
-#define LASTFRAMEPOOLINDEX 4228250625
+#define LASTFRAMEPOOLINDEX 2114125312
 #define GLOBALLIST static vector<QString> listIncludeFileSprite;
 #define LOADED_FILE_SPRITE listIncludeFileSprite
 //enum sprite_mod{live,fait,death,custom_1,custom_2,
@@ -220,13 +220,13 @@ public:
      * @brief getFrame
      * @return вернёт ресуемый кадр
      */
-    ui getFrame();
+    int getFrame();
     /**
      * @brief newAdresFromFrame установит новый адрес в памяти для текущего рисуемого кадра перед вызовом этого метода нужно вызывать метод start_stop
      * @param ui новый адресс памяти
      * @return вернёт false если в качестве пораметра был принят не верный адресс
      */
-    bool newAdresFromFrame(const ui&);
+    bool newAdresFromFrame(const int &);
     /**
      * @brief stop_start　остановит или запускает все анимации
      * по усолчанию анимации запущены

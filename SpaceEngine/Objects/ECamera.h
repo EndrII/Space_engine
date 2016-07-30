@@ -25,6 +25,7 @@ private:
    // void poolRender(EObject* sprite);// podkachka izobragenie
     //unsigned int poolMemorySize,poolMemorySizeLemit,poolSize, poolLastIndex,poolFirstIndex;//razmer i index poslednego elementa v poole
     EPool* pool;
+    QOpenGLTexture*tempTexture;// vremennaya peremennaya dlya sozzdaniya ne sozdanih textur
     EObject_List** draw_list; //spisok na otrisovku
     GLfloat indexArray[1][4];
     //GLfloat idintyMatrix[4][3];

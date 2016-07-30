@@ -1,6 +1,7 @@
 #ifndef EPOOL_H
 #define EPOOL_H
 #include <QOpenGLTexture>
+#include <QOpenGLFunctions>
 #include "ESprite.h"
 #define sizeFrame 100000
 #define _4GB 4294967296
@@ -29,6 +30,7 @@ class EPool
 {
 private:
     poolElement * pool;// графический пуул камеры
+    QOpenGLTexture* emptyTexture;
     //void poolRender(EObject* sprite);// podkachka izobragenie
     unsigned int poolMemorySize,
     poolMemorySizeLemit,
@@ -36,8 +38,8 @@ private:
     poolLastIndex,
     poolFirstIndex;//razmer i index poslednego elementa v poole
 public:
-    QOpenGLTexture* operator[](const unsigned int&i);
-    EPool(const unsigned int& sizePool=_512MB);
+    QOpenGLTexture* operator[](const int &i);
+    explicit EPool(const unsigned int& sizePool=_512MB);
     /**
      * @brief getSize
      * @return вернёт размер пулла в байтах
@@ -47,16 +49,30 @@ public:
      * @brief find
      * @return вернет адресс текстуры в пулле, или вернет -1 если её не найдет.
      */
-    inline unsigned int find(const unsigned int &idFrame);
+     int find(const unsigned int &idFrame);
     /**
      * @brief malloc выделит память под новый кадр
      */
-    inline void malloc(ESprite*);
+     void malloc(ESprite*);
     /**
      * @brief poolRender
      * обработает кадр если ему требуеться выделение памяти
      */
      void poolRender(ESprite*);
+    // /**
+    //  * @brief CreateEmptyTexture создаст пустую текстуру если токовой нет.
+    //  */
+    // void CreateEmptyTexture();
+
+     /**
+      * @brief call вызов системного пулла выполняет все необходимые действия что бы подргузить текстуру
+      * @param object обьект которому необходимо отрисовать спрайт
+      * @return вернет текстуру запрашиваемого кадра
+      */
+     QOpenGLTexture* call(ESprite* object);
+     /**
+      * @brief clear отчистит содержимое пулла
+      */
      void clear();
     ~EPool();
 };

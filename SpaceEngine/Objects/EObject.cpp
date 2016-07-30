@@ -64,8 +64,8 @@ EObject::EObject(const EKord& size, const EKord& kord_, const QString &str,ECont
      massa=1;
      _w=size.X;
      _h=size.Y;
-     _x=kord_.X;
-     _y=kord_.Y;
+     mx= _x=kord_.X;
+     my= _y=kord_.Y;
      _z=0;
      vertixArrayRefresh();
      contur=cont;
