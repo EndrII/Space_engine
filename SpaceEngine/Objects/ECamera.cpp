@@ -3,9 +3,7 @@ ECamera::ECamera(const EKord &kord, const EKord &size,EConfig *cfg,EPool*pool_, 
     QOpenGLWidget(ptr)
 {
       pool=pool_;
-     // pool->CreateEmptyTexture();
       event=true;
-      //setings=new EConfig(cfg);
       setings=cfg;
       setings->Update();
       speed_kord_X=0;
@@ -40,6 +38,17 @@ ECamera::ECamera(const EKord &kord, const EKord &size,EConfig *cfg,EPool*pool_, 
       krai[1].Y=kord.Y+siz.Y/2;
       connect(&timer,SIGNAL(timeout()),this,SLOT(Render()));
       timer.start(1000/60);
+      idintyMatrix[0][0]=-0.0;
+      idintyMatrix[0][1]=-0.0;
+
+      idintyMatrix[1][0]=+1.0;
+      idintyMatrix[1][1]=-0.0;
+
+      idintyMatrix[2][0]=+1.0;
+      idintyMatrix[2][1]=+1.0;
+
+      idintyMatrix[3][0]=-0.0;
+      idintyMatrix[3][1]=+1.0;
       indexArray[0][0]=0;
       indexArray[0][1]=1;
       indexArray[0][2]=2;
@@ -53,7 +62,6 @@ void ECamera::initializeGL()
     glClearColor(0.0,0.0,0.0,1.0);//ustonovim zvet fona okna
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    glOrtho(krai[0].X,krai[1].X,krai[1].Y,krai[0].Y,1.0,-1.0);
     glEnable(GL_TEXTURE_2D);
     glEnableClientState(GL_VERTEX_ARRAY);
     glEnableClientState(GL_TEXTURE_COORD_ARRAY);
@@ -90,6 +98,8 @@ void ECamera::paintGL()
     {
         glLoadIdentity();
         glOrtho(krai[0].X,krai[1].X,krai[1].Y,krai[0].Y,1.0,-1.0);
+       //glOrtho(-1.0,1.0,1.0,-1.0,1.0,-1.0);
+
         (*draw_list)->Elock();
         for(EObject* element:**draw_list)//vozmogen bag
         {
@@ -186,11 +196,6 @@ void ECamera::draw_Object(EObject * Object)
 {
     switch(Object->getEObjectNameClass()){
     case EOBJECT:{
-        /*try{
-            (*pool)[Object->getFrame()]->bind();
-        }catch(...){
-            pool->poolRender(Object);
-        }*/
         tempTexture=pool->call(Object);
         if(!tempTexture->isCreated())
             tempTexture->create();
@@ -198,9 +203,9 @@ void ECamera::draw_Object(EObject * Object)
         glPushMatrix();
         glTranslatef(Object->x(),Object->y(),Object->getSloi());
         glRotatef(Object->getUgol(),0,0,1);
-        glVertexPointer(4,GL_FLOAT,0,Object->getMatrix());
-        glTexCoordPointer(4,GL_FLOAT,0,Object->getMatrix());
-        glDrawElements(GL_QUADS,4,GL_FLOAT,indexArray);
+        glVertexPointer(3,GL_FLOAT,0,Object->getMatrix());
+        glTexCoordPointer(2,GL_FLOAT,0,idintyMatrix);
+        glDrawElements(GL_QUADS,4,GL_UNSIGNED_BYTE,indexArray);
         glPopMatrix();
         break;
     }
@@ -226,10 +231,9 @@ void ECamera::draw_Object(EObject * Object)
         Object->getMatrix()[3][0]=krai[1].X;
         Object->getMatrix()[3][1]=krai[1].Y;
         //Object->getMatrix()[3][2]=0;
-
-        glVertexPointer(4,GL_FLOAT,0,Object->getMatrix());
-        glTexCoordPointer(4,GL_FLOAT,0,Object->getMatrix());
-        glDrawElements(GL_QUADS,4,GL_FLOAT,indexArray);
+        glVertexPointer(3,GL_FLOAT,0,Object->getMatrix());
+        glTexCoordPointer(2,GL_FLOAT,0,idintyMatrix);
+        glDrawElements(GL_QUADS,4,GL_UNSIGNED_BYTE,indexArray);
         glPopMatrix();
         break;
     }

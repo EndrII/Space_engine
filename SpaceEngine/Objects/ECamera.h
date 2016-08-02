@@ -21,14 +21,11 @@ class ECamera: public QOpenGLWidget,protected QOpenGLFunctions
     Q_OBJECT
 private:
     void update();//obnovlenie razmera kameri po novim nastroikam
-    //poolElement * pool;// графический пуул камеры
-   // void poolRender(EObject* sprite);// podkachka izobragenie
-    //unsigned int poolMemorySize,poolMemorySizeLemit,poolSize, poolLastIndex,poolFirstIndex;//razmer i index poslednego elementa v poole
     EPool* pool;
     QOpenGLTexture*tempTexture;// vremennaya peremennaya dlya sozzdaniya ne sozdanih textur
     EObject_List** draw_list; //spisok na otrisovku
-    GLfloat indexArray[1][4];
-    //GLfloat idintyMatrix[4][3];
+    GLubyte indexArray[1][4];
+    GLfloat idintyMatrix[4][2];
     EMaps *map;//karta kotoruyu risuet eta camera
     EKord Vkord,VSize;// virtualnie koordinati kameri na osnownom ekrane
     bool status;//status off/on
@@ -49,7 +46,6 @@ protected:
     void initializeGL(); //iniziolizaziya okna GL
     void paintGL(); //ego otrisovka
     void resizeGL(int w, int h);//pererazmetka
-    //void draw_ModuleObject();
 protected slots:
   virtual void draw_Object(EObject*);//otrisovka staticheskogo ojecta
   virtual void _render();//obnovleni kameri
@@ -57,7 +53,7 @@ protected slots:
   virtual void _seting_update();//obnovleniye nastroek
 public:
     virtual void folow(EObject*);//sledit za ubjectom
-    ECamera(const EKord &kord, const EKord &size, EConfig *, EPool *pool_, QWidget *ptr=0);//prostoi konsstruktor
+    explicit ECamera(const EKord &kord, const EKord &size, EConfig *, EPool *pool_, QWidget *ptr=0);//prostoi konsstruktor
     MOD getMode();//poluchit tekushii regim
     EKord getSize();//vernyot razmer siyomki
     EKord* getKrai(); //verniot obe chasti cameri

@@ -94,15 +94,15 @@ void EObject::vertixArrayRefresh(){
     vertixArray[0][1]=-_h/2;
     vertixArray[0][2]=_z;
 
-    vertixArray[1][0]=-_w/2;
-    vertixArray[1][1]=_h/2;
+    vertixArray[1][0]=+_w/2;
+    vertixArray[1][1]=-_h/2;
     vertixArray[1][2]=_z;
 
     vertixArray[2][0]=+_w/2;
-    vertixArray[2][1]=-_h/2;
+    vertixArray[2][1]=+_h/2;
     vertixArray[2][2]=_z;
 
-    vertixArray[3][0]=+_w/2;
+    vertixArray[3][0]=-_w/2;
     vertixArray[3][1]=+_h/2;
     vertixArray[3][2]=_z;
 }
