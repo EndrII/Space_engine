@@ -53,6 +53,8 @@ public:
     virtual bool setMap(EMaps*,ECamera*);//ustonovit kartu dlya otobrageniya vibronai kamere
     virtual bool addObject(EObject*,EMaps*);//dobavit object v kartu
     virtual void addObject(const int& index_Object, const int& index_Map);
+    virtual bool removeObject(const ui &indexObject);//udalit object
+    virtual bool removeObject(EObject*object);//dlya udobstva
     virtual void addQtButton(QPushButton*,  EKord kord,  EKord size);//dobovlaet object qt v glavnoe okno dvigka
     virtual void addQtWidget(QWidget*,  EKord kord,  EKord size);//dobovlaet object qt v glavnoe okno dvigka
     virtual short addAI(EAi*);//dobavit AI vernyot nomer ai

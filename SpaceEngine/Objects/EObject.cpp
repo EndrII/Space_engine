@@ -20,7 +20,7 @@ EObject::EObject(QObject *ptr):
      acceleration=accs;
      playerTarget=NULL;
      movmode=Standart;
-     MAP_ADRES=NULL;
+     map=NULL;
      feedback=inSlowRender;
      class_=EOBJECT;
 }
@@ -45,7 +45,7 @@ EObject::EObject(const QString &str, QObject *ptr):
      acceleration=accs;
      playerTarget=NULL;
      movmode=Standart;
-     MAP_ADRES=NULL;
+     map=NULL;
      feedback=inSlowRender;
      class_=EOBJECT;
      QFile f(str);
@@ -81,7 +81,7 @@ EObject::EObject(const EKord& size, const EKord& kord_, const QString &str,ECont
      acceleration=accs;
      playerTarget=NULL;
      movmode=Standart;
-     MAP_ADRES=NULL;
+     map=NULL;
      feedback=inSlowRender;
      class_=EOBJECT;
 }
@@ -476,14 +476,6 @@ void EObject::setH(const float &h){
 void EObject::setSloi(const float &s){
     _z=s;
     vertixArrayRefresh();
-}
-void EObject::setMapAdres(void *a)
-{
-    MAP_ADRES=a;
-}
-void* EObject::getMapAdres()
-{
-    return MAP_ADRES;
 }
 EObject::~EObject()
 {

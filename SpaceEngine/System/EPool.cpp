@@ -22,7 +22,6 @@ QOpenGLTexture* EPool::call(ESprite *object){
             return pool[object->getFrame()].textureID;
         }else
             return pool[temp].textureID;
-
     }else{
         return emptyTexture;
     }

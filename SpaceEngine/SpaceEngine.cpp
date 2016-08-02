@@ -118,9 +118,9 @@ bool SpaceEngine::addObject(EObject *o, EMaps *m)
          if(temp3==m->getMainList()->end())
          {
              o->delete_flag=true;
-             if(o->getMapAdres()!=NULL)((EMaps*)(o->getMapAdres()))->ForceuUpdate();
+             if(o->getMap()!=NULL)((EMaps*)(o->getMap()))->ForceuUpdate();
              Objects.push_back(o);
-             o->setMapAdres((void*)m);
+             o->setMap((void*)m);
            //  o->update(m->getTimeSync(),m->getSlowTimeSync());
              o->delete_flag=false;
              m->add_Object(o);
@@ -135,14 +135,33 @@ bool SpaceEngine::addObject(EObject *o, EMaps *m)
      }
  #else
     o->delete_flag=true;
-    if(o->getMapAdres()!=NULL)((EMaps*)(o->getMapAdres()))->ForceuUpdate();
+    if(o->getMap()!=NULL)((EMaps*)(o->getMap()))->ForceuUpdate();
     Objects.push_back(o);
-    o->setMapAdres((void*)m);
+    o->setMap((void*)m);
    // o->update(m->getTimeSync(),m->getSlowTimeSync());
     o->delete_flag=false;
     m->add_Object(o);
             return true;
  #endif
+}
+bool SpaceEngine::removeObject(EObject *object){
+    std::vector<EObject*>::iterator i=find(Objects.begin(),Objects.end(),object);
+    if(i==Objects.end())
+        return false;
+    (*i)->delete_flag=true;
+    ((EMaps*)((*i)->getMap()))->ForceuUpdate();
+    delete (*i);
+    Objects.erase(i);
+    return true;
+}
+bool SpaceEngine::removeObject(const ui &indexObject){
+    if(indexObject>=Objects.size())
+        return false;
+    Objects.data()[indexObject]->delete_flag=true;
+    ((EMaps*)(Objects.data()[indexObject]->getMap()))->ForceuUpdate();
+    delete Objects[indexObject];
+    Objects.erase(Objects.begin()+indexObject);
+    return true;
 }
 void SpaceEngine::addObject(const int& index_Object, const int& index_Map)
 {
@@ -154,8 +173,8 @@ void SpaceEngine::addObject(const int& index_Object, const int& index_Map)
          if(temp3==Maps[index_Map]->getMainList()->end())
          {
              Objects[index_Object]->delete_flag=true;
-             if(Objects[index_Object]->getMapAdres()!=NULL)((EMaps*)(Objects[index_Object]->getMapAdres()))->ForceuUpdate();
-             Objects[index_Object]->setMapAdres((void*)Maps[index_Map]);
+             if(Objects[index_Object]->getMap()!=NULL)((EMaps*)(Objects[index_Object]->getMap()))->ForceuUpdate();
+             Objects[index_Object]->setMap((void*)Maps[index_Map]);
              Objects[index_Object]->delete_flag=false;
              Maps[index_Map]->add_Object(Objects[index_Object]);
          }else

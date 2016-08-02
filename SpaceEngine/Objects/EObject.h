@@ -30,7 +30,6 @@ private:
     void vertixArrayRefresh();//perescyot vershin hsirini i sloyov;
     void NormalizeUgol();//normlizaziya ugla
     void NoramlizeUgolSrlrct();//povort objecta
-    void *MAP_ADRES;//adres pred idushei karti
     float *ElepsedCenter_X,*ElepsedCenter_Y;//ukazatel na zenter vrashenie
     int Rad;//radius vrasheniya po okrugnosti
     double ElepsedUgol;//ugol raspologeniya ovjecta v ragime dvugeniya pokrugu
@@ -78,7 +77,6 @@ public:
    EKord getKord()const;
    virtual void* getMap();
    virtual bool* getKeys();//vernyot spisok nagatih klavish
-   virtual void* getMapAdres();//gooluchit adres karti
    virtual MovMode getMovMode();//vernyot regim dvigeniya
    EObjectNameClass getEObjectNameClass();//vernyot tip dannih
    virtual Feedback getFeedBack();//uznat gde object
@@ -96,10 +94,7 @@ public:
    virtual void setKord(const EKord&);// ustonovit novii kordinati
    virtual void setUgol(const short&);//ustonovit ugol povorota otnositelno osi X
    virtual void setAcceleration(const float& A=1);//ustonovit uskorenie
-   virtual void setMapAdres(void*);//ustonovit adres karti
    float** getMatrix(); //return matrix
-   //virtual void setElasticity(const float&);//
-   //virtual void defaultColor();//ustonovit standartni zvet
    float& x();
    float& y();
    void setSloi(const float& );
@@ -109,7 +104,6 @@ public:
    EObject* getSlave()const;
    void setW(const float&);
    void setH(const float&);
-   //virtual bool isPainted(); //ukazatel na risovku
    virtual void startElepsedMove(float *Center_X, float *Center_Y, const int& Radius, const Rotate rot=NoRotate);//nachnyot dvigenie ovjecta po okrugnosti
    virtual bool mov_to(const EKord&); //ustonovit tochku dvigeniya
    virtual bool mov_to(const EKord&,const int& _speed); //+skorost

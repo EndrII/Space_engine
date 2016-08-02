@@ -120,7 +120,7 @@ void ESprite::ReadInFile(){
                 *stream>>tempL;
                 if(mode==Edit_Mode)SourceVector.push_back(tempI);
                 longFrame.push_back(tempL);
-                base.push_back(0);
+                base.push_back(LASTFRAMEPOOLINDEX);
             }
         }
         us longNames;
