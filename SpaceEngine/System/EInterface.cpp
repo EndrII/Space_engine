@@ -389,10 +389,13 @@ void Potok3_CORE::BaseRender(){
     (*slow_render_list_)->Eclear();
     for(Elist<EObject*>::iterator  i=object_list_->begin();i!=object_list_->end();i++)
     {
+        //bool b=(*i)->delete_flag;
         if((*i)->delete_flag)
         {
             object_list_->erase(i);
             i--;
+            if(object_list_->size()==0)
+                return;
         }else
         {
             if((*i)->getEObjectNameClass()==E_GAMEOBJECT)

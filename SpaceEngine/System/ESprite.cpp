@@ -15,9 +15,9 @@ ESprite::ESprite(const QString &patch,draw_mode mode_)
     playMode=DefaultAni;
     staticTimeLongFrameAnimation=1000;
     timer_.start();
-    CurentFrame=0;
+    CurentAnimationIndex=DrawFrame=CurentFrame=0;
     switcher=true;
-    stopedFlag=false;
+   // stopedFlag=false;
     if(patch!="none"){
         generateID();
         if(!file->exists())
@@ -144,21 +144,22 @@ QOpenGLTexture* ESprite::Read_(const ui &addres){
         return new QOpenGLTexture(temp);
     }
 }
-int ESprite::Append(const ui &indexAnimatoin, const QString &img, const ui position){
+int ESprite::Append(const ui &indexAnimatoin, const QString &img, const int position){
        return Append(indexAnimatoin,QImage(img),position);
 }
-int ESprite::Append(const ui &indexAnimatoin, const QImage &img, const ui position){
+int ESprite::Append(const ui &indexAnimatoin, const QImage &img, const int position){
     if(this->mode==Game_mode){
         throw EError("Sprite mode = Game","void ESprite::Append(const QString &gif_img)");
         return -1;
     }
     if(indexAnimatoin>longAnimationsVector.size()||position>longAnimationsVector[indexAnimatoin])
         return -1;
-    if(!position){
+    if(position<0){
         nameAdress.insert(nameAdress.begin()+IndexBeginAnimationsVector[indexAnimatoin]+longAnimationsVector[indexAnimatoin],0);
         SourceVector.insert(SourceVector.begin()+IndexBeginAnimationsVector[indexAnimatoin]+longAnimationsVector[indexAnimatoin],new QImage(img));
         base.insert(base.begin()+IndexBeginAnimationsVector[indexAnimatoin]+longAnimationsVector[indexAnimatoin],LASTFRAMEPOOLINDEX);
         longFrame.insert(longFrame.begin()+IndexBeginAnimationsVector[indexAnimatoin]+longAnimationsVector[indexAnimatoin],1000);
+        longAnimationsVector[position]++;
         refreshIndexBeginAnimations(indexAnimatoin,1);
         return IndexBeginAnimationsVector[indexAnimatoin]+longAnimationsVector[indexAnimatoin];
     }
@@ -167,9 +168,19 @@ int ESprite::Append(const ui &indexAnimatoin, const QImage &img, const ui positi
         SourceVector.insert(SourceVector.begin()+IndexBeginAnimationsVector[indexAnimatoin]+position,new QImage(img));
         base.insert(base.begin()+IndexBeginAnimationsVector[indexAnimatoin]+position,LASTFRAMEPOOLINDEX);
         longFrame.insert(longFrame.begin()+IndexBeginAnimationsVector[indexAnimatoin]+position,1000);
+        longAnimationsVector[position]++;
         refreshIndexBeginAnimations(indexAnimatoin,1);
         return IndexBeginAnimationsVector[indexAnimatoin]+position;
     }
+}
+void ESprite::newEmptyAnimation(const QString &name){
+    if(name=="")return;
+    longAnimationsVector.push_back(0);
+    IndexBeginAnimationsVector.push_back(longFrame.size());
+    if(longAnimationsVector.size()<=1)
+        AnimationsName.push_back("System");
+    else
+        AnimationsName.push_back(name);
 }
 int ESprite::Append(const QString &gif_img,const QString&name){
     if(this->mode==Game_mode){
@@ -235,43 +246,34 @@ void ESprite::Edit(const us &time){
     }
 }
 void ESprite::Remove_Frame(const ui &AnimationIndex, const ui &indexFrame){
-    stopedFlag=true;
-    Replay();
-    if(mode==Game_mode){
-        throw EError("animation \'"+file->fileName().toStdString()+"\' not open for Edit!","void ESprite::Remove_Animation(const int &index)");
-        return;
+    if(IndexBeginAnimationsVector.size()>AnimationIndex&&longAnimationsVector[AnimationIndex]){
+        stopedFlag=true;
+        Replay();
+        if(mode==Game_mode){
+            throw EError("animation \'"+file->fileName().toStdString()+"\' not open for Edit!","void ESprite::Remove_Animation(const int &index)");
+            return;
+        }
+        longFrame.erase(longFrame.begin()+IndexBeginAnimationsVector[AnimationIndex]+indexFrame);
+        nameAdress.erase(nameAdress.begin()+IndexBeginAnimationsVector[AnimationIndex]+indexFrame);
+        base.erase(base.begin()+IndexBeginAnimationsVector[AnimationIndex]+indexFrame);
+        delete SourceVector[indexFrame];
+        SourceVector.erase(SourceVector.begin()+IndexBeginAnimationsVector[AnimationIndex]+indexFrame);
+        refreshIndexBeginAnimations(AnimationIndex,-1);
+        longAnimationsVector[AnimationIndex]--;
+        stopedFlag=false;
     }
-    longFrame.erase(longFrame.begin()+IndexBeginAnimationsVector[AnimationIndex]+indexFrame);
-    nameAdress.erase(base.begin()+IndexBeginAnimationsVector[AnimationIndex]+indexFrame);
-    base.erase(base.begin()+IndexBeginAnimationsVector[AnimationIndex]+indexFrame);
-    delete SourceVector[indexFrame];
-    SourceVector.erase(SourceVector.begin()+IndexBeginAnimationsVector[AnimationIndex]+indexFrame);
-    refreshIndexBeginAnimations(AnimationIndex,-1);
-    stopedFlag=false;
 }
 void ESprite::Remove_Frame(const ui &FrameIndex){
-    stopedFlag=true;
-    Replay();
-    if(mode==Game_mode){
-        throw EError("animation \'"+file->fileName().toStdString()+"\' not open for Edit!","void ESprite::Remove_Animation(const int &index)");
-        return;
-    }
-    nameAdress.erase(nameAdress.begin()+FrameIndex);
-    longFrame.erase(longFrame.begin()+FrameIndex);
-    base.erase(base.begin()+FrameIndex);
-    delete SourceVector[FrameIndex];
-    SourceVector.erase(SourceVector.begin()+FrameIndex);
     ui temp=IndexBeginAnimationsVector.size()-1;
     while(IndexBeginAnimationsVector[temp]>FrameIndex){
         temp--;
     }
-    refreshIndexBeginAnimations(temp,-1);
-    stopedFlag=false;
+    Remove_Frame(temp,FrameIndex-temp);
 }
 void ESprite::Remove_Animation(const ui &index){
     stopedFlag=true;
     Replay();
-    if(longFrame.size()>=index)
+    if(longFrame.size()<=index||index==0)
         return;
     if(mode==Game_mode){
         throw EError("animation \'"+file->fileName().toStdString()+"\' not open for Edit!","void ESprite::Remove_Animation(const int &index)");
@@ -298,18 +300,18 @@ void ESprite::Play(const int &index, const PlayMode &playMode){
     case instantly:{
         CurentAnimationIndex=index;
         DrawFrame=IndexBeginAnimationsVector[index];
-        switcher=false;
+        switcher=true;
         animationStack.pop_front();
         break;
     }
     case toBegin:{
         animationStack.push_front(index);
-        switcher=false;
+     //   switcher=true;
         break;
     }
     case toEnd:{
         animationStack.push_back(index);
-        switcher=false;
+       // switcher=true;
         break;
     }
     default: throw EError("Play Animation Error, playMode is error mode!","void ESprite::Play(const int &index,const &playMode)");
@@ -319,7 +321,7 @@ void ESprite::Replay(){
     animationStack.clear();
     switcher=true;
 }
-void ESprite::render_sprite(){
+/*void ESprite::render_sprite(){
     callTime=allTime+timer_.elapsed();
     if(stopedFlag) return;
     if(switcher)
@@ -329,8 +331,9 @@ void ESprite::render_sprite(){
             if(timer_.elapsed()>longFrame[DrawFrame]){
                 allTime+=timer_.elapsed();
                 timer_.restart();
-                if(++DrawFrame>=longAnimationsVector[CurentAnimationIndex]){
+                if(++DrawFrame>=IndexBeginAnimationsVector[CurentAnimationIndex]+longAnimationsVector[CurentAnimationIndex]){
                     CurentAnimationIndex=animationStack.front();
+                    DrawFrame=IndexBeginAnimationsVector[CurentAnimationIndex];
                     animationStack.pop_front();
                     if(animationStack.empty())
                         switcher=true;
@@ -340,8 +343,9 @@ void ESprite::render_sprite(){
             if(timer_.elapsed()>staticTimeLongFrameAnimation){
                 allTime+=timer_.elapsed();
                 timer_.restart();
-                if(++DrawFrame>=longAnimationsVector[CurentAnimationIndex]){
+                if(++DrawFrame>=IndexBeginAnimationsVector[CurentAnimationIndex]+longAnimationsVector[CurentAnimationIndex]){
                     CurentAnimationIndex=animationStack.front();
+                    DrawFrame=IndexBeginAnimationsVector[CurentAnimationIndex];
                     animationStack.pop_front();
                     if(animationStack.empty())
                         switcher=true;
@@ -349,6 +353,26 @@ void ESprite::render_sprite(){
             }
         }
 
+    }
+}*/
+void ESprite::render_sprite(){
+    if(stopedFlag) return;
+    if(animationStack.empty())
+        DrawFrame=CurentFrame;
+    else{
+        if(timer_.elapsed()>((playMode)?staticTimeLongFrameAnimation:longFrame[DrawFrame])){
+            timer_.restart();
+            if(switcher){
+                CurentAnimationIndex=animationStack.front();
+                DrawFrame=IndexBeginAnimationsVector[CurentAnimationIndex];
+                switcher=false;
+            }
+            if(++DrawFrame>=IndexBeginAnimationsVector[CurentAnimationIndex]+longAnimationsVector[CurentAnimationIndex]){
+                 DrawFrame--;
+                 animationStack.pop_front();
+                 switcher=true;
+            }
+        }
     }
 }
 int ESprite::getCallTimeRender(){
@@ -422,11 +446,12 @@ us ESprite::getLongSprite(us indexAnimation)const{
 us ESprite::getValueSprite()const{
     return IndexBeginAnimationsVector.size();
 }
-bool ESprite::renameAnimation(const int &indexAnimation,const QString &newName){
-    if(indexAnimation<=0||indexAnimation>=AnimationsName.size()){
+bool ESprite::renameAnimation(const ui &indexAnimation,const QString &newName){
+    if(indexAnimation==0||indexAnimation>=AnimationsName.size()||newName==""){
         return false;
     }else{
         AnimationsName[indexAnimation]=newName;
+        return true;
     }
 }
 bool ESprite::moveFrame(const ui&indexAnimation,const ui &indexPasteAnimation,const ui& indexFrame,const ui& indexPasteFrame){
@@ -469,7 +494,7 @@ void ESprite::rennderDamageFrame(const ESprite &baseSprite, const ui &frameValue
     }
 }
 void ESprite::refreshIndexBeginAnimations(ui index, ui mov){
-    for(ui i=index;i<IndexBeginAnimationsVector.size();i++){
+    for(ui i=index+1;i<IndexBeginAnimationsVector.size();i++){
         IndexBeginAnimationsVector[i]+=mov;
     }
 }

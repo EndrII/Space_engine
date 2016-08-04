@@ -135,7 +135,7 @@ public:
      * @return вернет позицию куда юыл бобален кадр (если position= -1 вернет размер анимации, если в
      * в кадр бобавить е удалось вернет -1)
      */
-    int Append(const ui& indexAnimatoin,const QString& img,const ui position=-1);
+    int Append(const ui& indexAnimatoin, const QString& img, const int position=-1);
     /**
      * @brief Append сделанно для удобства
      * @param indexAnimatoin
@@ -143,8 +143,12 @@ public:
      * @param position
      * @return
      */
-    int Append(const ui& indexAnimatoin,const QImage& img,const ui position=-1);
-
+    int Append(const ui& indexAnimatoin, const QImage& img, const int position=-1);
+    /**
+     * @brief newEmptyAnimation добавит новую пустую анимацию
+     * @param name имя новой анимации
+     */
+    void newEmptyAnimation(const QString& name);
     /**
      * @brief Edit редактирует время длительности анимации
      * @param index индекс анимации
@@ -284,7 +288,7 @@ public:
      * @param indexAnimation индекс анимации которая будет перейменована
      * @return  вернет true в случее успеха или false правала.
      */
-    bool renameAnimation(const int& indexAnimation,const QString&newName);
+    bool renameAnimation(const ui &indexAnimation, const QString&newName);
     /**
      * @brief moveFrame передвинет кадр
      * @param indexAnimation индекс анимации

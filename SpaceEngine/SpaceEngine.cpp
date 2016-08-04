@@ -149,7 +149,8 @@ bool SpaceEngine::removeObject(EObject *object){
     if(i==Objects.end())
         return false;
     (*i)->delete_flag=true;
-    ((EMaps*)((*i)->getMap()))->ForceuUpdate();
+    if((*i)->getMap()!=NULL)
+        ((EMaps*)((*i)->getMap()))->ForceuUpdate();
     delete (*i);
     Objects.erase(i);
     return true;
@@ -158,6 +159,7 @@ bool SpaceEngine::removeObject(const ui &indexObject){
     if(indexObject>=Objects.size())
         return false;
     Objects.data()[indexObject]->delete_flag=true;
+    if(Objects.data()[indexObject]->getMap()!=NULL)
     ((EMaps*)(Objects.data()[indexObject]->getMap()))->ForceuUpdate();
     delete Objects[indexObject];
     Objects.erase(Objects.begin()+indexObject);

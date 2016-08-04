@@ -2,52 +2,12 @@
 EObject::EObject(QObject *ptr):
     QObject(ptr)
 {
-     keys=new bool[_Key_value];
-     for(int i(0);i<_Key_value;i++)
-         keys[i]=false;
-     massa=1;
-     _z=0;
-     speed=0;
-     ugol=0;
-     _ugol=0;
-     radius=0;
-     slave_=this;
-     ElepsedUgol=0;
-     contur=NULL;
-     Rad=0;
-     ratateMode=NoRotate;
-     delete_flag=false;
-     acceleration=accs;
-     playerTarget=NULL;
-     movmode=Standart;
-     map=NULL;
-     feedback=inSlowRender;
-     class_=EOBJECT;
+    PreConstructor(EKord(0),EKord(0),0);
 }
 EObject::EObject(const QString &str, QObject *ptr):
     QObject(ptr)
 {
-     keys=new bool[_Key_value];
-     for(int i(0);i<_Key_value;i++)
-         keys[i]=false;
-     massa=1;
-     _z=0;
-     speed=0;
-     ugol=0;
-     _ugol=0;
-     radius=0;
-     ElepsedUgol=0;
-     contur=NULL;
-     Rad=0;
-     slave_=this;
-     ratateMode=NoRotate;
-     delete_flag=false;
-     acceleration=accs;
-     playerTarget=NULL;
-     movmode=Standart;
-     map=NULL;
-     feedback=inSlowRender;
-     class_=EOBJECT;
+    PreConstructor(EKord(0),EKord(0),0);
      QFile f(str);
      if(!f.open(QIODevice::ReadOnly)){
          throw EError("file no detected!","EObject::EObject(const QString &str, QObject *ptr):");
@@ -58,32 +18,38 @@ EObject::EObject(const QString &str, QObject *ptr):
 EObject::EObject(const EKord& size, const EKord& kord_, const QString &str,EContur *cont, draw_mode mode, QObject *ptr):
     QObject(ptr), ESprite(str,mode)
 {
-     keys=new bool[_Key_value];
-     for(int i(0);i<_Key_value;i++)
-         keys[i]=false;
-     massa=1;
-     _w=size.X;
-     _h=size.Y;
-     mx= _x=kord_.X;
-     my= _y=kord_.Y;
-     _z=0;
-     vertixArrayRefresh();
-     contur=cont;
-     slave_=this;
-     speed=0;
-     ugol=0;
-     _ugol=0;
-     radius=0;
-     ElepsedUgol=0;
-     Rad=0;
-     ratateMode=NoRotate;
-     delete_flag=false;
-     acceleration=accs;
-     playerTarget=NULL;
-     movmode=Standart;
-     map=NULL;
-     feedback=inSlowRender;
-     class_=EOBJECT;
+    PreConstructor(size,kord_,cont);
+}
+void EObject::PreConstructor(const EKord& size, const EKord& kord_,EContur *cont){
+    keys=new bool[_Key_value];
+    for(int i(0);i<_Key_value;i++)
+        keys[i]=false;
+    massa=1;
+    _w=size.X;
+    _h=size.Y;
+    mx= _x=kord_.X;
+    my= _y=kord_.Y;
+    _z=0;
+    vertixArrayRefresh();
+    contur=cont;
+    slave_=this;
+    speed=0;
+    ugol=0;
+    _ugol=0;
+    radius=0;
+    ElepsedUgol=0;
+    Rad=0;
+    ratateMode=NoRotate;
+    noDraw_flag=false;
+    delete_flag=false;
+    ignore_flag=false;
+    forceRenderFlag=false;
+    acceleration=accs;
+    playerTarget=NULL;
+    movmode=Standart;
+    map=NULL;
+    feedback=inSlowRender;
+    class_=EOBJECT;
 }
 void EObject::setAcceleration(const float &A)
 {

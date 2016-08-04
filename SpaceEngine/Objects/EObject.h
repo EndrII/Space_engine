@@ -25,6 +25,7 @@ class EObject:public QObject,public ESprite //osnovnoi klas obektov dvigka
 {
     Q_OBJECT
 private:
+    void PreConstructor(const EKord& size, const EKord& kord_, EContur *cont);//osnovnoi consructor
     EContur *contur;// kontur dannogo objecta
     float vertixArray[4][3]; //vershini risovki (zavisyat ot razmera i sloya)
     void vertixArrayRefresh();//perescyot vershin hsirini i sloyov;
