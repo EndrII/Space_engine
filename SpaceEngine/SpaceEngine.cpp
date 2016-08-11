@@ -189,8 +189,8 @@ void SpaceEngine::addObject(const int& index_Object, const int& index_Map)
      }
  #else
     Objects[index_Object]->delete_flag=true;
-    if(Objects[index_Object]->getMapAdres()!=NULL)((EMaps*)(Objects[index_Object]->getMapAdres()))->ForceuUpdate();
-    Objects[index_Object]->setMapAdres((void*)Maps[index_Map]);
+    if(Objects[index_Object]->getMap()!=NULL)((EMaps*)(Objects[index_Object]->getMap()))->ForceuUpdate();
+    Objects[index_Object]->setMap((void*)Maps[index_Map]);
     Objects[index_Object]->delete_flag=false;
     Maps[index_Map]->add_Object(Objects[index_Object]);
  #endif

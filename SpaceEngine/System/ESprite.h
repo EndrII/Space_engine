@@ -1,11 +1,10 @@
 #ifndef ESPARAIT_H
 #define ESPARAIT_H
-#include <QPixmap>
-#include <QWidget>
 #include <QImage>
 #include <QMovie>
 #include <QTime>
 #include "EError.h"
+#include "./SpaceEngine/Objects/ELoadScreen.h"
 #include <ctime>
 #include <QDataStream>
 #include <QFile>
@@ -52,8 +51,9 @@ enum modeAnimation{DefaultAni,StaticAni};
  * базовая графическая состовляющая Space Engine
  */
 
-class ESprite //klass spraitov s vipolneniem vseh animazii
+class ESprite:public QObject //klass spraitov s vipolneniem vseh animazii
 {
+    Q_OBJECT
 private:
     bool switcher;//perecluschtel
     bool isBindet;//
@@ -71,7 +71,7 @@ private:
     modeAnimation playMode;//regim vosproizvedeniya animazii
     draw_mode mode;//regim risowki
     us CurentAnimationIndex; //индеус выранной анимации
-    us CurentFrame,DrawFrame;   // CurentFrame кадр отображаемый в случаи отсуцтвия анимации
+    us CurentFrame,DrawFrame,tempDrawFrame;   // CurentFrame кадр отображаемый в случаи отсуцтвия анимации
                                 //DrawFrame рисуемы в данный момент кадр
     std::list<us> animationStack;//ocheredi animazii
     void Clear();
@@ -85,6 +85,7 @@ private:
     std::vector<ui> base;// basa izobragenii
     std::vector<us> longAnimationsVector;// vector dlin anomazii
     std::vector<us> IndexBeginAnimationsVector;// indxi nachal animazii
+    bool loading_test;//test na proverku zanyatosti ekrana zagruski
 protected:
     /**
      * @brief getAnimationStackValue
@@ -104,13 +105,28 @@ protected:
      * @brief WriteToFile : пишет в файл
      */
     void WriteToFile(); // zapis v faila
+    /**
+     * @brief StartHaviProcess начнет процесс загрузки (начнет показ экрана загруски)
+     * @param long_prcess количество выплняемых работ
+     * @param nameProzess название выполняемой работы
+     */
+    void StartHaviProcess(int long_prcess,const QString&nameProzess);
+    /**
+     * @brief EndHaviProcess завершит процесс загрузки (прекратит показ экрана загруски)
+     */
+    void EndHaviProcess();
+    /**
+     * @brief LoadProcess покажет текушую степень завершения выполняемого процесса
+     * @param value номер выполненной работы
+     */
+    void LoadProcess(ui value);
 public:
     /**
      * @brief ESprite
      * @param patch - путь к файлу спрайта
      * @param mode_ - режим рисовки по умолчаню Game_mode
      */
-    explicit ESprite(const QString &patch="none", draw_mode mode_=draw_mode::Game_mode);
+    explicit ESprite(const QString &patch="none", draw_mode mode_=draw_mode::Game_mode, QObject *ptr=0);
     /**
      * @brief getPatch
      * @return место расположения файла спрайта
@@ -168,15 +184,32 @@ public:
      */
     void Edit(const us &time);
     /**
+     * @brief getLongFrame вернет длину воспроизведения выбранного кадра
+     * @param index индекс анимации
+     * @param frame индекс кадра
+     * @return вернет длину воспроизведения выбранного кадра
+     */
+    ui getLongFrame(const us &index, const us &frame);
+
+    /**
     * @brief Remove_Animation удалит анимацию
     * @param index индекс удаляемой анимации
     */
     void Remove_Animation(const ui &index);
     /**
+     * @brief Compress изменит размер длительности анимации
+     * может сократить количество кадров в зависимости от пораметров
+     * @param animation индекс анимации над которой будет выполняться действие
+     * @param frame_sec количество кадров в секунду в анимации
+     * @param time_ml_sec длительность анимации
+     */
+    void Compress(const ui &animation, const ui& frame_sec, const ui time_ml_sec);
+    /**
      * @brief Remove_Frame удалит кадр
      * @param AnimationIndex индекс анимации в которой находиться удаемы кадр
      * @param indexFrame номер удаляемого кадра
      */
+
     void Remove_Frame(const ui& AnimationIndex,const ui&indexFrame);
     /**
      * @brief Remove_Frame то же самое
@@ -200,11 +233,21 @@ public:
      */
     void setMode(const modeAnimation&mod,const int &staticTime=0);
     /**
+     * @brief getMode
+     * @return вернет текущий режим
+     */
+    modeAnimation getMode();
+    /**
      * @brief setCurentFrame установит кадр по умолчанию
      * @param frame индекс кадра
      */
     void setCurentFrame(us frame);
-
+    /**
+     * @brief setCurentFrame  установит кадр по умолчанию
+     * @param animation  индекс анимации
+     * @param frame  индекс кадра
+     */
+    void setCurentFrame(us animation,ui frame);
     /**
      * @brief render
      * обработка анимации
@@ -220,6 +263,12 @@ public:
      * @return  вернёт вектор обьектов (кадров не подготовленных для текстурирования)
      */
     std::vector<QImage*>* getSource();
+    /**
+     * @brief getBeginIndexAnimation
+     * @param i индекс анимации
+     * @return вернет индекс начала выбронной анимации i
+     */
+    ui getBeginIndexAnimation(ui i);
     /**
      * @brief getFrame
      * @return вернёт ресуемый кадр
@@ -310,7 +359,22 @@ public:
      * @param baseSprite основа для повреждений
      */
     void rennderDamageFrame(const ESprite &baseSprite,const ui&frameValue);
+    /**
+     * @brief connectProgress статический метод подключения обьекта к прогресс бару
+     * @param connectObject обьект за которым будет вестись слежка
+     * @param bar бар который будет отслеживать выбранный обьект
+     */
+    static void connectProgress(ESprite *connectObject, ELoadScreen *bar);
+    /**
+     * @brief disconnectProgress отоеденит процесс и экран загруски
+     * @param connectObject обьект за которым будет вестись слежка
+     * @param bar  бар который будет отслеживать выбранный обьект
+     */
+    static void disconnectProgress(ESprite *connectObject, ELoadScreen *bar);
     ~ESprite();
+signals:
+    void progress(int);
+    void progressMaximumChanged(int,QString);
 };
 #endif // ESPARAIT_H
 

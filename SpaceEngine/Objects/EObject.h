@@ -1,9 +1,6 @@
 #ifndef EOBJECT_H
 #define EOBJECT_H
 #include <QVector>
-#include <QDataStream>
-#include <QTime>
-#include <ctime>
 #include <cmath>
 #include "SpaceEngine/System/EDefkey.h"
 #include "SpaceEngine/System/EKord.h"
@@ -21,7 +18,7 @@ enum Rotate{RotateLeft,RotateRight,NoRotate};//brashenie objecta pri dvigeni po 
 //enum EObjectNameClass{EOBJECT,E_MODULEOBJECT,E_FON,E_EFFECT,E_GAMEOBJECT};
 enum EObjectNameClass{EOBJECT,E_MODULEOBJECT,E_FON,E_PARALAX,E_EFFECT,E_GAMEOBJECT};
 using namespace std;
-class EObject:public QObject,public ESprite //osnovnoi klas obektov dvigka
+class EObject:public ESprite //osnovnoi klas obektov dvigka
 {
     Q_OBJECT
 private:

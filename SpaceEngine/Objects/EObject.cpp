@@ -1,11 +1,9 @@
 #include "EObject.h"
-EObject::EObject(QObject *ptr):
-    QObject(ptr)
+EObject::EObject(QObject *)
 {
     PreConstructor(EKord(0),EKord(0),0);
 }
-EObject::EObject(const QString &str, QObject *ptr):
-    QObject(ptr)
+EObject::EObject(const QString &str, QObject *)
 {
     PreConstructor(EKord(0),EKord(0),0);
      QFile f(str);
@@ -16,7 +14,7 @@ EObject::EObject(const QString &str, QObject *ptr):
      stream>>*this;
 }
 EObject::EObject(const EKord& size, const EKord& kord_, const QString &str,EContur *cont, draw_mode mode, QObject *ptr):
-    QObject(ptr), ESprite(str,mode)
+    ESprite(str,mode,ptr)
 {
     PreConstructor(size,kord_,cont);
 }
