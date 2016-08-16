@@ -1,78 +1,98 @@
 #include "EContur.h"
-EContur::EContur(){
-}
-EContur::EContur(float*x,float*y,std::list<float> *p){
-    mode=elipse;
-	points=p;
-    points->sort();
+EContur::EContur(float *x,float*y,QVector<EKord> *p){
+    points=p;
+    edge=points->data()[FindEdge()];
 	_x=x;
 	_y=y;
 }
-EContur::EContur(float*x,float*y,float *h,float *w){
-    mode=rectangle;
-	_h=h;
-	_w=w;
-	_x=x;
-	_y=y;
+unsigned short EContur::FindEdge(){
+    unsigned short result=0;
+    for(int i=0;i<points->size();i++){
+        if(points->data()[i].X>points->data()[result].X)
+            result=i;
+    }
+    return result;
 }
-void EContur::setPoints(std::list<float> *p){
+void EContur::setPoints(QVector<EKord> *p){
     if(points!=NULL)
        delete points;
     points=p;
 }
 QDataStream& operator>>(QDataStream& stream, EContur& cont){
-    contur_mode temp;
-    short tempEnum;
-    stream>>tempEnum;temp=(contur_mode)tempEnum;
-    if(cont.mode==temp&&temp==elipse){
-        int temp;
-        float value;
-        stream>>temp;
-        for(int i=0;i<temp;i++){
-            stream>>value;
-            cont.points->push_back(value);
-        }
+    int tempEnum;
+    stream>>tempEnum;
+    for(int i=0;i<tempEnum;i++){
+        EKord kord;
+        stream>>kord;
+        cont.points->push_back(kord);
     }
+    stream>>cont.depth;
+    stream>>cont.edge;
+    if(cont.depth)
+        stream>>cont.depchLong;
     return stream;
 }
 QDataStream& operator<<(QDataStream& stream, const EContur& cont){
-    stream<<cont.mode;
-    if(cont.mode==elipse){
-        stream<<(int)cont.points->size();
-        for(float i:*cont.points)
-            stream<<i;
-    }
+    stream<<(int)cont.points->size();
+    for(EKord i:*cont.points)
+        stream<<i;
+    stream<<cont.depth;
+    stream<<cont.edge;
+    if(cont.depth)
+        stream<<cont.depchLong;
     return stream;
 }
-bool EContur::touching(const int&x_,const int &y_){
-    if(mode==elipse){
-        int index=1;
-        std::list<float>::iterator i=points->begin();
-        while((EKord::length(*_x,*_y,x_,y_)>*i&&std::rand()%index==0)&&i!=points->end()){
-            i++; index+=100/points->size();
-        }
-        return i!=points->end();
-    }else{
-        int thistempw=*_w/2,thistemph=*_h/2,
-                thistempx=*_x,thistempy=*_y;
-        return EKord::inQuan(x_,y_,thistempx-thistempw,thistempy-thistemph,thistempx+thistempw,thistempy+thistemph);
-	}
+float EContur::generateX(const int &index)const{
+    return (*_x)+points->data()[index].X*cos(points->data()[index].Y);
 }
-bool EContur::touching(const EContur& conturA,const float&x_,const float &y_){
-    if(conturA.mode==elipse){
-        int index=1;
-        std::list<float>::iterator i=conturA.points->begin();
-        while((EKord::length(*conturA._x,*conturA._y,x_,y_)>*i&&std::rand()%index==0)&&i!=conturA.points->end()){
-            i++; index+=100/conturA.points->size();
-        }
-        return i!=conturA.points->end();
-    }else{
-        int thistempw=*conturA._w/2,thistemph=*conturA._h/2,
-                thistempx=*conturA._x,thistempy=*conturA._y;
-        return EKord::inQuan(x_,y_,thistempx-thistempw,thistempy-thistemph,thistempx+thistempw,thistempy+thistemph);                ;
+float EContur::generateY(const int &index)const{
+    return (*_y)+points->data()[index].X*sin(points->data()[index].Y);
+}
+bool EContur::touching(const float &x, const float &y)const{
+    if(EKord::length(x,y,*_x,*_y)>edge.X)return false;
+    unsigned short size=points->size();
+    bool result=false;
+    int oldX=generateX(size-1),oldY=generateY(size-1),X,Y;
+    for(int i=0;i<size;i++){
+        X=generateX(i);
+        Y=generateY(i);
+        if((Y>y)!=(oldY>y)&&(x<(oldX-X)*(y-Y)/(oldY-Y)+X))
+            result=!result;
+        oldY=Y;
+        oldX=X;
     }
+    return result;
+}
+bool EContur::touching(const EContur &contur)const{
+    unsigned short size=contur.points->size();
+    while(!touching(contur.generateX(size-1),contur.generateY(size-1))&&size--);
+    return size;
+}
+bool EContur::touching(const EContur &conturA, EContur &conturB){
+    unsigned short size=conturB.points->size();
+    while(!conturA.touching(conturB.generateX(size-1),conturB.generateY(size-1))&&size--);
+    return size;
+}
+bool EContur::touching(const EContur& conturA,const float&x,const float &y){
+    if(EKord::length(x,y,*conturA._x,*conturA._y)>conturA.edge.X)return false;
+    unsigned short size=conturA.points->size();
+    bool result=false;
+    int oldX=conturA.generateX(size-1),oldY=conturA.generateY(size-1),X,Y;
+    for(int i=0;i<size;i++){
+        X=conturA.generateX(i);
+        Y=conturA.generateY(i);
+        if((Y>y)!=(oldY>y)&&(x<(oldX-X)*(y-Y)/(oldY-Y)+X))
+            result=!result;
+        oldY=Y;
+        oldX=X;
+    }
+    return result;
+}
+void EContur::setKord(float *x, float *y){
+    _x=x;
+    _y=y;
 }
 EContur::~EContur(){
-    if(mode==elipse&&points!=NULL)
+    if(points!=NULL)
         delete points;
 }

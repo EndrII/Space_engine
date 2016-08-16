@@ -7,6 +7,7 @@ ESprite::ESprite(const QString &patch,draw_mode mode_,QObject*ptr):
         if(patch.mid(patch.size()-3)!="spr")
             tempPatch+=".spr";
     }
+    loading_test=true;
     file=new QFile(tempPatch);
     stream=new QDataStream(file);
     mode =mode_;
@@ -49,19 +50,19 @@ void ESprite::WriteToFile(){
         file->open(QIODevice::ReadWrite|QIODevice::Truncate);
         stream->device()->seek(0);
         (*stream)<<(us)longAnimationsVector.size();
-        StartHaviProcess(longAnimationsVector.size(),"Write");
+        bool temp=StartHaviProcess(longAnimationsVector.size(),"Write");
         for(unsigned int i=0;i<longAnimationsVector.size();i++){
                (*stream)<<(us)longAnimationsVector[i];
                for(int j=IndexBeginAnimationsVector[i];j<(longAnimationsVector[i]+IndexBeginAnimationsVector[i]);j++){
                    (*stream)<<*SourceVector[j]<<longFrame[j];
                }
-               LoadProcess(i);
+               LoadProcess(i,temp);
         }
         *stream<<(us)AnimationsName.size();
         for(QString str:AnimationsName){
             (*stream)<<str;
         }
-        EndHaviProcess();
+        EndHaviProcess(temp);
     }else{
         throw EError("sprite mode = Game Mode","void ESprite::WriteToFile(const QString &patch)");
     }
@@ -115,7 +116,7 @@ void ESprite::ReadInFile(){
         if(mode==Game_mode)
             tempI=new QImage;
         *stream>>Long;
-        StartHaviProcess(Long,"Read Sprite "+file->fileName());
+        bool resolution= StartHaviProcess(Long,"Read Sprite "+file->fileName());
         while(Long>longAnimationsVector.size()){
             *stream>>temp;
             longAnimationsVector.push_back(temp);
@@ -129,7 +130,7 @@ void ESprite::ReadInFile(){
                 longFrame.push_back(tempL);
                 base.push_back(LASTFRAMEPOOLINDEX);
             }
-             LoadProcess(longAnimationsVector.size());
+             LoadProcess(longAnimationsVector.size(),resolution);
         }
         us longNames;
         *stream>>longNames;
@@ -140,7 +141,7 @@ void ESprite::ReadInFile(){
         }
         if(mode==Game_mode)
             delete tempI;
-        EndHaviProcess();
+        EndHaviProcess(resolution);
     }
 }
 QOpenGLTexture* ESprite::Read_(const ui &addres){
@@ -210,15 +211,16 @@ int ESprite::Append(const QString &gif_img,const QString&name){
     }else{
         longAnimationsVector.push_back(temp.frameCount());
         IndexBeginAnimationsVector.push_back(longFrame.size());
-        progressMaximumChanged(temp.frameCount(),"Append");
+        bool resolution= StartHaviProcess(temp.frameCount(),"Append");
         for(int i=0;i<temp.frameCount();i++){
             SourceVector.push_back(new QImage(temp.currentImage()));
             longFrame.push_back(temp.nextFrameDelay());
             nameAdress.push_back(0);
             base.push_back(LASTFRAMEPOOLINDEX);
             temp.jumpToNextFrame();
-            LoadProcess(i);
+            LoadProcess(i,resolution);
         }
+        EndHaviProcess(resolution);
     }
     if(name.isEmpty()){
         if(AnimationsName.size())
@@ -232,7 +234,6 @@ int ESprite::Append(const QString &gif_img,const QString&name){
         else
             AnimationsName.push_back("System");
     }
-    EndHaviProcess();
     return longAnimationsVector.size()-1;
 }
 void ESprite::Edit(const us &index, const us &time){
@@ -296,8 +297,6 @@ void ESprite::Compress(const ui& animation,const ui &frame_sec, const ui time_ml
         throw EError("animation \'"+file->fileName().toStdString()+"\' not open for Edit!","void ESprite::Remove_Animation(const int &index)");
         return;
     }
-    int longFram=time_ml_sec/getLongSprite(animation);
-    Edit(animation,longFram);
     int frameValue=time_ml_sec*frame_sec/1000;
     if(frameValue<getLongSprite(animation)){
         float tempDeleteIndexFrame=1,
@@ -307,6 +306,8 @@ void ESprite::Compress(const ui& animation,const ui &frame_sec, const ui time_ml
             tempDeleteIndexFrame+=plus-1;
         }
     }
+    int longFram=time_ml_sec/getLongSprite(animation);
+    Edit(animation,longFram);
 }
 void ESprite::Remove_Animation(const ui &index){
     stopedFlag=true;
@@ -321,9 +322,9 @@ void ESprite::Remove_Animation(const ui &index){
         nameAdress.erase(nameAdress.begin()+IndexBeginAnimationsVector[index],nameAdress.begin()+IndexBeginAnimationsVector[index]+longAnimationsVector[index]);
         AnimationsName.erase(AnimationsName.begin()+index);
         longFrame.erase(longFrame.begin()+IndexBeginAnimationsVector[index],longFrame.begin()+IndexBeginAnimationsVector[index]+longAnimationsVector[index]);
-        SourceVector.erase(SourceVector.begin()+IndexBeginAnimationsVector[index],SourceVector.begin()+IndexBeginAnimationsVector[index]+longAnimationsVector[index]);
         for(int i=0;i<longAnimationsVector[index];i++)
             delete SourceVector[i+IndexBeginAnimationsVector[index]];
+        SourceVector.erase(SourceVector.begin()+IndexBeginAnimationsVector[index],SourceVector.begin()+IndexBeginAnimationsVector[index]+longAnimationsVector[index]);
         base.erase(base.begin()+IndexBeginAnimationsVector[index],base.begin()+IndexBeginAnimationsVector[index]+longAnimationsVector[index]);
         IndexBeginAnimationsVector.erase(IndexBeginAnimationsVector.begin()+index);
         for(std::vector<us>::iterator i=IndexBeginAnimationsVector.begin()+index;i!=IndexBeginAnimationsVector.end();i++){
@@ -481,12 +482,13 @@ bool ESprite::moveFrame(const ui&indexAnimation,const ui &indexPasteAnimation,co
         SourceVector.erase(SourceVector.begin()+IndexBeginAnimationsVector[indexAnimation]+indexFrame);
         base.erase(base.begin()+IndexBeginAnimationsVector[indexAnimation]+indexFrame);
         longFrame.erase(longFrame.begin()+IndexBeginAnimationsVector[indexAnimation]+indexFrame);
+        longAnimationsVector[indexAnimation]--;
         refreshIndexBeginAnimations(indexAnimation,-1);
         SourceVector.insert(SourceVector.begin()+IndexBeginAnimationsVector[indexPasteAnimation]+indexPasteFrame,temp);
         base.insert(base.begin()+IndexBeginAnimationsVector[indexPasteAnimation]+indexPasteFrame,temp1);
         longFrame.insert(longFrame.begin()+IndexBeginAnimationsVector[indexPasteAnimation]+indexPasteFrame,temp2);
         refreshIndexBeginAnimations(indexPasteAnimation,1);
-
+        longAnimationsVector[indexPasteAnimation]++;
         /*if(IndexBeginAnimationsVector[indexPasteAnimation]+indexPasteFrame>IndexBeginAnimationsVector[indexAnimation]+indexFrame){
         }else{
             refreshIndexBeginAnimations();
@@ -499,15 +501,19 @@ bool ESprite::moveFrame(const ui&indexAnimation,const ui& indexFrame,const ui& i
 }
 void ESprite::rennderDamageFrame(const ESprite &baseSprite, const ui &frameValue){
     srand(time(0));
+    bool resolution=StartHaviProcess(frameValue,"FrameRender");
+    ui tempProgres=0;
     for(ui i=0;i<frameValue;i++){
         QImage *temp= SourceVector[longAnimationsVector[0]-1];
         ui tempIndex=baseSprite.IndexBeginAnimationsVector.size()*i/longAnimationsVector[0];
         if(!FrameRender(*temp,*(baseSprite.SourceVector[baseSprite.IndexBeginAnimationsVector[tempIndex]+rand()%(baseSprite.getLongSprite(tempIndex))])))
             break;
         Append(0,*temp);
+        LoadProcess(++tempProgres,resolution);
     }
+    EndHaviProcess(resolution);
 }
-void ESprite::refreshIndexBeginAnimations(ui index, ui mov){
+void ESprite::refreshIndexBeginAnimations(ui index, int mov){
     for(ui i=index+1;i<IndexBeginAnimationsVector.size();i++){
         IndexBeginAnimationsVector[i]+=mov;
     }
@@ -515,40 +521,46 @@ void ESprite::refreshIndexBeginAnimations(ui index, ui mov){
 bool ESprite::FrameRender(QImage &A, const QImage &B){
     if(A.size().height()>B.size().height()&&
             A.size().width()>B.size().width()){
-        StartHaviProcess(B.size().width()*B.size().height(),"FrameRender");
         ui BeginX=rand()%(A.size().width()-B.size().width()+1);
         ui BeginY=rand()%(A.size().height()-B.size().height()+1);
-        ui tempProgres=0;
         for(ui i=BeginX;i<B.size().width()+BeginX;i++){
             for(ui j=BeginY;j<B.size().height()+BeginY;j++){
                 QColor temp=B.pixelColor(i-BeginX,j-BeginY);
+                QColor AColor=A.pixelColor(i,j);
                 if(temp.alpha()>100){
-                    temp.setAlpha(A.pixelColor(i,j).alpha());
+                    if(AColor.alphaF()<(1-temp.greenF())){
+                        temp.setAlphaF(AColor.alphaF());
+                    }else{
+                        temp.setAlphaF(1-temp.greenF());
+                    }
+                    temp.setGreen(0);
                     A.setPixelColor(i,j,temp);
                 }
-                LoadProcess(++tempProgres);
             }
         }
-        EndHaviProcess();
         return true;
     }else{
         return false;
     }
 }
-void ESprite::StartHaviProcess(int long_prcess,const QString&nameProzess){
+bool ESprite::StartHaviProcess(int long_prcess,const QString&nameProzess){
     if(loading_test){
         emit progressMaximumChanged(long_prcess,nameProzess);
         loading_test=false;
+        return true;
     }
+    return false;
 }
-void ESprite::LoadProcess(ui value){
-    if(loading_test){
+void ESprite::LoadProcess(ui value,bool test){
+    if(test){
         emit progress(value);
     }
 }
-void ESprite::EndHaviProcess(){
+void ESprite::EndHaviProcess(bool test){
+    if(test){
         loading_test=true;
         emit progress(-1);
+    }
 }
 void ESprite::connectProgress(ESprite *connectObject,ELoadScreen *bar){
     connect(connectObject,SIGNAL(progress(int)),bar,SLOT(progress(int)));

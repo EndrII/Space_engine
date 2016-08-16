@@ -59,6 +59,7 @@ ECamera::ECamera(const EKord &kord, const EKord &size,EConfig *cfg,EPool*pool_, 
 void ECamera::initializeGL()
 {
     initializeOpenGLFunctions();
+    clearColor =QColor(0,0,0,1);
     glClearColor(0.0,0.0,0.0,1.0);//ustonovim zvet fona okna
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
@@ -93,6 +94,7 @@ bool ECamera::On()
 }
 void ECamera::paintGL()
 {
+    glClearColor(clearColor.redF(),clearColor.greenF(),clearColor.blueF(),1.0);
     glClear(GL_COLOR_BUFFER_BIT);
     if(status)
     {
@@ -163,35 +165,6 @@ void ECamera::_render()
     krai[1].Y=_Y_+siz.Y/2.0;
     repaint();
  }
-/*void ECamera::poolRender(EObject *sprite){
-    sprite->stop(true);
-    int i=poolLastIndex;
-    unsigned int tempID=sprite->getIdFrame();
-    while(i!=-1||pool[i].textureID!=NULL||pool[i].FrameID!=tempID){
-        i--;
-    }
-    if(i<0||pool[i].textureID==NULL){
-        while(poolMemorySize>poolMemorySizeLemit)
-        {
-            poolMemorySize-=SIZE_FRAME(poolFirstIndex);
-            delete pool[poolFirstIndex].textureID;
-            pool[poolFirstIndex].textureID=NULL;
-            if(poolFirstIndex<poolSize-1)
-                poolFirstIndex++;
-            else
-                poolFirstIndex=0;
-        }
-        if(poolLastIndex<poolSize-1)
-            poolLastIndex++;
-        else
-            poolLastIndex=0;
-        pool[poolLastIndex].textureID=sprite->Bind(poolLastIndex);
-        poolMemorySize+=SIZE_FRAME(poolLastIndex);
-    }else{
-        sprite->newAdresFromFrame(i);
-    }
-    sprite->stop(false);
-}*/
 void ECamera::draw_Object(EObject * Object)
 {
     switch(Object->getEObjectNameClass()){
@@ -344,6 +317,9 @@ void ECamera::setVirtualKord(const EKord &kord){
 }
 void ECamera::setVirtualSize(const EKord &kord){
     VSize=kord;
+}
+void ECamera::setBackgroundColor(const QColor &color){
+    clearColor=color;
 }
 void ECamera::setSizeSkrin(const EKord &kord)
 {

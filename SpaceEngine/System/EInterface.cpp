@@ -300,7 +300,7 @@ Potok3_CORE::Potok3_CORE(QObject *obj):
     EObject(obj)
 {
    full=false;
-   priority_=LOWER;
+   priority_=LOW_PLUS;
    puls=true;
    buffer_for_draw=new EObject_List;
    buffer_for_render=new EObject_List;

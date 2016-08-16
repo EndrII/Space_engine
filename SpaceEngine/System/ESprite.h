@@ -61,7 +61,7 @@ private:
     //esli id = -1 znachit sprait se bil eshyu procitan
     void generateID();
     QFile *file;
-    void refreshIndexBeginAnimations(ui index,ui mov);//
+    void refreshIndexBeginAnimations(ui index, int mov);//
     bool FrameRender(QImage& A,const QImage&B);//nalogen texturu B na A v zavisimosti ot alpha kanala
     //t.e. picsel budet menyat svoi ottenok no ne alpha kanal
     // vernyot true esli vsyo prroidyo uspeshno false esli B bilshe chem A
@@ -110,16 +110,16 @@ protected:
      * @param long_prcess количество выплняемых работ
      * @param nameProzess название выполняемой работы
      */
-    void StartHaviProcess(int long_prcess,const QString&nameProzess);
+    bool StartHaviProcess(int long_prcess,const QString&nameProzess);
     /**
      * @brief EndHaviProcess завершит процесс загрузки (прекратит показ экрана загруски)
      */
-    void EndHaviProcess();
+    void EndHaviProcess(bool);
     /**
      * @brief LoadProcess покажет текушую степень завершения выполняемого процесса
      * @param value номер выполненной работы
      */
-    void LoadProcess(ui value);
+    void LoadProcess(ui value, bool test);
 public:
     /**
      * @brief ESprite

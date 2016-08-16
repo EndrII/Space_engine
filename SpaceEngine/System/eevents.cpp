@@ -36,14 +36,17 @@ void EEvents::setSetings(EConfig* c)
 }
 void EEvents::keyPressEvent(QKeyEvent *Event)
 {
-       emit Press(convert(Event->key()));
+    emit EkeyPressEvent(Event);
+    emit Press(convert(Event->key()));
 }
 void EEvents::keyReleaseEvent(QKeyEvent *Event)
 {
+    emit EkeyReleaseEvent(Event);
     emit Release(convert(Event->key()));
 }
 void EEvents::mousePressEvent(QMouseEvent *Event)
 {
+    emit EmousePressEvent(Event);
     switch (Event->button()) {
     case Qt::LeftButton:{
        emit Press(_mous_left);break;}
@@ -56,8 +59,9 @@ void EEvents::mousePressEvent(QMouseEvent *Event)
     }
 
 }
-void EEvents::mouseDoubleClickEvent(QMouseEvent*)
+void EEvents::mouseDoubleClickEvent(QMouseEvent*Event)
 {
+    emit EmouseDoubleClickEvent(Event);
 
 }
 void EEvents::resizeEvent(QResizeEvent *event){
@@ -84,6 +88,7 @@ void EEvents::_release()
 }
 void EEvents::mouseReleaseEvent(QMouseEvent *Event)
 {
+    emit EmouseReleaseEvent(Event);
     switch (Event->button()) {
     case Qt::LeftButton:{
        emit Release(_mous_left);break;}
@@ -98,6 +103,7 @@ void EEvents::mouseReleaseEvent(QMouseEvent *Event)
 }
 void EEvents::mouseMoveEvent(QMouseEvent *Event)
 {
+    emit EmouseMoveEvent(Event);
     emit Mousemov(EKord(Event->x(),Event->y()));
 }
 void EEvents::focus()

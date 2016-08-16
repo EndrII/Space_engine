@@ -22,6 +22,7 @@ class ECamera: public QOpenGLWidget,protected QOpenGLFunctions
 private:
     void update();//obnovlenie razmera kameri po novim nastroikam
     EPool* pool;
+    QColor clearColor;
     QOpenGLTexture*tempTexture;// vremennaya peremennaya dlya sozzdaniya ne sozdanih textur
     EObject_List** draw_list; //spisok na otrisovku
     GLubyte indexArray[1][4];
@@ -69,6 +70,7 @@ public:
     EConfig* config();//vernyot ukazatel na kobfigurazii
     void setVirtualKord(const EKord&);
     void setVirtualSize(const EKord&);
+    void setBackgroundColor(const QColor&color);
     void setmode(const MOD &mode); // ustonovit mod kameri(custom/atomatik)
     void setSize(const int&);//ustonovit novi razmer siyomki
     void setSizeSkrin(const EKord& kord=EKord(640,480));//ustonovit novii razmer okna

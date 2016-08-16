@@ -2,6 +2,7 @@
 #define EKORD_H
 #include <QString>
 #include <QPoint>
+#include <QDataStream>
 #include <QSize>
 #include "EError.h"
 enum Operation{plus_,minus_,mul_,div_};
@@ -41,6 +42,8 @@ public:
     EKord operator /(const double&);
     bool operator==(const EKord&);
     bool operator!=(const EKord&);
+    friend QDataStream& operator <<(QDataStream&stream,const EKord& object);
+    friend QDataStream& operator >>(QDataStream&stream,EKord& object);
     ~EKord();
 };
 #endif // EKORD_H

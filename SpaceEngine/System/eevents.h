@@ -37,6 +37,12 @@ public:
 public slots:
     void focus();
 signals:
+    void EmousePressEvent(QMouseEvent*);//nagatie mouse
+    void EmouseReleaseEvent(QMouseEvent*);//otgatie mishi
+    void EmouseMoveEvent(QMouseEvent*);// klavishi
+    void EmouseDoubleClickEvent(QMouseEvent*);// sobitie double clika
+    void EkeyPressEvent(QKeyEvent*);//nagati
+    void EkeyReleaseEvent(QKeyEvent *);//otgatie klavish
     void Press(short);//signal o nagatie klavishi
     void Release(short);//signal o nagatie klavishi
     void Mousemov(EKord); //signal o dvigenii mishi

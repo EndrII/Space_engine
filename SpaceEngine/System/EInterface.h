@@ -10,6 +10,7 @@
 #define HIGH 1
 #define MEDIUM 16
 #define LOW 160
+#define LOW_PLUS 350
 #define LOWER 1600
 #define ULTRA_LOW 10000
 #define _1_ON_MINUTE 60000

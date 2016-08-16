@@ -177,6 +177,16 @@ QSize EKord::TO_QSize()
 {
     return QSize(X,Y);
 }
+QDataStream& operator<<(QDataStream&stream,const EKord& object){
+    stream<<object.X;
+    stream<<object.Y;
+    return stream;
+}
+QDataStream& operator>>(QDataStream&stream,EKord&object){
+    stream>>object.X;
+    stream>>object.Y;
+    return stream;
+}
 EKord::~EKord()
 {
 

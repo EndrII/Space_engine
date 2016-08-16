@@ -30,6 +30,8 @@ void EObject::PreConstructor(const EKord& size, const EKord& kord_,EContur *cont
     _z=0;
     vertixArrayRefresh();
     contur=cont;
+    if(cont!=NULL)
+        contur->setKord(&_x,&_y);
     slave_=this;
     speed=0;
     ugol=0;
@@ -81,6 +83,7 @@ QDataStream& operator>>(QDataStream&stream,EObject&obj){
     }
     obj.contur=new EContur();
     stream>>*obj.contur;
+    obj.contur->setKord(&obj._x,&obj._y);
     stream>>obj.Rad;
     stream>>obj.ElepsedUgol;
     stream>>tempEnum;obj.ratateMode=(Rotate)tempEnum;

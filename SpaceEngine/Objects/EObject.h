@@ -9,7 +9,6 @@
 #include "./SpaceEngine/System/EContur.h"
 //#define CREATE_SPRITE "CREATE_Z"
 //#define EOBJECT Q_OBJECT
-#define PI 3.1415926535
 const int accs=1000;
 typedef unsigned short us;
 enum MovMode{Standart,Key,NoMove,NoMovePlus,MoveElepsed};
