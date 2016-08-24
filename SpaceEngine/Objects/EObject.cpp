@@ -1,11 +1,11 @@
 #include "EObject.h"
 EObject::EObject(QObject *)
 {
-    PreConstructor("",EKord(0),EKord(0),0);
+    PreConstructor("",EKord(0),EKord(0));
 }
 EObject::EObject(const QString &str, QObject *)
 {
-    PreConstructor("",EKord(0),EKord(0),0);
+    PreConstructor("",EKord(0),EKord(0));
      QFile f(str);
      if(!f.open(QIODevice::ReadOnly)){
          throw EError("file no detected!","EObject::EObject(const QString &str, QObject *ptr):");
@@ -13,12 +13,12 @@ EObject::EObject(const QString &str, QObject *)
      QDataStream stream(&f);
      stream>>*this;
 }
-EObject::EObject(const QString& createPatch,const EKord& size, const EKord& kord_, const QString &str,EContur *cont, draw_mode mode, QObject *ptr):
+EObject::EObject(const QString& createPatch,const EKord& size, const EKord& kord_, const QString &str, draw_mode mode, QObject *ptr):
     ESprite(str,mode,ptr)
 {
-    PreConstructor(createPatch,size,kord_,cont);
+    PreConstructor(createPatch,size,kord_);
 }
-void EObject::PreConstructor(const QString& createPatch, const EKord& size, const EKord& kord_,EContur *cont){
+void EObject::PreConstructor(const QString& createPatch, const EKord& size, const EKord& kord_){
     keys=new bool[_Key_value];
     for(int i(0);i<_Key_value;i++)
         keys[i]=false;
@@ -30,9 +30,7 @@ void EObject::PreConstructor(const QString& createPatch, const EKord& size, cons
     _z=0;
     DrawContur=false;
     vertixArrayRefresh();
-    contur=cont;
-    if(cont!=NULL)
-        contur->setKord(&_x,&_y);
+    contur=new EContur(&_x,&_y,&ugol);
     slave_=this;
     speed=0;
     ugol=0;
@@ -69,6 +67,7 @@ void EObject::setName(const QString &name){
 }
 void EObject::setContur(EContur *c){
     contur=c;
+    contur->setKord(&_x,&_y,&ugol);
 }
 EContur* EObject::getContur()const{
     return contur;
@@ -101,7 +100,7 @@ QDataStream& operator>>(QDataStream&stream,EObject&obj){
     }
     obj.contur=new EContur();
     stream>>*obj.contur;
-    obj.contur->setKord(&obj._x,&obj._y);
+    obj.contur->setKord(&obj._x,&obj._y,&obj.ugol);
     stream>>obj.Rad;
     stream>>obj.ElepsedUgol;
     stream>>tempEnum;obj.ratateMode=(Rotate)tempEnum;
@@ -388,8 +387,8 @@ void EObject::_render()
         {
             _ugol=ugol-180;
         }
-        mx=_x+radius*cos(_ugol*PI/180);
-        my=_y+radius*sin(_ugol*PI/180);
+        mx=_x+radius*cos(_ugol*TO_RADIAN);
+        my=_y+radius*sin(_ugol*TO_RADIAN);
         _x+=(mx-_x)/1000*Tsync;
         _y+=(my-_y)/1000*Tsync;
         break;
@@ -434,8 +433,8 @@ void EObject::_render()
             _ugol=ugol-180;
         }
         ElepsedUgol+=(double)speed/Rad/40.0*Tsync;;
-        _x=*ElepsedCenter_X+Rad*cos(ElepsedUgol*PI/180);
-        _y=*ElepsedCenter_Y+Rad*sin(ElepsedUgol*PI/180);
+        _x=*ElepsedCenter_X+Rad*cos(ElepsedUgol*TO_RADIAN);
+        _y=*ElepsedCenter_Y+Rad*sin(ElepsedUgol*TO_RADIAN);
        break;
     }
     default:
@@ -481,5 +480,6 @@ EObject::~EObject()
 {
   if(keys!=NULL)
       delete[] keys;
+  delete contur;
   emit destructed();
 }

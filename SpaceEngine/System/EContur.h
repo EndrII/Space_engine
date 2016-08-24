@@ -3,17 +3,17 @@
 #include "EKord.h"
 #include <QDataStream>
 #include <QVector>
-#define PI 3.1415926535
+#define TO_RADIAN 0.017453293
 /**
  * @brief The EContur class
  * предстоаляет собой контур выбронного обьекта по которому определяються столкновения
 */
 // Апроксимация значений EKord
 // X -> Radius
-// Y -> Ugol (в радианах)
+// Y -> Ugol (в градусах)
 class EContur{
 private:
-    float *_x,*_y;
+    float *_x,*_y,*base_engle; //базовые данные об Обьекте
     float depchLong;//glubina
     bool depth;// proverka
     EKord edge;//крайняя точка
@@ -48,7 +48,7 @@ public:
      * @param x указатель на центр по x
      * @param y указатель на центр по у
      */
-    void setKord(float *x, float *y);
+    void setKord(float *x, float *y,float *engle);
     /**
      * @brief touching данный метод проверит входит ли точка в данный контур
      * @param contur
@@ -71,12 +71,29 @@ public:
      */
     static bool touching(const EContur& conturA, EContur& conturB);
     /**
+     * @brief addVertix добавит вершину для хит бокса
+     * @param vertixItem данные о вершине
+     * X-> Radius;  Y-> Ugol (в радианах)
+     */
+    void addVertix(const EKord& vertixItem);
+    /**
+     * @brief removeLastVertix удалит последне добавленую вершину
+     * @return вернет истину если удалось удалить в пративном случае лож
+     */
+    bool removeLastVertix();
+    /**
+     * @brief removeVertix удалит выбранную вершину
+     * @param indexVertix индекс удоляемой вершины
+     * @return вернет истину в случае удачи в противнос случае лож
+     */
+    bool removeVertix(const unsigned int indexVertix);
+    /**
      * @brief EContur конструктор для режима окружностей
      * @param x указатель на центр обьекта
      * @param y указатель на центр обьекта
      * @param point список точек окружностей (радиусы окружностей)
      */
-    explicit EContur(float *x=NULL, float *y=NULL,QVector<EKord> *point=NULL);
+    explicit EContur(float *x=NULL, float *y=NULL,float *engle=NULL,QVector<EKord> *point=NULL);
     ~EContur();
 };
 #endif // CONTUR_H

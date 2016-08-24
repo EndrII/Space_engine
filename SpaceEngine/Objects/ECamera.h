@@ -62,6 +62,7 @@ public:
     MOD getMode();//poluchit tekushii regim
     EKord getSize();//vernyot razmer siyomki
     EKord* getKrai(); //verniot obe chasti cameri
+    EKord getmovCenter();//vernyot poziziyo kameri na karte
     EObject* getFolow();//vernyot ukozatel na sleduemii object
     EConfig getConfig();//vernyot tekusie konfigurazii
     EKord getVirtualKord()const;
@@ -84,7 +85,7 @@ public:
 public slots:
    virtual void Press_key(short);//klawisha nagata
    virtual void Release_key(short);//klawisha otgata
-   virtual void Mov_ECamera_To(int x,int y);//peredvinut kameru v x,y na globalinoi karte
+   virtual void Mov_ECamera_To(float x, float y);//peredvinut kameru v x,y na globalinoi karte
    void skroll_size(const EKord&); //ustonovit novie razmeri karti
    void Off(); //vikluchit kameru
    bool On();  //vklushit kameru

@@ -159,9 +159,9 @@ void ECamera::_render()
        Y_new=folow_Obj->y();
     }
     if(new_siz.X<max_siz.X&&new_siz.Y<max_siz.Y&&keys[_mous_up]&&!keys[_mous_down])
-         new_siz=EKord(new_siz.X+100*Windows_Skrin,new_siz.Y+100);
+         new_siz=EKord(new_siz.X*1.05,new_siz.Y*1.05);
     if(new_siz.X>min_siz.X&&new_siz.Y>min_siz.Y&&keys[_mous_down]&&!keys[_mous_up])
-         new_siz=EKord(new_siz.X-100*Windows_Skrin,new_siz.Y-100);
+         new_siz=EKord(new_siz.X*0.95,new_siz.Y*0.95);
     speed_kord_X=(X_new-_X_)/10.0;
     speed_kord_Y=(Y_new-_Y_)/10.0;
     speed_siz_W=(new_siz.X-siz.X)/10.0;
@@ -177,31 +177,43 @@ void ECamera::_render()
  }
 void ECamera::drawContur(EObject *c){
     unsigned int size = c->getContur()->size();
-    glBegin(GL_LINE_STRIP);
-        glLineWidth(LineWidth);
+    if(!size) return ;
+    glPointSize(LineWidth*2);
+    glBegin(GL_POINTS);
+        glColor3f(1.0,0.4,0.3);
         for(unsigned int j=0,i=size-1;j<size;i=j++){
             glVertex2f(c->getContur()->generateX(i),c->getContur()->generateY(i));
             glVertex2f(c->getContur()->generateX(j),c->getContur()->generateY(j));
         }
     glEnd();
+    glLineWidth(LineWidth);
+    glBegin(GL_LINES);
+        glColor3f(0.3,1.0,0.3);
+        for(unsigned int j=0,i=size-1;j<size;i=j++){
+            glVertex2f(c->getContur()->generateX(i),c->getContur()->generateY(i));
+            glVertex2f(c->getContur()->generateX(j),c->getContur()->generateY(j));
+        }
+    glEnd();
+    glColor3f(1.0,1.0,1.0);
 }
 void ECamera::draw_Object(EObject * Object)
 {
     switch(Object->getEObjectNameClass()){
     case EOBJECT:{
+        glPushMatrix();
+        if(Object->isDrawContur())
+            drawContur(Object);
         tempTexture=pool->call(Object);
         if(tempTexture)
             tempTexture->bind();
         else
             return;
-        glPushMatrix();
         glTranslatef(Object->x(),Object->y(),Object->getSloi());
         glRotatef(Object->getUgol(),0,0,1);
-        if(Object->isDrawContur())
-            drawContur(Object);
         glVertexPointer(3,GL_FLOAT,0,Object->getMatrix());
         glTexCoordPointer(2,GL_FLOAT,0,idintyMatrix);
         glDrawElements(GL_QUADS,4,GL_UNSIGNED_BYTE,indexArray);
+
         glPopMatrix();
         break;
     }
@@ -276,7 +288,7 @@ void ECamera::skroll_size(const EKord &s)
 {
     new_siz=s;
 }
-void ECamera::Mov_ECamera_To(int x, int y)
+void ECamera::Mov_ECamera_To(float x, float y)
 {
     if(mode==custom)
     {
@@ -305,6 +317,9 @@ EObject* ECamera::getFolow()
 EKord* ECamera::getKrai()
 {
     return krai;
+}
+EKord ECamera::getmovCenter(){
+    return EKord(X_new,Y_new);
 }
 MOD ECamera::getMode()
 {

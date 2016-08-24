@@ -22,7 +22,7 @@ class EObject:public ESprite //osnovnoi klas obektov dvigka
 {
     Q_OBJECT
 private:
-    void PreConstructor(const QString& createPatch,const EKord& size, const EKord& kord_, EContur *cont);//osnovnoi consructor
+    void PreConstructor(const QString& createPatch, const EKord& size, const EKord& kord_);//osnovnoi consructor
     EContur *contur;// kontur dannogo objecta
     float vertixArray[4][3]; //vershini risovki (zavisyat ot razmera i sloya)
     void vertixArrayRefresh();//perescyot vershin hsirini i sloyov;
@@ -117,7 +117,7 @@ public:
    virtual bool mov_to(const EKord&,const int& _speed); //+skorost
    virtual void saveObject(QString patch="");//sohronit sebya v fail
    EObject(QObject *ptr=0);
-   EObject(const QString& createPatch,const EKord& size, const EKord& kord, const QString& name_image, EContur *cont,draw_mode mode=Game_mode, QObject *ptr=0);
+   EObject(const QString& createPatch, const EKord& size, const EKord& kord, const QString& name_image, draw_mode mode=Game_mode, QObject *ptr=0);
     EObject(const QString&patch, QObject *ptr=0);
     ~EObject();
 public slots:

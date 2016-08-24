@@ -1,9 +1,12 @@
 #include "EContur.h"
-EContur::EContur(float *x,float*y,QVector<EKord> *p){
+EContur::EContur(float *x,float*y,float * engle,QVector<EKord> *p){
     points=p;
+    if(!points)
+        points=new QVector<EKord>;
     edge=points->data()[FindEdge()];
 	_x=x;
 	_y=y;
+    base_engle=engle;
 }
 unsigned short EContur::FindEdge(){
     unsigned short result=0;
@@ -46,10 +49,10 @@ QDataStream& operator<<(QDataStream& stream, const EContur& cont){
     return stream;
 }
 float EContur::generateX(const int &index)const{
-    return (*_x)+points->data()[index].X*cos(points->data()[index].Y);
+    return (*_x)+points->data()[index].X*cos((points->data()[index].Y+(*base_engle))*TO_RADIAN);
 }
 float EContur::generateY(const int &index)const{
-    return (*_y)+points->data()[index].X*sin(points->data()[index].Y);
+    return (*_y)+points->data()[index].X*sin((points->data()[index].Y+(*base_engle))*TO_RADIAN);
 }
 bool EContur::touching(const float &x, const float &y)const{
     if(EKord::length(x,y,*_x,*_y)>edge.X)return false;
@@ -91,9 +94,29 @@ bool EContur::touching(const EContur& conturA,const float&x,const float &y){
     }
     return result;
 }
-void EContur::setKord(float *x, float *y){
+void EContur::addVertix(const EKord &vertixItem){
+    points->push_back(vertixItem);
+    if(edge.X<vertixItem.X)
+        edge=vertixItem;
+}
+bool EContur::removeLastVertix(){
+    if(points->size()){
+        points->pop_back();
+        return true;
+    }else
+        return false;
+}
+bool EContur::removeVertix(const unsigned int indexVertix){
+    if((unsigned int)points->size()>indexVertix){
+        points->remove(indexVertix);
+        return true;
+    }else
+        return false;
+}
+void EContur::setKord(float *x, float *y, float *engle){
     _x=x;
     _y=y;
+    base_engle=engle;
 }
 EContur::~EContur(){
     if(points!=NULL)
