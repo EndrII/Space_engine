@@ -1,11 +1,11 @@
 #include "EObject.h"
 EObject::EObject(QObject *)
 {
-    PreConstructor(EKord(0),EKord(0),0);
+    PreConstructor("",EKord(0),EKord(0),0);
 }
 EObject::EObject(const QString &str, QObject *)
 {
-    PreConstructor(EKord(0),EKord(0),0);
+    PreConstructor("",EKord(0),EKord(0),0);
      QFile f(str);
      if(!f.open(QIODevice::ReadOnly)){
          throw EError("file no detected!","EObject::EObject(const QString &str, QObject *ptr):");
@@ -13,12 +13,12 @@ EObject::EObject(const QString &str, QObject *)
      QDataStream stream(&f);
      stream>>*this;
 }
-EObject::EObject(const EKord& size, const EKord& kord_, const QString &str,EContur *cont, draw_mode mode, QObject *ptr):
+EObject::EObject(const QString& createPatch,const EKord& size, const EKord& kord_, const QString &str,EContur *cont, draw_mode mode, QObject *ptr):
     ESprite(str,mode,ptr)
 {
-    PreConstructor(size,kord_,cont);
+    PreConstructor(createPatch,size,kord_,cont);
 }
-void EObject::PreConstructor(const EKord& size, const EKord& kord_,EContur *cont){
+void EObject::PreConstructor(const QString& createPatch, const EKord& size, const EKord& kord_,EContur *cont){
     keys=new bool[_Key_value];
     for(int i(0);i<_Key_value;i++)
         keys[i]=false;
@@ -28,6 +28,7 @@ void EObject::PreConstructor(const EKord& size, const EKord& kord_,EContur *cont
     mx= _x=kord_.X;
     my= _y=kord_.Y;
     _z=0;
+    DrawContur=false;
     vertixArrayRefresh();
     contur=cont;
     if(cont!=NULL)
@@ -48,12 +49,29 @@ void EObject::PreConstructor(const EKord& size, const EKord& kord_,EContur *cont
     playerTarget=NULL;
     movmode=Standart;
     map=NULL;
+    _name="No Name Object";
+    Objectpatch=createPatch;
     feedback=inSlowRender;
     class_=EOBJECT;
 }
 void EObject::setAcceleration(const float &A)
 {
     acceleration=A;
+}
+bool EObject::isDrawContur()const{
+     return DrawContur;
+}
+void EObject::setDrawContur(bool b){
+    DrawContur=b;
+}
+void EObject::setName(const QString &name){
+    _name=name;
+}
+void EObject::setContur(EContur *c){
+    contur=c;
+}
+EContur* EObject::getContur()const{
+    return contur;
 }
 void EObject::vertixArrayRefresh(){
     vertixArray[0][0]=-_w/2;
@@ -95,6 +113,8 @@ QDataStream& operator>>(QDataStream&stream,EObject&obj){
     stream>>obj._z;
     stream>>obj._h;
     stream>>obj._w;
+    stream>>obj.Objectpatch;
+    stream>>obj._name;
     obj.vertixArrayRefresh();
     return stream;
 }
@@ -113,9 +133,13 @@ QDataStream& operator<<(QDataStream&stream,const EObject&obj){
     stream<<obj._z;
     stream<<obj._h;
     stream<<obj._w;
+    stream<<obj.Objectpatch;
+    stream<<obj._name;
     return stream;
 }
+
 void EObject::saveObject(QString patch){
+    if(patch.isEmpty()) patch=Objectpatch;
     if(patch.mid(patch.size()-4)!="eobj")
         patch+=".eobj";
     QFile f(patch);
@@ -186,6 +210,9 @@ float ** EObject::getMatrix(){
 void * EObject::getPlayerTarget()
 {
     return playerTarget;
+}
+void EObject::click(Qt::MouseButton){
+
 }
 int* EObject::getSlowTime()
 {
@@ -431,6 +458,12 @@ float EObject::getW()const{
 }
 float EObject::getH()const{
     return _h;
+}
+QString EObject::getObjectPatch(){
+    return Objectpatch;
+}
+QString EObject::getName(){
+    return _name;
 }
 void EObject::setW(const float &w){
     _w=w;

@@ -37,7 +37,7 @@ ECamera::ECamera(const EKord &kord, const EKord &size,EConfig *cfg,EPool*pool_, 
       krai[1].X=kord.X+siz.X/2;
       krai[1].Y=kord.Y+siz.Y/2;
       connect(&timer,SIGNAL(timeout()),this,SLOT(Render()));
-      timer.start(1000/60);
+      timer.setInterval(1000/60);
       idintyMatrix[0][0]=-0.0;
       idintyMatrix[0][1]=-0.0;
 
@@ -54,8 +54,16 @@ ECamera::ECamera(const EKord &kord, const EKord &size,EConfig *cfg,EPool*pool_, 
       indexArray[0][2]=2;
       indexArray[0][3]=3;
       draw_list=NULL;
+      LineWidth=3;
       this->show();
-      }
+}
+void ECamera::mousePressEvent(QMouseEvent *event){
+    tempEvent.button=event->button();
+    tempEvent.x=krai[0].X+siz.X*event->x()/width();
+    tempEvent.y=krai[0].Y+siz.Y*event->y()/height();
+    map->ClickEvent(&tempEvent);
+    emit MouseClikedEvent(&tempEvent);
+}
 void ECamera::initializeGL()
 {
     initializeOpenGLFunctions();
@@ -75,6 +83,7 @@ void ECamera::initializeGL()
 }
 void ECamera::Off()
 {
+    timer.stop();
      status=OFF;
      emit ECamera_Off();
 }
@@ -82,11 +91,13 @@ bool ECamera::On()
 {
     if(draw_list==NULL)
     {
-     status=OFF;
+        timer.stop();
+        status=OFF;
     return false;
     }
     else
     {
+        timer.start();
         status=ON;
         emit ECamera_On();
         return true;
@@ -100,7 +111,6 @@ void ECamera::paintGL()
     {
         glLoadIdentity();
         glOrtho(krai[0].X,krai[1].X,krai[1].Y,krai[0].Y,1.0,-1.0);
-       //glOrtho(-1.0,1.0,1.0,-1.0,1.0,-1.0);
 
         (*draw_list)->Elock();
         for(EObject* element:**draw_list)//vozmogen bag
@@ -165,17 +175,30 @@ void ECamera::_render()
     krai[1].Y=_Y_+siz.Y/2.0;
     repaint();
  }
+void ECamera::drawContur(EObject *c){
+    unsigned int size = c->getContur()->size();
+    glBegin(GL_LINE_STRIP);
+        glLineWidth(LineWidth);
+        for(unsigned int j=0,i=size-1;j<size;i=j++){
+            glVertex2f(c->getContur()->generateX(i),c->getContur()->generateY(i));
+            glVertex2f(c->getContur()->generateX(j),c->getContur()->generateY(j));
+        }
+    glEnd();
+}
 void ECamera::draw_Object(EObject * Object)
 {
     switch(Object->getEObjectNameClass()){
     case EOBJECT:{
         tempTexture=pool->call(Object);
-        if(!tempTexture->isCreated())
-            tempTexture->create();
-        tempTexture->bind();
+        if(tempTexture)
+            tempTexture->bind();
+        else
+            return;
         glPushMatrix();
         glTranslatef(Object->x(),Object->y(),Object->getSloi());
         glRotatef(Object->getUgol(),0,0,1);
+        if(Object->isDrawContur())
+            drawContur(Object);
         glVertexPointer(3,GL_FLOAT,0,Object->getMatrix());
         glTexCoordPointer(2,GL_FLOAT,0,idintyMatrix);
         glDrawElements(GL_QUADS,4,GL_UNSIGNED_BYTE,indexArray);
@@ -184,26 +207,22 @@ void ECamera::draw_Object(EObject * Object)
     }
     case E_FON:{
         tempTexture=pool->call(Object);
-        if(!tempTexture->isCreated())
-            tempTexture->create();
-        tempTexture->bind();
+        if(tempTexture)
+            tempTexture->bind();
+        else
+            return;
         glPushMatrix();
-        //glTranslatef(krai->X,krai->Y,Object->getSloi());
         Object->getMatrix()[0][0]=krai->X;
         Object->getMatrix()[0][1]=krai->Y;
-        //Object->getMatrix()[0][2]=Object->getSloi();
 
         Object->getMatrix()[1][0]=krai[0].X;
         Object->getMatrix()[1][1]=krai[1].Y;
-        //Object->getMatrix()[1][2]=0;
 
         Object->getMatrix()[2][0]=krai[1].X;
         Object->getMatrix()[2][1]=krai[0].Y;
-        //Object->getMatrix()[2][2]=0;
 
         Object->getMatrix()[3][0]=krai[1].X;
         Object->getMatrix()[3][1]=krai[1].Y;
-        //Object->getMatrix()[3][2]=0;
         glVertexPointer(3,GL_FLOAT,0,Object->getMatrix());
         glTexCoordPointer(2,GL_FLOAT,0,idintyMatrix);
         glDrawElements(GL_QUADS,4,GL_UNSIGNED_BYTE,indexArray);
@@ -304,6 +323,9 @@ EKord ECamera::getVirtualSize()const{
 EMaps* ECamera::getMap(){
     return map;
 }
+void ECamera::setLineWidth(const int &LineWidth_){
+    LineWidth=LineWidth_;
+}
 void ECamera::set_maps(EMaps *m){
     bool temp=status;
     status=false;
@@ -362,7 +384,7 @@ ECamera::~ECamera()
         timer.stop();
         delete[] keys;
         //delete setings;
-        glDisable(GL_ALPHA_TEST);
-        glDisable(GL_BLEND);
+       // glDisable(GL_ALPHA_TEST);
+       // glDisable(GL_BLEND);
         draw_list=NULL;
 }

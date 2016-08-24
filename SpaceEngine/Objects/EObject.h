@@ -2,8 +2,9 @@
 #define EOBJECT_H
 #include <QVector>
 #include <cmath>
-#include "SpaceEngine/System/EDefkey.h"
-#include "SpaceEngine/System/EKord.h"
+#include "./SpaceEngine/System/EDefkey.h"
+#include "./SpaceEngine/System/EKord.h"
+#include "./SpaceEngine/System/EMouseEvent.h"
 #include "./SpaceEngine/System/EList.h"
 #include "./SpaceEngine/System/ESprite.h"
 #include "./SpaceEngine/System/EContur.h"
@@ -21,7 +22,7 @@ class EObject:public ESprite //osnovnoi klas obektov dvigka
 {
     Q_OBJECT
 private:
-    void PreConstructor(const EKord& size, const EKord& kord_, EContur *cont);//osnovnoi consructor
+    void PreConstructor(const QString& createPatch,const EKord& size, const EKord& kord_, EContur *cont);//osnovnoi consructor
     EContur *contur;// kontur dannogo objecta
     float vertixArray[4][3]; //vershini risovki (zavisyat ot razmera i sloya)
     void vertixArrayRefresh();//perescyot vershin hsirini i sloyov;
@@ -29,11 +30,13 @@ private:
     void NoramlizeUgolSrlrct();//povort objecta
     float *ElepsedCenter_X,*ElepsedCenter_Y;//ukazatel na zenter vrashenie
     int Rad;//radius vrasheniya po okrugnosti
+    bool DrawContur;// otrisovjk kontura
     double ElepsedUgol;//ugol raspologeniya ovjecta v ragime dvugeniya pokrugu
     Rotate ratateMode;//vid vrasheniya v regime dvigeniya po okrugnosti
     float optimalUgol(float);//vernyot ugol v diapozone 2pi
 private slots:
 protected:
+    QString Objectpatch,_name; //patch from object;
     MovMode movmode;//regim dvigeniya
     void* playerTarget;
     void* map;//karta na kotoroi object nahoditsya
@@ -57,6 +60,7 @@ protected:
     virtual void _timeRender();//podbor vremeni
 protected slots:
 public:
+   virtual void click(Qt::MouseButton);
    friend QDataStream& operator >>(QDataStream&stream,EObject& obj);
    friend QDataStream& operator <<(QDataStream&stream,const EObject& obj);
    bool noDraw_flag,//flag na skorost renderinga//otrisovku
@@ -79,6 +83,7 @@ public:
    virtual Feedback getFeedBack();//uznat gde object
    int* getSlowTime();//
    int* getFastTime();
+   EContur* getContur()const;
    virtual void setSlave(EObject*);//ustanovit ovjekt kotoromy on podchinyaetsy
    virtual void setRotateUgol(const float&);//ustonovit ugol dlya regima dvigeniya po okrugnosti
    virtual void setPlayerTaraget(void*);//ustonovit po komu vedyot ogon igrok
@@ -91,22 +96,28 @@ public:
    virtual void setKord(const EKord&);// ustonovit novii kordinati
    virtual void setUgol(const short&);//ustonovit ugol povorota otnositelno osi X
    virtual void setAcceleration(const float& A=1);//ustonovit uskorenie
+   virtual void setDrawContur(bool);
+   virtual void setName(const QString& name);//ustanovit imya dlya objecta
+   void setContur(EContur*);//ustanovit new contur
    float** getMatrix(); //return matrix
    float& x();
    float& y();
+   virtual bool isDrawContur()const;
    void setSloi(const float& );
    float getSloi()const;
    float getW()const;
    float getH()const;
+   virtual QString getObjectPatch();// vernyot raspologenie objecta
+   virtual QString getName();//vernyot imya
    EObject* getSlave()const;
    void setW(const float&);
    void setH(const float&);
    virtual void startElepsedMove(float *Center_X, float *Center_Y, const int& Radius, const Rotate rot=NoRotate);//nachnyot dvigenie ovjecta po okrugnosti
    virtual bool mov_to(const EKord&); //ustonovit tochku dvigeniya
    virtual bool mov_to(const EKord&,const int& _speed); //+skorost
-   virtual void saveObject(QString patch);//sohronit sebya v fail
+   virtual void saveObject(QString patch="");//sohronit sebya v fail
    EObject(QObject *ptr=0);
-   EObject(const EKord& size, const EKord& kord, const QString& name_image, EContur *cont,draw_mode mode=Game_mode, QObject *ptr=0);
+   EObject(const QString& createPatch,const EKord& size, const EKord& kord, const QString& name_image, EContur *cont,draw_mode mode=Game_mode, QObject *ptr=0);
     EObject(const QString&patch, QObject *ptr=0);
     ~EObject();
 public slots:

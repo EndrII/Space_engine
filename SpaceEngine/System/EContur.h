@@ -21,6 +21,7 @@ private:
     unsigned short FindEdge();//poisk samoi dalnei ticki
 public:
     void setPoints(QVector<EKord> *p);
+    unsigned int size()const;
     friend QDataStream& operator>>(QDataStream& stream,EContur& cont);
     friend QDataStream& operator<<(QDataStream& stream,const EContur& cont);
     /**

@@ -124,6 +124,9 @@ priority_map EMaps::getPrioryty()
 {
     return priority_;
 }
+void EMaps::ClickEvent(EMouseEvent *e){
+    P_CORE.click(e);
+}
 EObject_List* EMaps::getMainList()
 {
     return ist;

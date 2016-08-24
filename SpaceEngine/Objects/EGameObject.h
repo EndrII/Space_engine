@@ -25,7 +25,7 @@ protected:
     virtual void _animation_render();//obrobotka animzii objecta
 public:
    explicit EGameObject(QObject *ptr=0);
-   explicit EGameObject(const EKord& size,const EKord& kord,const QString& patchSprite,EContur*, QObject *ptr=0);
+   explicit EGameObject(const QString &createPatch, const EKord& size, const EKord& kord, const QString& patchSprite, EContur*, QObject *ptr=0);
    explicit EGameObject(const EKord& size,const EKord& kord,const QString&objPatch, QObject *ptr=0);
    explicit EGameObject(const QString& patch_GameObject, QObject *ptr=0);
    friend QDataStream& operator>>(QDataStream&stream,EGameObject&obj);

@@ -62,6 +62,7 @@ public:
     void Stop();
     void ForceuUpdate();//prinuditelnoe obnovlenie pereraspredelenie objectov na karte;
     priority_map getPrioryty();//vernyot tekushii prioritet
+    void ClickEvent(EMouseEvent*);// peredacha soo bsheniya o nagatii klavishi mishi na object (na kavere)
     EMaps& operator  = (const EMaps&);
     bool operator !=  (const EMaps&);
     bool operator ==  (const EMaps&);

@@ -18,6 +18,9 @@ void EContur::setPoints(QVector<EKord> *p){
        delete points;
     points=p;
 }
+unsigned int EContur::size()const{
+    return points->size();
+}
 QDataStream& operator>>(QDataStream& stream, EContur& cont){
     int tempEnum;
     stream>>tempEnum;

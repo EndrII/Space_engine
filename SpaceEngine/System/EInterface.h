@@ -88,6 +88,8 @@ class Potok3_CORE:public EObject //potok po raspredeleniya objectov
 private:
     void BaseRender();//basivii rnder objectov (bez uchota flagov)
     unsigned short draw_;
+    bool cliced;//shelchek misgi
+    EMouseEvent * clicedevent;
     bool full,puls;//zapolnen li potok nugnimi dannimi
     void *pointer_void; //ukazatel na void nugen dlya obmena ukozateleei
     priority priority_;//zadergka
@@ -111,6 +113,7 @@ public:
                 EObject_List **GameObjectList,
                 Elist<EKord*> *);
     void render();//pereopridilim render
+    void click(EMouseEvent *event);
     void ForseRender();//prinuditelnii render
     bool* getpuls();//vernyot vikluchatel
     void setPriority(const priority&); //ustonovit zadergku vipolneniya

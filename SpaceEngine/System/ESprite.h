@@ -58,13 +58,10 @@ private:
     bool switcher;//perecluschtel
     bool isBindet;//
     us ID_fileSprite;// unikalinii adree faila spraita vidovaemii sistemoi
-    //esli id = -1 znachit sprait se bil eshyu procitan
     void generateID();
     QFile *file;
     void refreshIndexBeginAnimations(ui index, int mov);//
     bool FrameRender(QImage& A,const QImage&B);//nalogen texturu B na A v zavisimosti ot alpha kanala
-    //t.e. picsel budet menyat svoi ottenok no ne alpha kanal
-    // vernyot true esli vsyo prroidyo uspeshno false esli B bilshe chem A
     QDataStream *stream;//stream zapisi
     long long int callTime, allTime; //vremya poslednego vizova i vremya ot momenta smeni animazii (nugno dlya nakopleniya)
     QTime timer_; //vnitreni schochik vremeni dlya animazii
@@ -359,6 +356,21 @@ public:
      * @param baseSprite основа для повреждений
      */
     void rennderDamageFrame(const ESprite &baseSprite,const ui&frameValue);
+    /**
+     * @brief copyFrame копирует кадр
+     * @param indexAnimation индекс анимации
+     * @param IndexFrame индекс копируемого  кадра
+     * @param IndexPasteFrame индекс куда кадр будет скопирован
+     */
+    bool copyFrame(const ui&indexAnimation,const ui& IndexFrame,const ui& IndexPasteFrame);
+    /**
+     * @brief moveFrame копирует кадр
+     * @param indexAnimation индекс анимации
+     * @param IndexPasteAnimation индекс анимации куда будет вставлен кадр
+     * @param IndexFrame индекс копируемого  кадра
+     * @param IndexPasteFrame индекс куда кадр будет скопирован
+     */
+    bool copyFrame(const ui&indexAnimation,const ui& IndexPasteAnimation,const ui& IndexFrame,const ui& IndexPasteFrame);
     /**
      * @brief connectProgress статический метод подключения обьекта к прогресс бару
      * @param connectObject обьект за которым будет вестись слежка

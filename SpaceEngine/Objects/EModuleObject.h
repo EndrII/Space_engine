@@ -17,7 +17,7 @@ class EModuleObject: public EObject//modulni object vse objecti v nem ne yavlyay
     virtual void addObject(EObject* Obj);//dobavit object v modul
 protected slots:
 public:
-    explicit EModuleObject(const EKord&size,const QString& patchSprite,EContur*, QObject *ptr=0);//konstruktor dlya regima inPoint
+    explicit EModuleObject(const QString &createPatch, const EKord&size, const QString& patchSprite, EContur*, QObject *ptr=0);//konstruktor dlya regima inPoint
     explicit EModuleObject(const QString&objPatch, QObject *ptr=0);//konstruktor dlya regima inPoint
     explicit EModuleObject(QObject *ptr=0);//konstruktor dlya regima inPoint
     friend QDataStream& operator>>(QDataStream& stream,EModuleObject&obj);

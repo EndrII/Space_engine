@@ -479,25 +479,49 @@ bool ESprite::moveFrame(const ui&indexAnimation,const ui &indexPasteAnimation,co
         QImage* temp=SourceVector[IndexBeginAnimationsVector[indexAnimation]+indexFrame];
         ui temp1=base[IndexBeginAnimationsVector[indexAnimation]+indexFrame];
         us temp2=longFrame[IndexBeginAnimationsVector[indexAnimation]+indexFrame];
+        ui temp3=nameAdress[IndexBeginAnimationsVector[indexAnimation]+indexFrame];
         SourceVector.erase(SourceVector.begin()+IndexBeginAnimationsVector[indexAnimation]+indexFrame);
         base.erase(base.begin()+IndexBeginAnimationsVector[indexAnimation]+indexFrame);
         longFrame.erase(longFrame.begin()+IndexBeginAnimationsVector[indexAnimation]+indexFrame);
+        nameAdress.erase(nameAdress.begin()+IndexBeginAnimationsVector[indexAnimation]+indexFrame);
         longAnimationsVector[indexAnimation]--;
         refreshIndexBeginAnimations(indexAnimation,-1);
         SourceVector.insert(SourceVector.begin()+IndexBeginAnimationsVector[indexPasteAnimation]+indexPasteFrame,temp);
         base.insert(base.begin()+IndexBeginAnimationsVector[indexPasteAnimation]+indexPasteFrame,temp1);
         longFrame.insert(longFrame.begin()+IndexBeginAnimationsVector[indexPasteAnimation]+indexPasteFrame,temp2);
+        nameAdress.insert(nameAdress.begin()+IndexBeginAnimationsVector[indexPasteAnimation]+indexPasteFrame,temp3);
         refreshIndexBeginAnimations(indexPasteAnimation,1);
         longAnimationsVector[indexPasteAnimation]++;
-        /*if(IndexBeginAnimationsVector[indexPasteAnimation]+indexPasteFrame>IndexBeginAnimationsVector[indexAnimation]+indexFrame){
-        }else{
-            refreshIndexBeginAnimations();
-        }*/
         return true;
     }
 }
+
 bool ESprite::moveFrame(const ui&indexAnimation,const ui& indexFrame,const ui& indexPasteFrame){
     return moveFrame(indexAnimation,indexAnimation,indexFrame,indexPasteFrame);
+}
+bool ESprite::copyFrame(const ui&indexAnimation,const ui &indexPasteAnimation,const ui& indexFrame,const ui& indexPasteFrame){
+    if(mode!=Edit_Mode)
+        throw EError("sprite mode = Game Mode","void ESprite::WriteToFile(const QString &patch)");
+    if(indexAnimation>=IndexBeginAnimationsVector.size()||indexPasteAnimation>=IndexBeginAnimationsVector.size()||
+            indexFrame>=longAnimationsVector[indexAnimation]||indexPasteFrame>=longAnimationsVector[indexPasteAnimation]){
+        return false;
+    }else{
+        QImage* temp=new QImage(*SourceVector[IndexBeginAnimationsVector[indexAnimation]+indexFrame]);
+        ui temp1=base[IndexBeginAnimationsVector[indexAnimation]+indexFrame];
+        us temp2=longFrame[IndexBeginAnimationsVector[indexAnimation]+indexFrame];
+        ui temp3=nameAdress[IndexBeginAnimationsVector[indexAnimation]+indexFrame];
+        SourceVector.insert(SourceVector.begin()+IndexBeginAnimationsVector[indexPasteAnimation]+indexPasteFrame,temp);
+        base.insert(base.begin()+IndexBeginAnimationsVector[indexPasteAnimation]+indexPasteFrame,temp1);
+        longFrame.insert(longFrame.begin()+IndexBeginAnimationsVector[indexPasteAnimation]+indexPasteFrame,temp2);
+        nameAdress.insert(nameAdress.begin()+IndexBeginAnimationsVector[indexPasteAnimation]+indexPasteFrame,temp3);
+        refreshIndexBeginAnimations(indexPasteAnimation,1);
+        longAnimationsVector[indexPasteAnimation]++;
+        return true;
+    }
+}
+
+bool ESprite::copyFrame(const ui&indexAnimation,const ui& indexFrame,const ui& indexPasteFrame){
+    return copyFrame(indexAnimation,indexAnimation,indexFrame,indexPasteFrame);
 }
 void ESprite::rennderDamageFrame(const ESprite &baseSprite, const ui &frameValue){
     srand(time(0));

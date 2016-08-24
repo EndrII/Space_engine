@@ -80,6 +80,7 @@ public:
     virtual void clearQWidgetsList();//udalit vse elementi interfeisa
     virtual void clearMapsList();//udalit vse karti;
     virtual bool WindowsShow();//proresuet vse kameri
+    virtual void cashClear();// удалит все содержимое графического ядра (анологично clearBuffer, но в месте с отчисткой выключит все камеры )
     virtual void OffAll();//vikluchit vse kameri
     virtual void OnAll();//vkluchit vse kameri
     virtual void sync();// sinhotniziruet razmeri vseh objectov dvigka s razmerom glovnogo okna

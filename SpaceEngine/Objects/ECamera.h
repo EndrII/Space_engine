@@ -21,7 +21,10 @@ class ECamera: public QOpenGLWidget,protected QOpenGLFunctions
     Q_OBJECT
 private:
     void update();//obnovlenie razmera kameri po novim nastroikam
+    void drawContur(EObject*);
+    EMouseEvent tempEvent;//временный элемент для хронения дискриптора последнего клика мыши
     EPool* pool;
+    int LineWidth;//ширина линий контура
     QColor clearColor;
     QOpenGLTexture*tempTexture;// vremennaya peremennaya dlya sozzdaniya ne sozdanih textur
     EObject_List** draw_list; //spisok na otrisovku
@@ -44,6 +47,7 @@ protected:
     EObject *folow_Obj;//object slegki
     QTimer timer;//taimer obnovleniya ekrana;
     bool event;//flag na sobitiya nagatiya klavish
+    void mousePressEvent(QMouseEvent *event);
     void initializeGL(); //iniziolizaziya okna GL
     void paintGL(); //ego otrisovka
     void resizeGL(int w, int h);//pererazmetka
@@ -63,6 +67,7 @@ public:
     EKord getVirtualKord()const;
     EKord getVirtualSize()const;
     void set_maps(EMaps*);
+    void setLineWidth(const int& LineWidth_);//ustanovit shirennu linii contura
     EMaps* getMap();
     void setEvent(const bool&);//ustonovit flag na reogirovanie na sobitiya
     void setDrawList(EObject_List**);//
@@ -85,7 +90,8 @@ public slots:
    bool On();  //vklushit kameru
    virtual void Render();//obnovlenie objectov na karte
 signals:
-    void ECamera_On();//start
-    void ECamera_Off();//ECamera otklyachena
+   void MouseClikedEvent(EMouseEvent*);
+   void ECamera_On();//start
+   void ECamera_Off();//ECamera otklyachena
 };
 #endif // ECamera_H

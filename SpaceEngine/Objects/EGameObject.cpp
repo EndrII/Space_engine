@@ -12,8 +12,8 @@ EGameObject::EGameObject(const EKord& size,const EKord& kord,const QString&objPa
     setKord(kord);
     constructorFork();
 }
-EGameObject::EGameObject(const EKord& size,const EKord& kord,const QString& patchSprite,EContur*cont, QObject *ptr)
-    :EModuleObject(size,patchSprite,cont,ptr)
+EGameObject::EGameObject(const QString& createPatch,const EKord& size,const EKord& kord,const QString& patchSprite,EContur*cont, QObject *ptr)
+    :EModuleObject(createPatch,size,patchSprite,cont,ptr)
 {
     setKord(kord);
     constructorFork();

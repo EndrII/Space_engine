@@ -299,34 +299,13 @@ MultiCorRender::~MultiCorRender()
 Potok3_CORE::Potok3_CORE(QObject *obj):
     EObject(obj)
 {
-   full=false;
+   cliced=full=false;
    priority_=LOW_PLUS;
    puls=true;
    buffer_for_draw=new EObject_List;
    buffer_for_render=new EObject_List;
    buffer_for_Game=new EObject_List;
 }
-/*void Potok3_CORE::Sort(int Size)
-{
-    bool flag =1;
-    while(--Size&&flag)
-    {
-       flag=0;
-       int j=0; EObject* temp=buffer_for_draw->front();
-       for(EObject_List::iterator i=++buffer_for_draw->begin();j<Size;i++)
-       {
-           j++;
-           if(**i>*temp)
-           {
-               flag=1;
-               EObject *temp2=*i;
-               *i=temp;
-               *(--i)=temp2; i++;
-           }
-            temp=*i;
-       }
-    }
-}*/
 void Potok3_CORE::update(EObject_List *object_list,
                          EObject_List **slow_render_list,
                          EObject_List **render_list,
@@ -341,6 +320,7 @@ void Potok3_CORE::update(EObject_List *object_list,
     Game_List=GameObjectList;
     draw_list_=draw_list;
     full=true;
+    cliced=false;
 }
 void Potok3_CORE::setPriority(const priority &p)
 {
@@ -349,6 +329,10 @@ void Potok3_CORE::setPriority(const priority &p)
 void Potok3_CORE::Exit()
 {
     puls=false;
+}
+void Potok3_CORE::click(EMouseEvent *event){
+    clicedevent=event;
+    cliced=true;
 }
 bool* Potok3_CORE::getpuls()
 {
@@ -398,8 +382,12 @@ void Potok3_CORE::BaseRender(){
                 return;
         }else
         {
-            if((*i)->getEObjectNameClass()==E_GAMEOBJECT)
+            if((*i)->getEObjectNameClass()==E_GAMEOBJECT){
                 buffer_for_Game->Epush_back(*i);
+                if(cliced&&(*i)->getContur()->touching(clicedevent->x,clicedevent->y)){
+                    (*i)->click(clicedevent->button);
+                }
+            }
             draw_=0;
             for(EKord* j:*camers)
                draw_+=(!(*i)->noDraw_flag&&(*i)->getKord().inQuan(j[0]-(*i)->getSize(),j[1]+(*i)->getSize()));
@@ -427,6 +415,8 @@ void Potok3_CORE::BaseRender(){
             }
         }
     }
+    if(cliced)
+        cliced=false;
 }
 void Potok3_CORE::ForseRender()
 {

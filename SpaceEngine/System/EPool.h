@@ -30,8 +30,6 @@ class EPool
 {
 private:
     poolElement * pool;// графический пуул камеры
-    QOpenGLTexture* emptyTexture;
-    //void poolRender(EObject* sprite);// podkachka izobragenie
     unsigned int poolMemorySize,
     poolMemorySizeLemit,
     poolSize,

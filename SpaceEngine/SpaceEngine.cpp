@@ -299,6 +299,10 @@ bool SpaceEngine::WindowsShow()
     sync();
     return true;
 }
+void SpaceEngine::cashClear(){
+    OffAll();
+    CORE->clear();
+}
 void SpaceEngine::AIOff()
 {
     AI_CORE.Off();

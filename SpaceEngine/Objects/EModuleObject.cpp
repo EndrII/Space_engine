@@ -1,6 +1,6 @@
 #include "EModuleObject.h"
-EModuleObject::EModuleObject(const EKord&size,const QString& patchSprite,EContur*cont, QObject *ptr):
-    EObject(size,EKord(0),patchSprite,cont,Game_mode,ptr){
+EModuleObject::EModuleObject(const QString& createPatch,const EKord&size,const QString& patchSprite,EContur*cont, QObject *ptr):
+    EObject(createPatch,size,EKord(0),patchSprite,cont,Game_mode,ptr){
     constructorFork();
 }
 EModuleObject::EModuleObject(const QString&objPatch,QObject *ptr):
