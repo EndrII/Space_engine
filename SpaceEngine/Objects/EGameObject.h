@@ -26,8 +26,8 @@ protected:
 public:
    explicit EGameObject(QObject *ptr=0);
    explicit EGameObject(const QString &createPatch, const EKord& size, const EKord& kord, const QString& patchSprite, QObject *ptr=0);
-   explicit EGameObject(const EKord& size,const EKord& kord,const QString&objPatch, QObject *ptr=0);
-   explicit EGameObject(const QString& patch_GameObject, QObject *ptr=0);
+   explicit EGameObject(const EKord& size, const EKord& kord, const QString&objPatch, QObject *ptr=0);
+   explicit EGameObject(const QString& patch_GameObject,draw_mode mode=Game_mode, QObject *ptr=0);
    friend QDataStream& operator>>(QDataStream&stream,EGameObject&obj);
    friend QDataStream& operator<<(QDataStream&stream,const EGameObject&obj);
    virtual bool damag(const int &dem);//poluchenie urona vernyot true esli unichtogen

@@ -9,11 +9,15 @@ class EFon: public EObject//klass predstovlyaet soboi fonovoe izobrogenie
 {
     Q_OBJECT
 private:
+    //float size_;//razmer fona (viberaetsa menishee znachenie)
     float Max;//koofizent razmera fona (dolgen bit >1)
 protected:
 public:
     explicit EFon(const QString &urlSprite, const float &kf,const float&sloi=FIRST_FON);//konstruktor
-    float getMax();//vernyot koofizient rzmera fona;
+    explicit EFon();
+    float getMax()const;//vernyot koofizient rzmera fona;
+    //float getminsize();
+    void setMax(const float &max);//ustanovit kooficent razmera fona
     friend QDataStream& operator >>(QDataStream&,EFon&);
     friend QDataStream& operator <<(QDataStream&,EFon&);
     void render();//otrenderit izobragenie

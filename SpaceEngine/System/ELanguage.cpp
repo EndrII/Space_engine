@@ -38,6 +38,26 @@ QString ELanguage::GetWord(const int &index)
     else
         return base[index];
 }
+QString ELanguage::getWord(const unsigned int &index,const QString&patch)
+{
+    QFile f(patch);
+    QString result="NOT DETECTED";
+    if(f.open(QIODevice::ReadOnly)){
+        QTextStream stream(&f);
+        unsigned int temp=0,Seek=0,oldSeek=0;
+        while(index>temp&&!f.atEnd()){
+            if(stream.read(1)=="|"){
+                temp++;
+                oldSeek=Seek;
+                Seek=stream.device()->pos();
+            }
+        }
+        stream.device()->seek(oldSeek);
+        result=stream.read(Seek-oldSeek);
+        f.close();
+    }
+    return result;
+}
 ELanguage::~ELanguage()
 {
     file->flush();

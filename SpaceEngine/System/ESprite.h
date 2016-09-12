@@ -14,7 +14,7 @@
 #include <QOpenGLTexture>
 #define minFrameTime 16
 #define LASTFRAMEPOOLINDEX 2114125312
-#define GLOBALLIST static vector<QString> listIncludeFileSprite;
+#define GLOBALLIST static vector<ESpriteBase*> listIncludeFileSprite;
 #define LOADED_FILE_SPRITE listIncludeFileSprite
 //enum sprite_mod{live,fait,death,custom_1,custom_2,
 //               custom_3,custom_4};
@@ -50,6 +50,23 @@ enum modeAnimation{DefaultAni,StaticAni};
  * длина n+1 анимации
  * базовая графическая состовляющая Space Engine
  */
+class ESpriteBase{
+private:
+    ui value;// kolichestvo objectov
+public:
+    ESpriteBase(const QString& patch_);
+    void clear();
+    QString patch;// patch spraita
+    std::vector<QString> AnimationsName;//imena animazii
+    std::vector<QImage*> SourceVector;// izobragenie i dlina kadra
+    std::vector<ui> nameAdress;// adresa kadrov v faile
+    std::vector<us> longFrame;//dlina proigrovaniya kagdogo kadra
+    std::vector<ui> base;// basa izobragenii
+    std::vector<us> longAnimationsVector;// vector dlin anomazii
+    std::vector<us> IndexBeginAnimationsVector;// indxi nachal animazii
+    bool DeleteThis();
+    ESpriteBase* CopyThis();
+};
 
 class ESprite:public QObject //klass spraitov s vipolneniem vseh animazii
 {
@@ -75,6 +92,8 @@ private:
     QOpenGLTexture* Read_(const ui& addres);//chteniye izobrageniy po adresu vernyot uge hotovuyu teksturu.
     bool stopedFlag;// flag ostonovki
     int staticTimeLongFrameAnimation;// dlina animazii v statichiskom regime
+    ESpriteBase *SpriteBase; //osnova
+  /*
     std::vector<QString> AnimationsName;//imena animazii
     std::vector<QImage*> SourceVector;// izobragenie i dlina kadra
     std::vector<ui> nameAdress;// adresa kadrov v faile
@@ -82,8 +101,10 @@ private:
     std::vector<ui> base;// basa izobragenii
     std::vector<us> longAnimationsVector;// vector dlin anomazii
     std::vector<us> IndexBeginAnimationsVector;// indxi nachal animazii
+    */
     bool loading_test;//test na proverku zanyatosti ekrana zagruski
 protected:
+    draw_mode getDrawMode()const;
     /**
      * @brief getAnimationStackValue
      * @return вернет количество анимаций в стаке
@@ -383,10 +404,28 @@ public:
      * @param bar  бар который будет отслеживать выбранный обьект
      */
     static void disconnectProgress(ESprite *connectObject, ELoadScreen *bar);
+
+    /**
+     * @brief getHeidImage вункция возврощает первый кадр спрайта (файла)
+     * @param patch расположение файла
+     * @param size предпочтительные размеры пинктограммы
+     * @return первый кадр в файле спрайта
+     */
+    static QImage* getHeidImage(const QString& patch, const QSize &size=QSize(50,50));
     ~ESprite();
 signals:
+    /**
+     * @brief progress текущий прогресс задач для меню прогресса
+     */
     void progress(int);
+    /**
+     * @brief progressMaximumChanged максимальное значение прогресса
+     */
     void progressMaximumChanged(int,QString);
+    /**
+     * @brief FrameValueChanged измененно максимальное значение загруски
+     */
+    void FrameValueChanged(unsigned short,unsigned int);
 };
 #endif // ESPARAIT_H
 

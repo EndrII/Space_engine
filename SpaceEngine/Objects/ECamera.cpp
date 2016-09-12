@@ -115,9 +115,9 @@ void ECamera::paintGL()
         (*draw_list)->Elock();
         for(EObject* element:**draw_list)//vozmogen bag
         {
-            if(element->getEObjectNameClass()==E_MODULEOBJECT)
-                for(EObject *obj:*((EModuleObject*)element)->getModuleVector())
-                    draw_Object(obj);
+            if(element->isMultiObject())
+                for(ModuleItem &obj:*((EModuleObject*)element)->getModuleVector())
+                    draw_Object(obj.obj);
             else
                 draw_Object(element);
         }
@@ -218,23 +218,28 @@ void ECamera::draw_Object(EObject * Object)
         break;
     }
     case E_FON:{
+        glPushMatrix();
+      //  tempTexture->release();
         tempTexture=pool->call(Object);
         if(tempTexture)
             tempTexture->bind();
         else
             return;
-        glPushMatrix();
-        Object->getMatrix()[0][0]=krai->X;
-        Object->getMatrix()[0][1]=krai->Y;
+        float tempX=(((EFon*)Object)->getMax()*siz.X*_X_/map->getSize().X);
+        float tempY=(((EFon*)Object)->getMax()*siz.Y*_Y_/map->getSize().Y);
+        float tempX1=tempX-((EFon*)Object)->getMax()*siz.X;
+        float tempY1=tempY-((EFon*)Object)->getMax()*siz.Y;
+        Object->vertixArray[0][0]=krai[1].X-tempX1;
+        Object->vertixArray[0][1]=krai[0].Y-tempY;
 
-        Object->getMatrix()[1][0]=krai[0].X;
-        Object->getMatrix()[1][1]=krai[1].Y;
+        Object->vertixArray[1][0]=krai[0].X-tempX;
+        Object->vertixArray[1][1]=krai[0].Y-tempY;
 
-        Object->getMatrix()[2][0]=krai[1].X;
-        Object->getMatrix()[2][1]=krai[0].Y;
+        Object->vertixArray[2][0]=krai[0].X-tempX;
+        Object->vertixArray[2][1]=krai[1].Y-tempY1;
 
-        Object->getMatrix()[3][0]=krai[1].X;
-        Object->getMatrix()[3][1]=krai[1].Y;
+        Object->vertixArray[3][0]=krai[1].X-tempX1;
+        Object->vertixArray[3][1]=krai[1].Y-tempY1;
         glVertexPointer(3,GL_FLOAT,0,Object->getMatrix());
         glTexCoordPointer(2,GL_FLOAT,0,idintyMatrix);
         glDrawElements(GL_QUADS,4,GL_UNSIGNED_BYTE,indexArray);

@@ -57,7 +57,6 @@ void EEvents::mousePressEvent(QMouseEvent *Event)
     default:
         break;
     }
-
 }
 void EEvents::mouseDoubleClickEvent(QMouseEvent*Event)
 {
@@ -99,7 +98,6 @@ void EEvents::mouseReleaseEvent(QMouseEvent *Event)
     default:
         break;
     }
-
 }
 void EEvents::mouseMoveEvent(QMouseEvent *Event)
 {

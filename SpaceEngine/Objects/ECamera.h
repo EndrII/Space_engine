@@ -6,6 +6,7 @@
 #include <QOpenGLFunctions>
 //#include "./SpaceEngine/System/EMaps.h"
 #include "EModuleObject.h"
+#include "EFon.h"
 #include <cmath>
 #include <QTimer>
 #include <QTime>
@@ -30,6 +31,7 @@ private:
     EObject_List** draw_list; //spisok na otrisovku
     GLubyte indexArray[1][4];
     GLfloat idintyMatrix[4][2];
+    GLfloat fonMatrix[4][3];
     EMaps *map;//karta kotoruyu risuet eta camera
     EKord Vkord,VSize;// virtualnie koordinati kameri na osnownom ekrane
     bool status;//status off/on

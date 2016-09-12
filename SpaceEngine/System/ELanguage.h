@@ -6,6 +6,9 @@
 #include <string>
 #include <vector>
 #include "SpaceEngine/System/EError.h"
+#define LANG_ENG "./language/ENG"
+#define PROGRAMM_LANGUAGE static QString lang;
+#define PROGRAMM_LANGUAGE_ACSSES lang
 using namespace std;
 /*
  * TEMPLATE
@@ -24,6 +27,7 @@ private:
 public:
     explicit ELanguage(const string &filename);
     QString GetWord(const int& index);//vernyot prevedyonnuyu frazu esli ona sushestvuet
+    static QString getWord(const unsigned int &index,const QString&patch=LANG_ENG);
     virtual ~ELanguage();
 };
 

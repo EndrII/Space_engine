@@ -1,5 +1,18 @@
 #include "EModuleObject.h"
-EModuleObject::EModuleObject(const QString& createPatch,const EKord&size,const QString& patchSprite, QObject *ptr):
+ModuleItem::ModuleItem(EObject *i, const float &e, const float &r){
+            obj=i; engle=e;range=r;
+}
+QDataStream& operator>>(QDataStream& stream,ModuleItem& item){
+    stream>> item.engle;
+    stream>> item.range;
+    return stream;
+}
+QDataStream& operator<<(QDataStream& stream,const ModuleItem& item){
+    stream<< item.engle;
+    stream<< item.range;
+    return stream;
+}
+EModuleObject::EModuleObject(const QString& createPatch, const EKord&size, const QString& patchSprite, QObject *ptr):
     EObject(createPatch,size,EKord(0),patchSprite,Game_mode,ptr){
     constructorFork();
 }
@@ -7,40 +20,42 @@ EModuleObject::EModuleObject(const QString&objPatch,QObject *ptr):
     EObject(objPatch,ptr){
     constructorFork();
 }
-EModuleObject::EModuleObject(QObject *ptr):
+EModuleObject::EModuleObject( QObject *ptr):
     EObject(ptr){
     constructorFork();
 }
 void EModuleObject::constructorFork(){
     class_=E_MODULEOBJECT;
+    multiObject=true;
     noDraw_flag=true;
     ignore_flag=false;
     draw_in_map_=false;
 }
 QDataStream& operator>>(QDataStream&stream,EModuleObject&obj){
-    us temp;
+   // stream>>obj.emptyModule;
+    /*if(!obj.emptyModule)
+        */
+    stream>>*((EObject*)&obj);
+    /*us temp;
     stream>>temp;
-    EObject* objectTemp;float ugolTemp;
+    EObject* objectTemp;
     for(us i=0;i<temp;i++){
         objectTemp=new EObject;
         stream>>*objectTemp;
         objectTemp->setSlave(obj.slave_);
         obj.elements.push_back(objectTemp);
-    }
-    for(us i=0;i<temp;i++){
-        stream>>ugolTemp;
-        obj.additionalUgol.push_back(ugolTemp);
-    }
+    }*/
     return stream;
 }
 QDataStream& operator<<(QDataStream&stream,EModuleObject&obj){
-    stream<<(us)obj.elements.size();
+   // stream<<obj.emptyModule;
+    /*if(!obj.emptyModule)
+        stream<<*((EObject*)&obj);*/
+    stream<<*((EObject*)&obj);
+    /*stream<<(us)obj.elements.size();
     for(EObject*i:obj.elements){
         stream<<*i;
-    }
-    for(float f:obj.additionalUgol){
-        stream<<f;
-    }
+    }*/
     return stream;
 }
 void EModuleObject::update(int *ptr2, int* ptr3)
@@ -48,27 +63,24 @@ void EModuleObject::update(int *ptr2, int* ptr3)
     timeSync=ptr2;
     timeSync_slow=ptr3;
     for(ui i(0);i<elements.size();i++)
-        elements.data()[i]->update(ptr2,ptr3);
+        elements.data()[i].obj->update(ptr2,ptr3);
     emit createdModule();
 }
 void EModuleObject::setSlave(EObject *s)
 {
     slave_=s;
    // feedback=((EObject*)s)->getFeedBack();
-     for(EObject *i:elements)
-         i->setSlave(s);
+     for(ModuleItem &i:elements)
+         i.obj->setSlave(s);
 }
 void EModuleObject::damag_of_target(const int&)
 {
 
 }
-std::vector<float>* EModuleObject::getAddUgol(){
-    return &additionalUgol;
-}
-void EModuleObject::addObject(EObject *Obj)
+void EModuleObject::addObject(EObject *Obj, float engle, float range)
 {
-    elements.push_back(Obj);
-    additionalUgol.push_back(0);
+    elements.push_back(ModuleItem(Obj,engle,range));
+ //   additionalUgol.push_back(0);
     Obj->ignore_flag=true;
     Obj->setSlave(slave_);
     Obj->update(timeSync,timeSync_slow);
@@ -100,7 +112,7 @@ void EModuleObject::addObject(EObject *Obj)
             }
         }
 }*/
-std::vector<EObject *> *EModuleObject::getModuleVector()
+std::vector<ModuleItem> *EModuleObject::getModuleVector()
 {
     return &elements;
 }
@@ -109,8 +121,8 @@ void EModuleObject::render()
     this->_timeRender();
     this->_keyRender();
     this->_render();
-    for(EObject* o:elements)
-        o->render();
+    for(ModuleItem& i:elements)
+        i.obj->render();
 }
 bool EModuleObject::isDraw_in_map()
 {
@@ -126,9 +138,10 @@ bool EModuleObject::firetest(void *v)
 }
 void EModuleObject::setNoDrawFlag(const bool &b)
 {
-    for(EObject* i:elements)
+    this->noDraw_flag=b;
+    for(ModuleItem &i:elements)
     {
-        i->noDraw_flag=b;
+        i.obj->noDraw_flag=b;
     }
 }
 /*void EModuleObject::setPrior(const int &i)
@@ -142,9 +155,10 @@ void EModuleObject::setNoDrawFlag(const bool &b)
 }*/
 void EModuleObject::setIgnoreFlag(const bool &b)
 {
-    for(EObject* i:elements)
+    this->ignore_flag=b;
+    for(ModuleItem &i:elements)
     {
-        i->ignore_flag=b;
+        i.obj->ignore_flag=b;
     }
 }
 /*void EModuleObject::setPriorALL(const int &i)
@@ -159,9 +173,10 @@ void EModuleObject::setIgnoreFlag(const bool &b)
 }*/
 void EModuleObject::setDeleteFlag(const bool &b)
 {
-    for(EObject* i:elements)
+    this->delete_flag=b;
+    for(ModuleItem& i:elements)
     {
-        i->delete_flag=b;
+        i.obj->delete_flag=b;
     }
 }
 RelationFraction EModuleObject::getRelation()
@@ -170,9 +185,9 @@ RelationFraction EModuleObject::getRelation()
 }
 void EModuleObject::setForceRenderFlag(const bool &b)
 {
-    for(EObject* i:elements)
+    for(ModuleItem& i:elements)
     {
-        i->forceRenderFlag=b;
+        i.obj->forceRenderFlag=b;
     }
 }
 /*std::vector<float>* EModuleObject::getAdditionalUgol()
@@ -181,22 +196,23 @@ void EModuleObject::setForceRenderFlag(const bool &b)
 }*/
 bool EModuleObject::deleteElement(EObject *pointer)
 {
-    std::vector<EObject*>::iterator temp =elements.begin();
-    std::vector<float>::iterator temp2= additionalUgol.begin();
+    std::vector<ModuleItem>::iterator temp =elements.begin();
+   // std::vector<float>::iterator temp2= additionalUgol.begin();
     for(ui i(0);i<elements.size();i++)
     {
-        if((*temp)==pointer)
+        if((temp->obj)==pointer)
         {
+            delete temp->obj;
             elements.erase(temp);
-            additionalUgol.erase(temp2);
+     //       additionalUgol.erase(temp2);
             return true;
         }
-        temp++;temp2++;
+        temp++;//temp2++;
     }
     return false;
 }
 EModuleObject::~EModuleObject()
 {
     for(ui i(0);i<elements.size();i++)
-        delete elements.data()[i];
+        delete elements.data()[i].obj;
 }

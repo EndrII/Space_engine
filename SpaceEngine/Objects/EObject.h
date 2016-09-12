@@ -24,7 +24,6 @@ class EObject:public ESprite //osnovnoi klas obektov dvigka
 private:
     void PreConstructor(const QString& createPatch, const EKord& size, const EKord& kord_);//osnovnoi consructor
     EContur *contur;// kontur dannogo objecta
-    float vertixArray[4][3]; //vershini risovki (zavisyat ot razmera i sloya)
     void vertixArrayRefresh();//perescyot vershin hsirini i sloyov;
     void NormalizeUgol();//normlizaziya ugla
     void NoramlizeUgolSrlrct();//povort objecta
@@ -36,6 +35,7 @@ private:
     float optimalUgol(float);//vernyot ugol v diapozone 2pi
 private slots:
 protected:
+    bool multiObject;// nugni li risovat etot object neskolko raz (yavlyaetsa li on modulnim)
     QString Objectpatch,_name; //patch from object;
     MovMode movmode;//regim dvigeniya
     void* playerTarget;
@@ -60,6 +60,7 @@ protected:
     virtual void _timeRender();//podbor vremeni
 protected slots:
 public:
+    float vertixArray[4][3]; //vershini risovki (zavisyat ot razmera i sloya)
    virtual void click(Qt::MouseButton);
    friend QDataStream& operator >>(QDataStream&stream,EObject& obj);
    friend QDataStream& operator <<(QDataStream&stream,const EObject& obj);
@@ -67,6 +68,7 @@ public:
         delete_flag,//flag na udoolenie
         ignore_flag,//flag na ignorirovanie
         forceRenderFlag;// prinudutelnii rendering
+   virtual void copy(EObject*);// metod copiroovaniya
    //virtual void saveObject(const QString&str);
   // virtual bool* getDrawPoiter();//vernyot ukazatel na risovku
    //virtual float getElasticity();
@@ -76,6 +78,7 @@ public:
    virtual int getSpeed(); //poluchit skorost
    EKord getSize()const;
    EKord getKord()const;
+   bool isMultiObject()const;
    virtual void* getMap();
    virtual bool* getKeys();//vernyot spisok nagatih klavish
    virtual MovMode getMovMode();//vernyot regim dvigeniya

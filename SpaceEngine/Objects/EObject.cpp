@@ -1,5 +1,6 @@
 #include "EObject.h"
-EObject::EObject(QObject *)
+EObject::EObject(QObject *)//:
+    //ESprite("void")
 {
     PreConstructor("",EKord(0),EKord(0));
 }
@@ -25,6 +26,7 @@ void EObject::PreConstructor(const QString& createPatch, const EKord& size, cons
     massa=1;
     _w=size.X;
     _h=size.Y;
+    multiObject=false;
     mx= _x=kord_.X;
     my= _y=kord_.Y;
     _z=0;
@@ -139,6 +141,7 @@ QDataStream& operator<<(QDataStream&stream,const EObject&obj){
 
 void EObject::saveObject(QString patch){
     if(patch.isEmpty()) patch=Objectpatch;
+    Objectpatch=patch;
     if(patch.mid(patch.size()-4)!="eobj")
         patch+=".eobj";
     QFile f(patch);
@@ -206,6 +209,30 @@ void EObject::setFeedBack(const Feedback &f)
 float ** EObject::getMatrix(){
     return (float**)vertixArray;
 }
+void EObject::copy(EObject *obj){
+    this->ElepsedCenter_X=obj->ElepsedCenter_X;
+    this->ElepsedCenter_Y=obj->ElepsedCenter_Y;
+    this->Rad=obj->Rad;
+    this->DrawContur=obj->DrawContur;
+    this->ElepsedUgol=obj->ElepsedUgol;
+    this->ratateMode=obj->ratateMode;
+    this->movmode=obj->movmode;
+    this->_name=obj->_name;
+    this->acceleration=obj->acceleration;
+    this->ugol=obj->ugol;
+    this->massa=obj->massa;
+    this->radius=obj->radius;
+    this->speed=obj->speed;
+    this->_x=obj->_x;
+    this->_y=obj->_y;
+    this->_z=obj->_z;
+    this->mx=obj->mx;
+    this->my=obj->my;
+    this->_w=obj->_w;
+    this->_h-obj->_h;
+    vertixArrayRefresh();
+    this->setPatch(obj->getPatch());
+}
 void * EObject::getPlayerTarget()
 {
     return playerTarget;
@@ -254,9 +281,15 @@ EKord EObject::getSize()const{
 EKord EObject::getKord()const{
     return EKord(_x,_y);
 }
+bool EObject::isMultiObject()const{
+    return multiObject;
+}
 float EObject::getUgol()
 {
-    return ugol;
+    if(slave_!=this)
+        return slave_->ugol+ugol;
+    else
+        return ugol;
 }
 bool* EObject::getKeys()
 {

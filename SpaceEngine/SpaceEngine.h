@@ -11,6 +11,7 @@
 #include "./System/EAiControle.h"
 #include "./SpaceEngine/Objects/EImage.h"
 #include <QBoxLayout>
+#include "SpaceEngine/System/css.h"
 #include "System/ELanguage.h"
 #include <QApplication>
 #include <QDesktopWidget>
