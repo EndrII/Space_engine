@@ -199,27 +199,8 @@ void ECamera::drawContur(EObject *c){
 void ECamera::draw_Object(EObject * Object)
 {
     switch(Object->getEObjectNameClass()){
-    case EOBJECT:{
-        glPushMatrix();
-        if(Object->isDrawContur())
-            drawContur(Object);
-        tempTexture=pool->call(Object);
-        if(tempTexture)
-            tempTexture->bind();
-        else
-            return;
-        glTranslatef(Object->x(),Object->y(),Object->getSloi());
-        glRotatef(Object->getUgol(),0,0,1);
-        glVertexPointer(3,GL_FLOAT,0,Object->getMatrix());
-        glTexCoordPointer(2,GL_FLOAT,0,idintyMatrix);
-        glDrawElements(GL_QUADS,4,GL_UNSIGNED_BYTE,indexArray);
-
-        glPopMatrix();
-        break;
-    }
     case E_FON:{
         glPushMatrix();
-      //  tempTexture->release();
         tempTexture=pool->call(Object);
         if(tempTexture)
             tempTexture->bind();
@@ -246,7 +227,23 @@ void ECamera::draw_Object(EObject * Object)
         glPopMatrix();
         break;
     }
-    default:break;
+    default:{
+        glPushMatrix();
+        if(Object->isDrawContur())
+            drawContur(Object);
+        tempTexture=pool->call(Object);
+        if(tempTexture)
+            tempTexture->bind();
+        else
+            return;
+        glTranslatef(Object->x(),Object->y(),Object->getSloi());
+        glRotatef(Object->getUgol(),0,0,1);
+        glVertexPointer(3,GL_FLOAT,0,Object->getMatrix());
+        glTexCoordPointer(2,GL_FLOAT,0,idintyMatrix);
+        glDrawElements(GL_QUADS,4,GL_UNSIGNED_BYTE,indexArray);
+        glPopMatrix();
+        break;
+    }
     }
 }
 void ECamera::Press_key(short key)
@@ -256,8 +253,12 @@ void ECamera::Press_key(short key)
 }
 void ECamera::Release_key(short key)
 {
-    if(event)
-    keys[key]=false;
+    if(event){
+        keys[key]=false;
+        if(key==_mous_up||key==_mous_down){
+            emit scrollEnd(new_siz);
+        }
+    }
 }
 void ECamera::folow(EObject *obj)
 {
@@ -292,6 +293,7 @@ void ECamera::setmode(const MOD &m)
 void ECamera::skroll_size(const EKord &s)
 {
     new_siz=s;
+    emit scrollEnd(new_siz);
 }
 void ECamera::Mov_ECamera_To(float x, float y)
 {

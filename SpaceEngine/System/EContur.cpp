@@ -16,6 +16,12 @@ unsigned short EContur::FindEdge(){
     }
     return result;
 }
+EContur& EContur::operator =(const EContur&right ){
+    if(!points)
+        points=new QVector<EKord>;
+    *points=*right.points;
+    edge=points->data()[FindEdge()];
+}
 void EContur::setPoints(QVector<EKord> *p){
     if(points!=NULL)
        delete points;

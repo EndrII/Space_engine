@@ -3,6 +3,7 @@
 #include "SpaceEngine/System/ESprite.h"
 #include "SpaceEngine/System/ELanguage.h"
 #include <QMap>
+#define FROM_NAME 0
 class EResurse
 {
 private:
@@ -50,11 +51,11 @@ public:
      * @return
      */
     ui id()const;
-  /*  /**
-     * @brief setId задаст новый ид ресурсу
-     * @param id новый ид
-     ** /
-    void setId(const ui&id);*/
+    /**
+     * @brief url
+     * @return вернет путь к файу генерации
+     */
+    const QString& url()const;
     /**
      * @brief getCraft элементы для создания этого элемента
      * @return вернет списов для создания (если он пуст значит предмет оздать нельзя)

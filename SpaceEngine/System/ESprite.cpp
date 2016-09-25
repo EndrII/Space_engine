@@ -20,7 +20,7 @@ void ESpriteBase::clear(){
     IndexBeginAnimationsVector.clear();
 }
 bool ESpriteBase::DeleteThis(){
-    if(value--){
+    if(!value--){
         delete this;
         return true;
     }else{
@@ -641,7 +641,7 @@ QImage* ESprite::getHeidImage(const QString &patch, const QSize &size){
     QFile f(patch);
     if(f.open(QIODevice::ReadOnly)){
         QDataStream stream_(&f);
-        QImage * img_temp;
+        QImage * img_temp=new QImage;
         stream_.device()->seek(8);
         stream_>>*img_temp;
         f.close();

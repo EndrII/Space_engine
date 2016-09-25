@@ -8,15 +8,20 @@
 #include "./SpaceEngine/System/EList.h"
 #include "./SpaceEngine/System/ESprite.h"
 #include "./SpaceEngine/System/EContur.h"
-//#define CREATE_SPRITE "CREATE_Z"
-//#define EOBJECT Q_OBJECT
+#include "./SpaceEngine/GameObjects/EResursePack.h"
+#define READ_THIS(patch) QFile file(patch);\
+    if(file.open(QIODevice::ReadOnly)){\
+        QDataStream stream(&file);\
+        stream>>(*this);\
+        file.close();\
+    }
 const int accs=1000;
 typedef unsigned short us;
 enum MovMode{Standart,Key,NoMove,NoMovePlus,MoveElepsed};
 enum Feedback{inFastRender,inSlowRender};//obratnaya svyazi s yadrom
 enum Rotate{RotateLeft,RotateRight,NoRotate};//brashenie objecta pri dvigeni po okrugnosti
 //enum EObjectNameClass{EOBJECT,E_MODULEOBJECT,E_FON,E_EFFECT,E_GAMEOBJECT};
-enum EObjectNameClass{EOBJECT,E_MODULEOBJECT,E_FON,E_PARALAX,E_EFFECT,E_GAMEOBJECT};
+enum EObjectNameClass{EOBJECT,E_MODULEOBJECT,E_FON,E_GAME_RESURS,E_PARALAX,E_EFFECT,E_GAMEOBJECT};
 using namespace std;
 class EObject:public ESprite //osnovnoi klas obektov dvigka
 {
@@ -68,7 +73,7 @@ public:
         delete_flag,//flag na udoolenie
         ignore_flag,//flag na ignorirovanie
         forceRenderFlag;// prinudutelnii rendering
-   virtual void copy(EObject*);// metod copiroovaniya
+   void copy(EObject*);// metod copiroovaniya
    //virtual void saveObject(const QString&str);
   // virtual bool* getDrawPoiter();//vernyot ukazatel na risovku
    //virtual float getElasticity();
@@ -101,6 +106,7 @@ public:
    virtual void setAcceleration(const float& A=1);//ustonovit uskorenie
    virtual void setDrawContur(bool);
    virtual void setName(const QString& name);//ustanovit imya dlya objecta
+   virtual void generateThisObject(EResurse *res);//sozdast object iz descriptora resursa
    void setContur(EContur*);//ustanovit new contur
    float** getMatrix(); //return matrix
    float& x();
@@ -121,8 +127,9 @@ public:
    virtual void saveObject(QString patch="");//sohronit sebya v fail
    EObject(QObject *ptr=0);
    EObject(const QString& createPatch, const EKord& size, const EKord& kord, const QString& name_image, draw_mode mode=Game_mode, QObject *ptr=0);
-    EObject(const QString&patch, QObject *ptr=0);
-    ~EObject();
+   EObject(const QString&patch, QObject *ptr=0);
+   //EObject& operator=(const EObject&right);
+   ~EObject();
 public slots:
 virtual void action_Begin(short); //nachat dvigenie object po naprovleniyu
 virtual void action_End(short); //zakonchit dvigenie object po naprovleniyu

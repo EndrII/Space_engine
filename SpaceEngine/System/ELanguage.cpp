@@ -31,6 +31,10 @@ ELanguage::ELanguage(const string &filename)
         return;
     }
 }
+QString& ELanguage::selectedLang(){
+    static QString lang;
+    return lang;
+}
 QString ELanguage::GetWord(const int &index)
 {
     if((unsigned)index>=base.size())

@@ -71,6 +71,9 @@ void EObject::setContur(EContur *c){
     contur=c;
     contur->setKord(&_x,&_y,&ugol);
 }
+void EObject::generateThisObject(EResurse *res){
+    READ_THIS(res->url());
+}
 EContur* EObject::getContur()const{
     return contur;
 }
@@ -210,6 +213,8 @@ float ** EObject::getMatrix(){
     return (float**)vertixArray;
 }
 void EObject::copy(EObject *obj){
+    *this->contur=*obj->contur;
+    contur->setKord(&_x,&_y,&ugol);
     this->ElepsedCenter_X=obj->ElepsedCenter_X;
     this->ElepsedCenter_Y=obj->ElepsedCenter_Y;
     this->Rad=obj->Rad;
@@ -217,6 +222,7 @@ void EObject::copy(EObject *obj){
     this->ElepsedUgol=obj->ElepsedUgol;
     this->ratateMode=obj->ratateMode;
     this->movmode=obj->movmode;
+    this->Objectpatch=obj->Objectpatch;
     this->_name=obj->_name;
     this->acceleration=obj->acceleration;
     this->ugol=obj->ugol;
@@ -229,7 +235,7 @@ void EObject::copy(EObject *obj){
     this->mx=obj->mx;
     this->my=obj->my;
     this->_w=obj->_w;
-    this->_h-obj->_h;
+    this->_h=obj->_h;
     vertixArrayRefresh();
     this->setPatch(obj->getPatch());
 }

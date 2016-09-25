@@ -4,7 +4,7 @@
 #include <QHostInfo>
 #include <QList>
 #include <QTimer>
-#include "EError.h"
+#include "SpaceEngine/System/EError.h"
 #include "ETcpSocket.h"
 #define LOCAL_PORT 7777
 /**

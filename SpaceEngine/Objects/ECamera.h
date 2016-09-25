@@ -93,6 +93,7 @@ public slots:
    bool On();  //vklushit kameru
    virtual void Render();//obnovlenie objectov na karte
 signals:
+   void scrollEnd(EKord&);
    void MouseClikedEvent(EMouseEvent*);
    void ECamera_On();//start
    void ECamera_Off();//ECamera otklyachena
