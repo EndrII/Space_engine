@@ -18,8 +18,8 @@ public:
     QPointF TO_QPointF();//
     QSize TO_QSize();//transliruet v QSize
     static EKord sintez(const EKord&,const float&,const Operation&);//vipolnet orefmeticheskuyu operaziyu s chislom po max
-    static EKord Random(const int &min,const int &max);//vernyot sluchainie koordinati v diapozone
-    static EKord Random(const int &min,const int &max,const int&skale);//vernyot dvva chisla raznizai v skale
+    static EKord Random(const unsigned int &min, const unsigned int &max);//vernyot sluchainie koordinati v diapozone
+    static EKord Random(const unsigned int &min, const unsigned int &max, const float &skale);//vernyot dvva chisla raznizai v skale
     float Distace(const EKord&);//vernyot distanziyu ot this do ukazonnogo objecta
     static float length(const float& x1,const float& y1,const float& x2,const float& y2); //dlina megdu tickami
     float X,Y;//kordinati

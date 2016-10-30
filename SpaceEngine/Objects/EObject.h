@@ -97,7 +97,7 @@ public:
    virtual void setPlayerTaraget(void*);//ustonovit po komu vedyot ogon igrok
    virtual void setFeedBack(const Feedback&f);//
    virtual void setMovMode(const MovMode &m);//ustonovit regim
-   virtual bool setMass(const short&); //ustonovit massu
+   virtual bool setMass(const float &); //ustonovit massu
    virtual void setMap(void*);
    virtual void setSize(const EKord&);//ustonovit razmer objecta
    virtual void setSpeed(const int&); //ustonovit skorost

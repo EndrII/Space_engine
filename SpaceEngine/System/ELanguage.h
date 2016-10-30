@@ -11,23 +11,14 @@ using namespace std;
 /*
  * TEMPLATE
  *
- *  start
- *  exit|
+ *  start{comments}
+ *  exit{}
 */
 class ELanguage
 {
-private:
-    int seek;
-    QFile *file;
-    QTextStream *stream;
-    vector<QString> base;
-    string name;
 public:
-    explicit ELanguage(const string &filename);
     static QString& selectedLang();
-    QString GetWord(const int& index);//vernyot prevedyonnuyu frazu esli ona sushestvuet
     static QString getWord(const unsigned int &index,const QString&patch=LANG_ENG);
-    virtual ~ELanguage();
 };
 
 #endif // ELANGUAGE_H

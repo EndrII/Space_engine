@@ -46,21 +46,26 @@ QString EKord::GetKord()
  {
      return ((rx>x)&&(ry>y)&&(lx<x)&&(ly<y));
  }
- EKord EKord::Random(const int &min, const int &max)
+ EKord EKord::Random(const unsigned int &min, const unsigned int &max)
  {
 #ifdef QT_DEBUG
      if(min>max) throw EError(35," EKord EKord::Random(const int &min, const int &max)");
 #endif
-     int temp=max-min;
-     return EKord(rand()%temp+min,rand()%temp+min);
+     int temp;
+     if(min>max)
+         temp=rand()%(min-max)+max;
+     else
+         temp=rand()%(max-min)+min;
+     return EKord(temp,temp);
  }
- EKord EKord::Random(const int &min, const int &max,const int &scaled)
+ EKord EKord::Random(const unsigned int &min, const unsigned int &max,const float &scaled)
  {
-#ifdef QT_DEBUG
-     if(min>max) throw EError(35," EKord EKord::Random(const int &min, const int &max)");
-#endif
-     int temp=max-min,temp2 =rand()%temp+min;
-     return EKord(temp2,temp2*scaled);
+     int temp;
+     if(min>max)
+         temp =rand()%((min-max)+1)+max;
+     else
+         temp =rand()%((max-min)+1)+min;
+     return EKord(temp,temp*scaled);
  }
  EKord EKord::sintez(const EKord &pr,const float & ch, const Operation &op)
  {

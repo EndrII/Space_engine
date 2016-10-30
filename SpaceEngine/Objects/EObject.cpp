@@ -176,7 +176,7 @@ void EObject::setPlayerTaraget(void *p)
 {
     playerTarget=p;
 }
-bool EObject::setMass(const short &m)
+bool EObject::setMass(const float &m)
 {
         massa=m;
         return true;

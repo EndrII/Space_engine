@@ -1,7 +1,8 @@
 #include "EGameResurs.h"
 
-EGameResurs::EGameResurs(const QString &Patch){
+EGameResurs::EGameResurs(const QString &Patch,EResursePack *pack){
     READ_THIS(Patch)
+    pack_=pack;
     class_=E_GAME_RESURS;
 }
 EGameResurs::EGameResurs(EObject *copy, EResursePack *pack):
@@ -20,6 +21,9 @@ EGameResurs::EGameResurs(EResurse *desc, const QString& createPatch,const EKord&
 {
     description=desc;
     class_=E_GAME_RESURS;
+}
+void EGameResurs::size_to_value(){
+    setSize(EKord::Random(description->getValue()*massa*0.9,description->getValue()*massa*1.1,_h/_w));
 }
 EResurse* EGameResurs::getRes()const{
     return description;
@@ -41,6 +45,11 @@ void EGameResurs::saveObject(QString patch){
         f.close();
     }
     pack_->save();
+}
+void EGameResurs::RandomValue(int max){
+    int temp=rand()%max;
+    description->setValue(temp);
+    size_to_value();
 }
 QDataStream& operator<<(QDataStream&stream,EGameResurs&obj){
     stream<<*((EObject*)&obj);

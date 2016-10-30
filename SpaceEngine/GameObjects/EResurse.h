@@ -16,6 +16,7 @@ protected:
     // first - id elementa na sozdanie
     // second - kolichestvo
     ui value;
+   // float mass_;
     /**
      * @brief loadImage загрузит картинку
      */
