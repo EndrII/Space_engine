@@ -6,7 +6,7 @@ QString& ELanguage::selectedLang(){
 }
 QString ELanguage::getWord(const unsigned int &index,const QString&patch)
 {
-    QFile f(patch);
+    QFile f((patch==LANG_DEF)?selectedLang():patch);
     QString result="";
     if(f.open(QIODevice::ReadOnly)){
         QTextStream stream(&f);

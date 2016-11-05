@@ -5,11 +5,12 @@
 #include <QString>
 #include <string>
 #include <vector>
-#include "SpaceEngine/System/EError.h"
+//#include "SpaceEngine/System/EError.h"
 #define LANG_ENG "/language/ENG"
+#define LANG_DEF "def"
 using namespace std;
 /*
- * TEMPLATE
+ * TEMPLATES
  *
  *  start{comments}
  *  exit{}
@@ -18,7 +19,7 @@ class ELanguage
 {
 public:
     static QString& selectedLang();
-    static QString getWord(const unsigned int &index,const QString&patch=LANG_ENG);
+    static QString getWord(const unsigned int &index,const QString&patch=LANG_DEF);
 };
 
 #endif // ELANGUAGE_H
