@@ -17,9 +17,12 @@ using namespace std;
 */
 class ELanguage
 {
+protected:
 public:
+    static QStringList& Buffer();
     static QString& selectedLang();
-    static QString getWord(const unsigned int &index,const QString&patch=LANG_DEF);
+    static void setLanguage(const QString& patch);
+    static QString getWord(const int &index, const QString&patch=LANG_DEF);
 };
 
 #endif // ELANGUAGE_H

@@ -4,34 +4,34 @@ QString& ELanguage::selectedLang(){
     static QString lang;
     return lang;
 }
-QString ELanguage::getWord(const unsigned int &index,const QString&patch)
+void ELanguage::setLanguage(const QString &patch){
+    selectedLang()=patch;
+    Buffer().clear();
+}
+QStringList& ELanguage::Buffer(){
+    static QStringList temp;
+    return temp;
+}
+QString ELanguage::getWord(const int &index,const QString&patch)
 {
     QFile f((patch==LANG_DEF)?selectedLang():patch);
-    QString result="";
-    if(f.open(QIODevice::ReadOnly)){
+    QString tempString;
+    QStringList &buffer = ELanguage::Buffer();
+    if(buffer.size()<=index&&f.open(QIODevice::ReadOnly)){
         QTextStream stream(&f);
-        QChar temp;unsigned int indexTemp=0;
-        while(index>indexTemp&&!stream.atEnd())
-        {
-            stream>>temp;
-            if(temp=='{')
-                indexTemp++;
-        }
-        while(indexTemp&&temp!='}'&&!stream.atEnd())
-            stream>>temp;
-        if(indexTemp)stream>>temp;
-        while(!stream.atEnd()){
-            stream>>temp;
-            if(temp!='{')
-                result.push_back(temp);
-            else
-                break;
+        stream.setCodec("UTF8");
+        tempString=stream.readAll();
+        buffer.clear();
+        int end=0;
+        while((end=tempString.indexOf('{'))>-1){
+            buffer.push_back(tempString.left(end));
+            tempString.remove(0,tempString.indexOf('}')+2);
         }
         f.close();
     }
-    if(result.isEmpty())
+    if(buffer.size()<=index)
         return "NO DETECTED";
-    return result;
+    return buffer[index];
 }
 
 
