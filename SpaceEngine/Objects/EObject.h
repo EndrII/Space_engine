@@ -9,6 +9,7 @@
 #include "./SpaceEngine/System/ESprite.h"
 #include "./SpaceEngine/System/EContur.h"
 #include "./SpaceEngine/GameObjects/EResursePack.h"
+//#define EOBJECT 0;
 #define READ_THIS(patch) QFile file(patch);\
     if(file.open(QIODevice::ReadOnly)){\
         QDataStream stream(&file);\

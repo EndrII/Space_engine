@@ -7,7 +7,7 @@
 #include <vector>
 //#include "SpaceEngine/System/EError.h"
 #define LANG_ENG "/language/ENG"
-#define LANG_DEF "def"
+#define LANG_DEF "Default"
 using namespace std;
 /*
  * TEMPLATES

@@ -13,9 +13,9 @@ QOpenGLTexture* EPool::operator [](const int &i){
 }
 QOpenGLTexture* EPool::call(ESprite *object){
     int temp =object->getFrame();
-#ifdef QT_DEBUG
-    poolElement &PoolTemp=pool[temp];
-#endif
+//#ifdef QT_DEBUG
+  //  qDebug()<<"call->pool["<<object->getFrame()<<"]="<<pool[temp].FrameID<<"\n\t"<<pool[temp].textureID;
+//#endif
     if(temp>=0){
         if((ui)temp>=poolSize||!pool[temp].textureID){
             poolRender(object);
@@ -33,7 +33,7 @@ int EPool::find(const unsigned int &idFrame){
     int i=poolLastIndex;
     while(!(i<0||pool[i].textureID==NULL)&&pool[i].FrameID!=idFrame){
 #ifdef QT_DEBUG
-        ui this_pool=pool[i].FrameID;
+        qDebug()<<"getSize->poolLastIndex="<<pool[i].FrameID<<"\n\t"<<pool[i].textureID;
 #endif
         i--;
     }
@@ -57,7 +57,7 @@ void EPool::malloc(ESprite *sprite){
     else
         poolLastIndex=0;
 #ifdef QT_DEBUG
-    poolElement &poolLastIndexIndex=pool[poolLastIndex];
+    qDebug()<<"malloc->poolLast="<<pool[poolLastIndex].FrameID<<"\n\t"<<pool[poolLastIndex].textureID;
 #endif
     pool[poolLastIndex].textureID=sprite->Bind(poolLastIndex);
     pool[poolLastIndex].FrameID=sprite->getIdFrame();

@@ -2,12 +2,26 @@
 #define EMODULEOBJECT
 #include "EObject.h"
 #include "SpaceEngine/System/EMaps.h"
+/*
+ * left porameter name of overreading operator>> need is "stream".
+ *  if you ready change name then compilyator throw error.
+*/
 #define WRITEMODULE(type) \
+{\
+    stream<<(us)obj.elements.size();\
     for(ModuleItem&i:obj.elements){\
         stream<<i;\
         stream<<*((type*)i.obj);\
-    }
+    }\
+}
+/*
+ * left porameter name of overreading operator>> need is "stream".
+ *  if you ready change name then compilyator throw error.
+*/
 #define READMODULE(type)\
+{\
+    us temp;\
+    stream>>temp;\
     for(us i=0;i<temp;i++){\
         ModuleItem temp1;\
         stream>>temp1;\
@@ -15,7 +29,9 @@
         stream>>*((type *)temp1.obj);\
         temp1.obj->setSlave(obj.slave_);\
         obj.elements.push_back(temp1);\
-    }
+    }\
+}
+
 
 enum RelationFraction{players,allies,enemies};
 typedef  unsigned int ui;
@@ -33,7 +49,6 @@ class EModuleObject: public EObject//modulni object vse objecti v nem ne yavlyay
 {
     Q_OBJECT
 private:
-   // bool emptyModule;//flag otvechayushi za to cho budet zapissano v fail (stoit li pisati obolocku)
     void constructorFork();// nastroika objecta posle constructora
     bool draw_in_map_;//flag na risovku objecta na karte
 protected:
@@ -47,7 +62,6 @@ public:
     friend QDataStream& operator>>(QDataStream& stream,EModuleObject&obj);
     friend QDataStream& operator<<(QDataStream& stream,EModuleObject&obj);
     void render();//
-    //virtual writeAngle(QDataStream& stream);// zapishet ugli i rastoyaniya objectov conteinera
     virtual void damag_of_target(const int&);
     virtual bool firetest(void*);//test moget li eta puska nanesti urob etomu objectu
     virtual bool isDraw_in_map();
@@ -59,7 +73,6 @@ public:
     void setSlave(EObject*);
     virtual bool deleteElement(EObject*pointer);//ydolit element i vernyot true esli on sushestvuet ili false esli net
     virtual std::vector<ModuleItem> *getModuleVector();//vernyot  spisok vsheh eelementov
-    //virtual std::vector<float>* getAddUgol();
     virtual RelationFraction getRelation();//vernyot otnosheni k igroku
     void update(int *ptr2, int* ptr3);
     ~EModuleObject();

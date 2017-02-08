@@ -44,15 +44,13 @@ void EParalax::changeUp(const float &up){
 }
 QDataStream& operator<<(QDataStream&stream,EParalax&obj){
     stream<<*((EModuleObject*)&obj);
-    stream<<(us)obj.elements.size();
-    WRITEMODULE(EFon)
+   // stream<<(us)obj.elements.size();
+    WRITEMODULE(EFon);
     return stream;
 }
 QDataStream& operator>>(QDataStream&stream,EParalax&obj){
     stream>>*((EModuleObject*)&obj);
-    us temp;
-    stream>>temp;
-    READMODULE(EFon)
+    READMODULE(EFon);
     return stream;
 }
 void EParalax::restore(const QStringList &UrlList,const float& up){

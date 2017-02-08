@@ -3,6 +3,9 @@
 #include <QOpenGLTexture>
 #include <QOpenGLFunctions>
 #include "ESprite.h"
+#ifdef QT_DEBUG
+    #include <QDebug>
+#endif
 #define sizeFrame 100000
 #define _4GB 4294967296
 #define _2GB 2147483648

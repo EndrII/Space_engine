@@ -31,7 +31,7 @@ ESprite::ESprite(const QString &patch,draw_mode mode_,QObject*ptr):
     QObject(ptr)
 {
     QString tempPatch=patch;
-    //if(patch=="void") return;
+    GLOBALLIST globalIdData=LOADED_FILE_SPRITE;
     if(patch!="none"){
         if(patch.mid(patch.size()-3)!="spr")
             tempPatch+=".spr";
@@ -50,7 +50,6 @@ ESprite::ESprite(const QString &patch,draw_mode mode_,QObject*ptr):
     CurentAnimationIndex=DrawFrame=CurentFrame=0;
     switcher=true;
     tempDrawFrame=0;
-   // stopedFlag=false;
     SpriteBase=NULL;
     if(patch!="none"){
         generateID();
@@ -66,15 +65,15 @@ us ESprite::getAnimationStackValue(){
     return animationStack.size();
 }
 void ESprite::generateID(){ // в режиме редактирования не выдаються id файлам!
-    GLOBALLIST
+   // GLOBALLIST //this line have a error removies global data
     ID_fileSprite=0;
-    while(LOADED_FILE_SPRITE.size()!=ID_fileSprite&&LOADED_FILE_SPRITE[ID_fileSprite]->patch!=file->fileName()){
+    while(globalIdData->size()!=ID_fileSprite&&globalIdData->data()[ID_fileSprite]->patch!=file->fileName()){
         ID_fileSprite++;
     }
-    if(ID_fileSprite==LOADED_FILE_SPRITE.size()){
+    if(ID_fileSprite==globalIdData->size()){
         SpriteBase=new ESpriteBase(file->fileName());
         if(mode!=Edit_Mode)
-            LOADED_FILE_SPRITE.push_back(SpriteBase);
+            globalIdData->push_back(SpriteBase);
         if(!file->exists())
             WriteToFile();
         else
@@ -82,7 +81,7 @@ void ESprite::generateID(){ // в режиме редактирования не
     }
     else{
         if(mode!=Edit_Mode){
-            SpriteBase=LOADED_FILE_SPRITE[ID_fileSprite]->CopyThis();
+            SpriteBase=globalIdData->data()[ID_fileSprite]->CopyThis();
         }else{
             SpriteBase=new ESpriteBase(file->fileName());
         }
@@ -138,7 +137,7 @@ void ESprite::setPatch(const QString &str){
     stopedFlag=false;
 }
 void ESprite::ReadInFile(){
-    this->Clear();
+    this->Clear();// this line have a error, clear source images inn this sprite come to crashed programm
     if(!file->exists())
         throw EError("file \""+file->fileName().toStdString() +"\" is not detected","void ESprite::ReadInFile()");
     else{
@@ -157,7 +156,7 @@ void ESprite::ReadInFile(){
             *stream>>temp;
             SpriteBase->longAnimationsVector.push_back(temp);
             SpriteBase->IndexBeginAnimationsVector.push_back(SpriteBase->SourceVector.size());
-            for(temp;temp>0;temp--){
+            for(;temp>0;temp--){
                 if(mode==Edit_Mode)tempI=new QImage;
                 SpriteBase->nameAdress.push_back(stream->device()->pos());
                 *stream>>*tempI;

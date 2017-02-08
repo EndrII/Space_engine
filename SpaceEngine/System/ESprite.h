@@ -9,12 +9,15 @@
 #include <QDataStream>
 #include <QFile>
 #include <stack>
+#include <QList>
 #include <algorithm>
 //#include "EPictureCore.h"
 #include <QOpenGLTexture>
 #define minFrameTime 16
 #define LASTFRAMEPOOLINDEX 2114125312
-#define GLOBALLIST static vector<ESpriteBase*> listIncludeFileSprite;
+//#define GLOBALLIST static vector<ESpriteBase*> listIncludeFileSprite;
+#define GLOBALLIST static vector<ESpriteBase*>* listIncludeFileSprite;
+
 #define LOADED_FILE_SPRITE listIncludeFileSprite
 //enum sprite_mod{live,fait,death,custom_1,custom_2,
 //               custom_3,custom_4};
@@ -67,6 +70,7 @@ public:
     bool DeleteThis();
     ESpriteBase* CopyThis();
 };
+extern vector<ESpriteBase*>* listIncludeFileSprite;
 
 class ESprite:public QObject //klass spraitov s vipolneniem vseh animazii
 {
@@ -75,6 +79,7 @@ private:
     bool switcher;//perecluschtel
     bool isBindet;//
     us ID_fileSprite;// unikalinii adree faila spraita vidovaemii sistemoi
+    vector<ESpriteBase*> *globalIdData;
     void generateID();
     QFile *file;
     void refreshIndexBeginAnimations(ui index, int mov);//
