@@ -3,7 +3,7 @@
 #include <QSize>
 #include "EKord.h"
 #include "EError.h"
-#include "EInterface.h"
+#include "EMapCore.h"
 //#include "SpaceEngine/Objects/EExplosion.h"
 #include "EThread.h"
 #include <QTimer>
@@ -21,8 +21,8 @@ private:
     void (*Func_For_High)();//dlya bistrogo viponeniya
     void (*Func_For_Medium)(); //dlya srednego viponeniya
     void (*Func_For_Low)();//dlya medlennogo viponeniya
-    MultiCorRender *P_slow,*P_fast;
-    Potok3_CORE P_CORE;//potok raspredeleniya
+    EThreadObject *P_slow,*P_fast;
+    EMapCore P_CORE;//potok raspredeleniya
     EThread T_slow,T2_fast,T_CORE;//potoki
     bool stats_fast,stats_slow;//sostoyanie renderinga
     EKord siz_map;// razmer karti

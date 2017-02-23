@@ -4,7 +4,7 @@ EThread::EThread(QObject *ptr):
 {
     object=_void;
 }
-EThread::EThread(EObject *Obj, bool *p, QObject *ptr):
+EThread::EThread(EThreadObject *Obj, bool *p, QObject *ptr):
     QThread(ptr)
 {
     if(Obj!=NULL)
@@ -26,7 +26,7 @@ thread_stats EThread::getStats()
 {
     return object;
 }
-bool EThread::setObject(EObject * Obj, bool *p)
+bool EThread::setObject(EThreadObject *Obj, bool *p)
 {
     if(object==_void){
       thread_object=Obj;

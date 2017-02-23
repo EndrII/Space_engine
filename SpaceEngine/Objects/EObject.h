@@ -47,7 +47,7 @@ protected:
     void* playerTarget;
     void* map;//karta na kotoroi object nahoditsya
     EObject* slave_;//ukazatel na object roditel (obiek v sostave kotorogo nahoditasy danni object)
-    QTime *timeUpdates;//vnutrenii taimer ispolzuetsya v Potokah
+    QTime *Plus;//vnutrenii taimer ispolzuetsya v Potokah
     float acceleration;//uskoreni objecta
     float _ugol;//ego ugol povorota otnoositelno X(ugol vectora) (ugol dvigeniya)
     float ugol;//ego ugol povorota otnoositelno X(ugol otrisovki)

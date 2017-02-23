@@ -13,10 +13,7 @@ protected:
     QString _name, _descript,_url;
     QImage *Picture;
     QMap<us,us> craft;// te elementi kotorie nugni dlya sozdaniya etogo elementa
-    // first - id elementa na sozdanie
-    // second - kolichestvo
     ui value;
-   // float mass_;
     /**
      * @brief loadImage загрузит картинку
      */
@@ -31,7 +28,6 @@ public:
      * @param descript индекс описания в языковом файле
      */
     explicit EResurse(const QString &url, const ui &id, const ui& name=0, const ui val=1, const ui &descript=0);
-    //explicit EResurse(const QString &url, const QString& name="none", const ui val=1, const QString &descript="none");
     /**
      * @brief picture
      * @return  вернет пиутограмму

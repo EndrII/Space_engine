@@ -1,11 +1,10 @@
 #ifndef ELIST_H
 #define ELIST_H
-#include <list>
 #include <QList>
 #include <mutex>
 using namespace std;
 template <typename T>
-class Elist:public list<T> //dannii shablonnii klass yavlyaetisya klonnom list no so vshitim mutexom
+class Elist:public QList<T> //dannii shablonnii klass yavlyaetisya klonnom list no so vshitim mutexom
 {
 private:
     mutex mutex_;// vshitii mutex
@@ -27,13 +26,13 @@ public:
 };
 template <typename T>
 Elist<T>::Elist():
-    list<T>()
+    QList<T>()
 {
 
 }
 template <typename T>
 Elist<T>::Elist(const Elist<T> &obj):
-    list<T>()
+    QList<T>()
 {
 
     for(auto a:obj)
@@ -92,13 +91,6 @@ void Elist<T>::Eclear()
     this->clear();
     mutex_.unlock();
 }
-/*template <typename T>
-void Elist<T>::Eerase(iterator<T> position)
-{
-    mutex_.lock();
-    this->erase(position);
-    mutex_.unlock();
-}*/
 template <typename T>
 Elist<T> Elist<T>::operator =(Elist<T>& obj)
 {

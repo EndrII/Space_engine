@@ -1,4 +1,5 @@
 #include "ESprite.h"
+
 ESpriteBase* ESpriteBase::CopyThis(){
     value++;
     return this;
@@ -21,6 +22,8 @@ void ESpriteBase::clear(){
 }
 bool ESpriteBase::DeleteThis(){
     if(!value--){
+        clear();
+        ID_CORE->removeOne(this);
         delete this;
         return true;
     }else{
@@ -31,7 +34,7 @@ ESprite::ESprite(const QString &patch,draw_mode mode_,QObject*ptr):
     QObject(ptr)
 {
     QString tempPatch=patch;
-    GLOBALLIST globalIdData=LOADED_FILE_SPRITE;
+    globalIdData=ID_CORE;
     if(patch!="none"){
         if(patch.mid(patch.size()-3)!="spr")
             tempPatch+=".spr";
@@ -64,10 +67,9 @@ us ESprite::getIdFile(){
 us ESprite::getAnimationStackValue(){
     return animationStack.size();
 }
-void ESprite::generateID(){ // в режиме редактирования не выдаються id файлам!
-   // GLOBALLIST //this line have a error removies global data
+void ESprite::generateID(){
     ID_fileSprite=0;
-    while(globalIdData->size()!=ID_fileSprite&&globalIdData->data()[ID_fileSprite]->patch!=file->fileName()){
+    while(globalIdData->size()!=ID_fileSprite&&globalIdData->operator [](ID_fileSprite)->patch!=file->fileName()){
         ID_fileSprite++;
     }
     if(ID_fileSprite==globalIdData->size()){
@@ -81,7 +83,7 @@ void ESprite::generateID(){ // в режиме редактирования не
     }
     else{
         if(mode!=Edit_Mode){
-            SpriteBase=globalIdData->data()[ID_fileSprite]->CopyThis();
+            SpriteBase=globalIdData->operator [](ID_fileSprite)->CopyThis();
         }else{
             SpriteBase=new ESpriteBase(file->fileName());
         }
@@ -93,7 +95,7 @@ void ESprite::WriteToFile(){
         stream->device()->seek(0);
         (*stream)<<(us)SpriteBase->longAnimationsVector.size();
         bool temp=StartHaviProcess(SpriteBase->longAnimationsVector.size(),"Write");
-        for(unsigned int i=0;i<SpriteBase->longAnimationsVector.size();i++){
+        for(int i=0;i<SpriteBase->longAnimationsVector.size();i++){
                (*stream)<<(us)SpriteBase->longAnimationsVector[i];
                for(int j=SpriteBase->IndexBeginAnimationsVector[i];j<(SpriteBase->longAnimationsVector[i]+SpriteBase->IndexBeginAnimationsVector[i]);j++){
                    (*stream)<<*SpriteBase->SourceVector[j]<<SpriteBase->longFrame[j];
@@ -369,7 +371,7 @@ void ESprite::Remove_Animation(const ui &index){
         SpriteBase->SourceVector.erase(SpriteBase->SourceVector.begin()+SpriteBase->IndexBeginAnimationsVector[index],SpriteBase->SourceVector.begin()+SpriteBase->IndexBeginAnimationsVector[index]+SpriteBase->longAnimationsVector[index]);
         SpriteBase->base.erase(SpriteBase->base.begin()+SpriteBase->IndexBeginAnimationsVector[index],SpriteBase->base.begin()+SpriteBase->IndexBeginAnimationsVector[index]+SpriteBase->longAnimationsVector[index]);
         SpriteBase->IndexBeginAnimationsVector.erase(SpriteBase->IndexBeginAnimationsVector.begin()+index);
-        for(std::vector<us>::iterator i=SpriteBase->IndexBeginAnimationsVector.begin()+index;i!=SpriteBase->IndexBeginAnimationsVector.end();i++){
+        for(QList<us>::iterator i=SpriteBase->IndexBeginAnimationsVector.begin()+index;i!=SpriteBase->IndexBeginAnimationsVector.end();i++){
             (*i)=(*i)-=SpriteBase->longAnimationsVector[index];
         }
         SpriteBase->longAnimationsVector.erase(SpriteBase->longAnimationsVector.begin()+index);
@@ -442,10 +444,10 @@ void ESprite::setCurentFrame(us animation,ui frame){
     frame+=SpriteBase->IndexBeginAnimationsVector[animation];
     CurentFrame=frame%SpriteBase->base.size();
 }
-std::vector<ui>* ESprite::getBase(){
+QList<ui>* ESprite::getBase(){
     return &SpriteBase->base;
 }
-std::vector<QImage *> *ESprite::getSource(){
+QList<QImage *> *ESprite::getSource(){
     return &SpriteBase->SourceVector;
 }
 ui ESprite::getBeginIndexAnimation(ui i){

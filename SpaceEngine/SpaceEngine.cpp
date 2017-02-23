@@ -4,7 +4,7 @@ SpaceEngine::SpaceEngine(const char* Patch,const short &key)
     setings=new EConfig(Patch,key);
     setings->Default();
     ifstream f(Patch);
-    CORE=new EPool;
+    Core=new EPool;
     if(f.is_open())
     {
         setings->Update();
@@ -45,7 +45,7 @@ bool SpaceEngine::addCamera(const EKord &locationInMap, const EKord &GlobalLocat
 {
     if(locationInMap.X<0||locationInMap.Y<0||GlobalLocation.X<0||GlobalLocation.Y<0)
         return false;
-    ECamera* temp=new ECamera(locationInMap,EKord(500,500),setings,CORE,PointerForQt);
+    ECamera* temp=new ECamera(locationInMap,EKord(500,500),setings,Core,PointerForQt);
     temp->setVirtualKord(GlobalLocation);
     temp->setVirtualSize(EKord(0.999999,0.999999));
     temp->setGeometry(QRect(matrix(GlobalLocation),QSize(0,0)));
@@ -301,7 +301,7 @@ bool SpaceEngine::WindowsShow()
 }
 void SpaceEngine::cashClear(){
     OffAll();
-    CORE->clear();
+    Core->clear();
 }
 void SpaceEngine::AIOff()
 {
@@ -313,7 +313,7 @@ void SpaceEngine::AIOn()
 }
 void SpaceEngine::clearBuffer()
 {
-    CORE->clear();
+    Core->clear();
 }
 EEvents * SpaceEngine::getMain()
 {
@@ -484,7 +484,7 @@ void SpaceEngine::setColorWindow(const QColor &color){
 SpaceEngine::~SpaceEngine()
 {
     AI_CORE.Off();
-    delete CORE;
+    delete Core;
     for(ECamera* i:Camers)
         delete i;
     for(EMaps* i:Maps)

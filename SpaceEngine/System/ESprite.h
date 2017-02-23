@@ -11,17 +11,11 @@
 #include <stack>
 #include <QList>
 #include <algorithm>
-//#include "EPictureCore.h"
+#include "SpaceEngine/System/ECore.h"
 #include <QOpenGLTexture>
 #define minFrameTime 16
 #define LASTFRAMEPOOLINDEX 2114125312
-//#define GLOBALLIST static vector<ESpriteBase*> listIncludeFileSprite;
-#define GLOBALLIST static vector<ESpriteBase*>* listIncludeFileSprite;
-
-#define LOADED_FILE_SPRITE listIncludeFileSprite
-//enum sprite_mod{live,fait,death,custom_1,custom_2,
-//               custom_3,custom_4};
-//typedef std::stack<sprite_mod> AniStack;
+CORE_ACCESS
 typedef unsigned short us;
 typedef unsigned int ui;
 /**
@@ -60,13 +54,13 @@ public:
     ESpriteBase(const QString& patch_);
     void clear();
     QString patch;// patch spraita
-    std::vector<QString> AnimationsName;//imena animazii
-    std::vector<QImage*> SourceVector;// izobragenie i dlina kadra
-    std::vector<ui> nameAdress;// adresa kadrov v faile
-    std::vector<us> longFrame;//dlina proigrovaniya kagdogo kadra
-    std::vector<ui> base;// basa izobragenii
-    std::vector<us> longAnimationsVector;// vector dlin anomazii
-    std::vector<us> IndexBeginAnimationsVector;// indxi nachal animazii
+    QList<QString> AnimationsName;//imena animazii
+    QList<QImage*> SourceVector;// izobragenie i dlina kadra
+    QList<ui> nameAdress;// adresa kadrov v faile
+    QList<us> longFrame;//dlina proigrovaniya kagdogo kadra
+    QList<ui> base;// basa izobragenii
+    QList<us> longAnimationsVector;// vector dlin anomazii
+    QList<us> IndexBeginAnimationsVector;// indxi nachal animazii
     bool DeleteThis();
     ESpriteBase* CopyThis();
 };
@@ -79,7 +73,7 @@ private:
     bool switcher;//perecluschtel
     bool isBindet;//
     us ID_fileSprite;// unikalinii adree faila spraita vidovaemii sistemoi
-    vector<ESpriteBase*> *globalIdData;
+    QList<ESpriteBase*> *globalIdData;
     void generateID();
     QFile *file;
     void refreshIndexBeginAnimations(ui index, int mov);//
@@ -280,12 +274,12 @@ public:
      * @brief getBase
      * @return OpenGl список текстур в анимации
      */
-    std::vector<ui> *getBase();
+    QList<ui> *getBase();
     /**
      * @brief getSource
      * @return  вернёт вектор обьектов (кадров не подготовленных для текстурирования)
      */
-    std::vector<QImage*>* getSource();
+    QList<QImage*>* getSource();
     /**
      * @brief getBeginIndexAnimation
      * @param i индекс анимации

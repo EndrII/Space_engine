@@ -18,6 +18,7 @@
 #include <SpaceEngine/System/EMusic.h>
 #include "./SpaceEngine/Objects/EEffect.h"
 #include "./SpaceEngine/Objects/EMinimap.h"
+
 typedef unsigned int ui;
 class SpaceEngine:public QObject
 {
@@ -32,7 +33,7 @@ private:
     EConfig *setings;//nastroiki
     AiControle AI_CORE;//yadro iskustvennogo intelecta
 protected:
-    EPool *CORE;//yadro pamyati
+    EPool *Core;//yadro pamyati
     EEvents *SpaceEngineEvents;//obrobotcik sobitii
     virtual QPoint matrix(const EKord&);//dlya udobstva
     virtual QSize matrixs(const EKord&);

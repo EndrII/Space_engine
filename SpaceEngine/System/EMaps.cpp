@@ -17,12 +17,12 @@ EMaps::EMaps(const EKord &s ):
     Func_For_Low=NULL;
     stats_fast=true;
     stats_slow=true;
-    P_slow=new MultiCorRender(1);
-#ifdef QT_DEBUG
-    P_fast=new MultiCorRender(1);
-#else
-    P_fast=new MultiCorRender(4);
-#endif
+    P_slow=new EThreadObject();
+//#ifdef QT_DEBUG
+    P_fast=new EThreadObject();
+//#else
+  //  P_fast=new MultiCorRender(4);
+//#endif
     T_slow.setObject(P_slow,P_slow->getpuls());
     T2_fast.setObject(P_fast,P_fast->getpuls());
     T_CORE.setObject(&P_CORE,P_CORE.getpuls());
@@ -38,10 +38,10 @@ EMaps::EMaps(const EKord &s ):
     P_CORE.update(ist,slow_render_list_,render_list_,
                   draw_list_,GameObjectList,&krai);
 }
-void EMaps::setValueCoresRender(const int &cor)
+/*void EMaps::setValueCoresRender(const int &cor)
 {
     P_fast->setCoresValue(cor);
-}
+}*/
 void EMaps::Pause(const bool &Paus)
 {
     if(Paus)
