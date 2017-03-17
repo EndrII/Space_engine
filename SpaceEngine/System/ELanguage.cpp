@@ -8,6 +8,14 @@ void ELanguage::setLanguage(const QString &patch){
     selectedLang()=patch;
     Buffer().clear();
 }
+void ELanguage::setLanguage(const QUrl &patch){
+    QString tempPatch= patch.path();
+#ifdef Q_OS_WIN
+    tempPatch=tempPatch.right(tempPatch.size()-1);
+#endif
+    selectedLang()=tempPatch;
+    Buffer().clear();
+}
 QStringList& ELanguage::Buffer(){
     static QStringList temp;
     return temp;

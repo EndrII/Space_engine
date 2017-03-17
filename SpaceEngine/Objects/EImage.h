@@ -5,15 +5,19 @@
 class EImage:public QLabel //izobragenie
 {
 private:
-    QString Url;
     QPixmap *img;
 protected:
     void _resize();
+    void resizeEvent(QResizeEvent *);
 public:
-    //void resizeGL(int w,int h);
-    explicit  EImage(const QString&url);
-    virtual void change(const QString&url);
-    virtual void resize();//obnovleni
+    explicit  EImage(const QString&url,QWidget *ptr=0);
+    explicit  EImage(const QImage&im,QWidget *ptr=0);
+    explicit  EImage(const QPixmap&im,QWidget *ptr=0);
+    explicit  EImage(QPixmap*im,QWidget *ptr=0); //warning this class automaticly deleted images, if you use a QPixmap pointer.
+    void change(const QString&url);
+    void change(const QImage&im);
+    void change(const QPixmap&im);
+    void change(QPixmap*im);
     ~EImage();
 };
 

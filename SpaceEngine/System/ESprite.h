@@ -76,7 +76,7 @@ private:
     QList<ESpriteBase*> *globalIdData;
     void generateID();
     QFile *file;
-    void refreshIndexBeginAnimations(ui index, int mov);//
+    void refreshIndexBeginAnimations(int index, int mov);//
     bool FrameRender(QImage& A,const QImage&B);//nalogen texturu B na A v zavisimosti ot alpha kanala
     QDataStream *stream;//stream zapisi
     long long int callTime, allTime; //vremya poslednego vizova i vremya ot momenta smeni animazii (nugno dlya nakopleniya)
@@ -176,7 +176,7 @@ public:
      * @param position
      * @return
      */
-    int Append(const ui& indexAnimatoin, const QImage& img, const int position=-1);
+    int Append(const int &indexAnimatoin, const QImage& img, const int position=-1);
     /**
      * @brief newEmptyAnimation добавит новую пустую анимацию
      * @param name имя новой анимации
@@ -199,7 +199,7 @@ public:
      * @brief Edit  редактирует время длительности анимации　всей анимации
      * @param time  время между кадрами анимации в мс
      */
-    void Edit(const us &time);
+    void Edit(const short &time);
     /**
      * @brief getLongFrame вернет длину воспроизведения выбранного кадра
      * @param index индекс анимации
@@ -212,7 +212,7 @@ public:
     * @brief Remove_Animation удалит анимацию
     * @param index индекс удаляемой анимации
     */
-    void Remove_Animation(const ui &index);
+    void Remove_Animation(const int &index);
     /**
      * @brief Compress изменит размер длительности анимации
      * может сократить количество кадров в зависимости от пораметров
@@ -227,7 +227,7 @@ public:
      * @param indexFrame номер удаляемого кадра
      */
 
-    void Remove_Frame(const ui& AnimationIndex,const ui&indexFrame);
+    void Remove_Frame(const int &AnimationIndex, const int &indexFrame);
     /**
      * @brief Remove_Frame то же самое
      * @param FrameIndex индекс удоляемого кадра
@@ -354,14 +354,14 @@ public:
      * @param indexAnimation индекс анимации которая будет перейменована
      * @return  вернет true в случее успеха или false правала.
      */
-    bool renameAnimation(const ui &indexAnimation, const QString&newName);
+    bool renameAnimation(const int &indexAnimation, const QString&newName);
     /**
      * @brief moveFrame передвинет кадр
      * @param indexAnimation индекс анимации
      * @param IndexFrame индекс перемещаемого  кадра
      * @param IndexPasteFrame индекс куда кадр будет перемещён
      */
-    bool moveFrame(const ui&indexAnimation,const ui& IndexFrame,const ui& IndexPasteFrame);
+    bool moveFrame(const int&indexAnimation,const int& IndexFrame,const int& IndexPasteFrame);
     /**
 
      * @brief moveFrame передвинет кадр
@@ -370,7 +370,7 @@ public:
      * @param IndexFrame индекс перемещаемого  кадра
      * @param IndexPasteFrame индекс куда кадр будет перемещён
      */
-    bool moveFrame(const ui&indexAnimation,const ui& IndexPasteAnimation,const ui& IndexFrame,const ui& IndexPasteFrame);
+    bool moveFrame(const int &indexAnimation, const int &IndexPasteAnimation, const int &IndexFrame, const int &IndexPasteFrame);
     /**
      * @brief rerndre дорисует определённое количество кадров для системной анимации.
      * @param baseSprite основа для повреждений
@@ -382,7 +382,7 @@ public:
      * @param IndexFrame индекс копируемого  кадра
      * @param IndexPasteFrame индекс куда кадр будет скопирован
      */
-    bool copyFrame(const ui&indexAnimation,const ui& IndexFrame,const ui& IndexPasteFrame);
+    bool copyFrame(const int&indexAnimation,const int& IndexFrame,const int& IndexPasteFrame);
     /**
      * @brief moveFrame копирует кадр
      * @param indexAnimation индекс анимации
@@ -390,7 +390,7 @@ public:
      * @param IndexFrame индекс копируемого  кадра
      * @param IndexPasteFrame индекс куда кадр будет скопирован
      */
-    bool copyFrame(const ui&indexAnimation,const ui& IndexPasteAnimation,const ui& IndexFrame,const ui& IndexPasteFrame);
+    bool copyFrame(const int&indexAnimation,const int& IndexPasteAnimation,const int& IndexFrame,const int& IndexPasteFrame);
     /**
      * @brief connectProgress статический метод подключения обьекта к прогресс бару
      * @param connectObject обьект за которым будет вестись слежка

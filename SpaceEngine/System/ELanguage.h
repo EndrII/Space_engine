@@ -3,6 +3,7 @@
 #include <QTextStream>
 #include <QFile>
 #include <QString>
+#include <QUrl>
 #include <string>
 #include <vector>
 //#include "SpaceEngine/System/EError.h"
@@ -22,6 +23,7 @@ public:
     static QStringList& Buffer();
     static QString& selectedLang();
     static void setLanguage(const QString& patch);
+    static void setLanguage(const QUrl& patch);
     static QString getWord(const int &index, const QString&patch=LANG_DEF);
 };
 

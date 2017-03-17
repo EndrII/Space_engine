@@ -13,19 +13,19 @@ EGameResurs::EGameResurs(EObject *copy, EResursePack *pack):
     pack_=pack;
     if(patch.mid(patch.size()-4)!="robj")
         patch+=".robj";
-    description=pack->add(patch);
+    description=new EItem(pack->add(patch));
     class_=E_GAME_RESURS;
 }
-EGameResurs::EGameResurs(EResurse *desc, const QString& createPatch,const EKord& size, const EKord& kord_, const QString &str):
+EGameResurs::EGameResurs(EResurse *desc, const QString& createPatch, const EKord& size, const EKord& kord_, const QString &str):
     EObject(createPatch,size,kord_,str)
 {
-    description=desc;
+    description= new EItem(desc);
     class_=E_GAME_RESURS;
 }
 void EGameResurs::size_to_value(){
     setSize(EKord::Random(description->getValue()*massa*0.9,description->getValue()*massa*1.1,_h/_w));
 }
-EResurse* EGameResurs::getRes()const{
+EItem *EGameResurs::getRes()const{
     return description;
 }
 void EGameResurs::generateThisObject(EResurse *r){
@@ -53,14 +53,14 @@ void EGameResurs::RandomValue(int max){
 }
 QDataStream& operator<<(QDataStream&stream,EGameResurs&obj){
     stream<<*((EObject*)&obj);
-    stream<<(us)obj.description->id();
+    stream<<(us)obj.description->getSource()->id();
     return stream;
 }
 QDataStream& operator>>(QDataStream&stream,EGameResurs&obj){
     stream>>*((EObject*)&obj);
     us temp;
     stream>>temp;
-    obj.description=EResursePack::getResurse(temp);
+    obj.description=new EItem(EResursePack::getResurse(temp));
     return stream;
 }
 EGameResurs::~EGameResurs(){

@@ -23,7 +23,7 @@ void ESpriteBase::clear(){
 bool ESpriteBase::DeleteThis(){
     if(!value--){
         clear();
-        ID_CORE->removeOne(this);
+        CORE_GET_ID->removeOne(this);
         delete this;
         return true;
     }else{
@@ -34,7 +34,7 @@ ESprite::ESprite(const QString &patch,draw_mode mode_,QObject*ptr):
     QObject(ptr)
 {
     QString tempPatch=patch;
-    globalIdData=ID_CORE;
+    globalIdData=CORE_GET_ID;
     if(patch!="none"){
         if(patch.mid(patch.size()-3)!="spr")
             tempPatch+=".spr";
@@ -197,7 +197,7 @@ QOpenGLTexture* ESprite::Read_(const ui &addres){
 int ESprite::Append(const ui &indexAnimatoin, const QString &img, const int position){
        return Append(indexAnimatoin,QImage(img),position);
 }
-int ESprite::Append(const ui &indexAnimatoin, const QImage &img, const int position){
+int ESprite::Append(const int &indexAnimatoin, const QImage &img, const int position){
     if(this->mode==Game_mode){
         throw EError("Sprite mode = Game","void ESprite::Append(const QString &gif_img)");
         return -1;
@@ -296,12 +296,12 @@ void ESprite::Edit(const us &index, const us &frame, const us &time){
     }
     SpriteBase->longFrame[SpriteBase->IndexBeginAnimationsVector[index]+frame]=time;
 }
-void ESprite::Edit(const us &time){
+void ESprite::Edit(const short &time){
     if(this->mode==Game_mode){
         throw EError("Sprite mode = Game","void ESprite::Edit(const us &time)");
         return;
     }
-    for(unsigned int i=0;i<SpriteBase->longFrame.size();i++){
+    for(int i=0;i<SpriteBase->longFrame.size();i++){
         SpriteBase->longFrame[i]=time;
     }
 }
@@ -311,7 +311,7 @@ ui ESprite::getLongFrame(const us &index, const us &frame){
     else
         return SpriteBase->longFrame[SpriteBase->IndexBeginAnimationsVector[index]+frame];
 }
-void ESprite::Remove_Frame(const ui &AnimationIndex, const ui &indexFrame){
+void ESprite::Remove_Frame(const int &AnimationIndex, const int &indexFrame){
     if(SpriteBase->IndexBeginAnimationsVector.size()>AnimationIndex&&SpriteBase->longAnimationsVector[AnimationIndex]){
         stopedFlag=true;
         Replay();
@@ -353,7 +353,7 @@ void ESprite::Compress(const ui& animation,const ui &frame_sec, const ui time_ml
     int longFram=time_ml_sec/getLongSprite(animation);
     Edit(animation,longFram);
 }
-void ESprite::Remove_Animation(const ui &index){
+void ESprite::Remove_Animation(const int &index){
     stopedFlag=true;
     Replay();
     if(SpriteBase->longFrame.size()<=index||index==0)
@@ -470,9 +470,6 @@ bool ESprite::newAdresFromFrame(const int&u_i){
 void ESprite::stop(bool b){
     stopedFlag=b;
 }
-/*bool ESprite::isBind(){
-    return isBindet;
-}*/
 QOpenGLTexture* ESprite::Bind(ui VideoAdressFrame){
         SpriteBase->base[DrawFrame]=VideoAdressFrame;
         if(mode!=Edit_Mode)
@@ -488,13 +485,10 @@ ui ESprite::getIdFrame(){
 }
 void ESprite::save(){
     if(mode==Edit_Mode){
-     //   file->open(QIODevice::ReadOnly);
         if(file->fileName().mid(file->fileName().size()-3)!="spr"){
             this->setPatch(file->fileName()+".spr");
         }
         this->WriteToFile();
-    //    file->close();
-        //file->open(QIODevice::ReadWrite);
     }
 }
 us ESprite::getLongSprite()const{
@@ -506,14 +500,14 @@ us ESprite::getLongSprite(us indexAnimation)const{
 us ESprite::getValueSprite()const{
     return SpriteBase->IndexBeginAnimationsVector.size();
 }
-bool ESprite::renameAnimation(const ui &indexAnimation,const QString &newName){
+bool ESprite::renameAnimation(const int &indexAnimation,const QString &newName){
     if(indexAnimation==0||indexAnimation>=SpriteBase->AnimationsName.size()||newName==""){
         return false;
     }
     SpriteBase->AnimationsName[indexAnimation]=newName;
     return true;
 }
-bool ESprite::moveFrame(const ui&indexAnimation,const ui &indexPasteAnimation,const ui& indexFrame,const ui& indexPasteFrame){
+bool ESprite::moveFrame(const int&indexAnimation,const int &indexPasteAnimation,const int& indexFrame,const int& indexPasteFrame){
     if(mode!=Edit_Mode)
         throw EError("sprite mode = Game Mode","void ESprite::WriteToFile(const QString &patch)");
     if(indexAnimation>=SpriteBase->IndexBeginAnimationsVector.size()||indexPasteAnimation>=SpriteBase->IndexBeginAnimationsVector.size()||
@@ -540,10 +534,10 @@ bool ESprite::moveFrame(const ui&indexAnimation,const ui &indexPasteAnimation,co
     }
 }
 
-bool ESprite::moveFrame(const ui&indexAnimation,const ui& indexFrame,const ui& indexPasteFrame){
+bool ESprite::moveFrame(const int&indexAnimation,const int& indexFrame,const int& indexPasteFrame){
     return moveFrame(indexAnimation,indexAnimation,indexFrame,indexPasteFrame);
 }
-bool ESprite::copyFrame(const ui&indexAnimation,const ui &indexPasteAnimation,const ui& indexFrame,const ui& indexPasteFrame){
+bool ESprite::copyFrame(const int&indexAnimation,const int &indexPasteAnimation,const int& indexFrame,const int& indexPasteFrame){
     if(mode!=Edit_Mode)
         throw EError("sprite mode = Game Mode","void ESprite::WriteToFile(const QString &patch)");
     if(indexAnimation>=SpriteBase->IndexBeginAnimationsVector.size()||indexPasteAnimation>=SpriteBase->IndexBeginAnimationsVector.size()||
@@ -564,7 +558,7 @@ bool ESprite::copyFrame(const ui&indexAnimation,const ui &indexPasteAnimation,co
     }
 }
 
-bool ESprite::copyFrame(const ui&indexAnimation,const ui& indexFrame,const ui& indexPasteFrame){
+bool ESprite::copyFrame(const int &indexAnimation, const int &indexFrame, const int &indexPasteFrame){
     return copyFrame(indexAnimation,indexAnimation,indexFrame,indexPasteFrame);
 }
 void ESprite::rennderDamageFrame(const ESprite &baseSprite, const ui &frameValue){
@@ -581,8 +575,8 @@ void ESprite::rennderDamageFrame(const ESprite &baseSprite, const ui &frameValue
     }
     EndHaviProcess(resolution);
 }
-void ESprite::refreshIndexBeginAnimations(ui index, int mov){
-    for(ui i=index+1;i<SpriteBase->IndexBeginAnimationsVector.size();i++){
+void ESprite::refreshIndexBeginAnimations(int index, int mov){
+    for(int i=index+1;i<SpriteBase->IndexBeginAnimationsVector.size();i++){
         SpriteBase->IndexBeginAnimationsVector[i]+=mov;
     }
 }

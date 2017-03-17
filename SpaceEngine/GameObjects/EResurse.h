@@ -13,7 +13,7 @@ protected:
     QString _name, _descript,_url;
     QImage *Picture;
     QMap<us,us> craft;// te elementi kotorie nugni dlya sozdaniya etogo elementa
-    ui value;
+    ui mass;
     /**
      * @brief loadImage загрузит картинку
      */
@@ -34,15 +34,15 @@ public:
      */
     QImage* picture();
     /**
-     * @brief setValue установит новое число данного ресурса
+     * @brief setmass установит новое число данного ресурса
      * @param val
      */
-    void setValue(const ui& val);
+    void setMass(const ui& val);
     /**
-     * @brief getValue
+     * @brief getmass
      * @return вернет количество ресурсов в этом стеке
      */
-    ui getValue()const;
+    ui getMass()const;
     /**
      * @brief id вернет ид ресурса
      * @return
@@ -90,7 +90,7 @@ public:
     us idDesc()const;
     ~EResurse();
     friend QDataStream& operator >>(QDataStream &stream,EResurse& res);
-    friend QDataStream& operator <<(QDataStream &stream,const EResurse& res);
+    friend QDataStream& operator <<(QDataStream &stream,EResurse& res);
 
 };
 

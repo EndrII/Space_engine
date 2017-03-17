@@ -31,7 +31,6 @@ void ELoadScreen::imgUpdate(){
     if(images.empty())return;
     img->change(*imageIterator);
     imageIterator++;
-    img->resize();
 }
 void ELoadScreen::setInterval(const int &interval){
     timer->setInterval(interval);
@@ -49,7 +48,6 @@ void ELoadScreen::resizeEvent(QResizeEvent*){
     img->setMaximumSize(this->width(),this->height()*0.9);
     img->setMinimumSize(this->width(),this->height()*0.9);
     img->setGeometry(0,0,this->width(),this->height()*0.9);
-    img->resize();
 }
 ELoadScreen::~ELoadScreen(){
     delete img;

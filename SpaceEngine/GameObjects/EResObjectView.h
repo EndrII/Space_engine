@@ -2,23 +2,29 @@
 #define ERESOBJECTVIEW_H
 
 #include <QWidget>
-#include "EResursePack.h"
-#include <QHBoxLayout>
-#include <QComboBox>
+#include "EItem.h"
+#include "SpaceEngine/Objects/EImage.h"
+#include <cmath>
+/**
+ * @brief The EResObjectView class
+ * view items is inventory
+ */
 class EResObjectView : public QWidget
 {
     Q_OBJECT
 private:
-    EResursePack *resPack;
-    QComboBox *combo;
-    QLabel *desc;
+    EItem *res;
+    EImage *img;
+    QLabel *desc,*value;
 private slots:
-    void comboChanged(int);
+    void valueChanged(int);
+protected:
+    void resizeEvent(QResizeEvent *);
 public:
-    explicit EResObjectView(QWidget *parent = 0);
+    explicit EResObjectView(EItem *res, QWidget *parent = 0);
+    void changeResurs(EItem *res);
+    EItem * getItem();
     ~EResObjectView();
-signals:
-    void itemChanged(int id_item);
 public slots:
 };
 

@@ -9,7 +9,6 @@ EDialog::EDialog(QWidget *ptr,const QString&FonUrl,const QString& Text,
     Fon->setParent(this);
     Fon->setMaximumSize(this->size());
     Fon->setMinimumSize(this->size());
-    Fon->resize();
     text.setText("<h4><p align=left style=color:#AFEEEE>"+Text+"</p></h4>");
     text.setMaximumSize(((QWidget*)this->parent())->size().height()*0.6,((QWidget*)this->parent())->size().width()*0.3);
     answers=new QVector<EButton*>;
@@ -18,7 +17,6 @@ EDialog::EDialog(QWidget *ptr,const QString&FonUrl,const QString& Text,
         img=new EImage(ImgUrl);
         img->setMaximumSize(siz.TO_QSize());
         img->setMinimumSize(siz.TO_QSize());
-        img->resize();
         main->addWidget(img);
     }else
     {
@@ -63,7 +61,6 @@ void EDialog::resize()
         float temp= (float)text.size().width()/img->width();
         img->setMaximumSize(img->width()*temp,img->height()*temp);
         img->setMinimumSize(img->width()*temp,img->height()*temp);
-        img->resize();
         this->setMaximumSize(img->size().width(),img->size().height()+text.size().height()*2+answers->size()*answers->data()[0]->size().height());
         this->setMinimumSize(img->size().width(),img->size().height()+text.size().height()*2+answers->size()*answers->data()[0]->size().height());
     }else
@@ -73,7 +70,6 @@ void EDialog::resize()
     }
         Fon->setMaximumSize(this->size());
     Fon->setMinimumSize(this->size());
-    Fon->resize();
     this->move(((QWidget*)this->parent())->geometry().width()*0.5-size().width()/2,
                ((QWidget*)this->parent())->geometry().height()*0.5-size().height()/2);
     this->setLayout(main);

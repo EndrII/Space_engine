@@ -8,34 +8,46 @@ void EResursePack::save(){
     QFile f(EResursePack::ResursePackDir());
     if(f.open(QIODevice::WriteOnly|QIODevice::Truncate)){
        QDataStream stream(&f);
-       stream<<(int)source.size();
-       for(EResurse *res:source){
+       stream<<(int)source->size();
+       for(EResurse *res:*source){
            stream<<*res;
        }
        f.close();
     }
 }
+void EResursePack::bufferClear(){
+     auto source=CORE_GET_RES;
+     for(EResurse *res:*source){
+         delete res;
+     }
+     source->clear();
+}
 void EResursePack::load(){
-    QFile f(EResursePack::ResursePackDir());
-    if(f.open(QIODevice::ReadOnly)){
-       QDataStream stream(&f);
-       int size;
-       stream>>size;
-       for(int i=0;i<size;i++){
-           EResurse *temp=new EResurse("",0);
-           stream>>*temp;
-           source.push_back(temp);
-       }
-       f.close();
-    }else{
-        f.open(QIODevice::WriteOnly|QIODevice::Truncate);
-        f.close();
+    static bool isLoad(false);
+    source=CORE_GET_RES;
+    if(!isLoad){
+        QFile f(EResursePack::ResursePackDir());
+        if(f.open(QIODevice::ReadOnly)){
+           QDataStream stream(&f);
+           int size;
+           stream>>size;
+           for(int i=0;i<size;i++){
+               EResurse *temp=new EResurse("",0);
+               stream>>*temp;
+               source->push_back(temp);
+           }
+           f.close();
+        }else{
+            f.open(QIODevice::WriteOnly|QIODevice::Truncate);
+            f.close();
+        }
     }
+    isLoad=true;
 }
 bool EResursePack::remove(const unsigned int id){
-    for(QList<EResurse*>::iterator i=source.begin();i!=source.end();i++){
+    for(QList<EResurse*>::iterator i=source->begin();i!=source->end();i++){
         if((*i)->id()==id){
-            source.erase(i);
+            source->erase(i);
             return true;
         }
     }
@@ -44,8 +56,8 @@ bool EResursePack::remove(const unsigned int id){
 EResurse *EResursePack::add(const QString& url){
     QFile f(EResursePack::ResursePackDir());
     if(f.exists()){
-        source.push_back(new EResurse(url,f.size()));
-        return source.last();
+        source->push_back(new EResurse(url,f.size()));
+        return source->last();
     }else{
         throw EError("Error RESURSE_PACK_DIR, this dir is not detected","EResurse *EResursePack::add(const QString& url)");
     }
@@ -69,19 +81,28 @@ QString& EResursePack::ResursePackDir(){
     return _dir__;
 }
 EResurse* EResursePack::getResurse(const ui id){
-    QFile f(EResursePack::ResursePackDir());
     EResurse* result=NULL;
-    if(f.open(QIODevice::ReadOnly)){
-        QDataStream stream(&f);
-        result=new EResurse("",0);
-        stream.device()->seek(id);
-        stream>>*result;
-        f.close();
+    auto res=CORE_GET_RES;
+    auto i=res->begin();
+    while(i!=res->end()&&(*i)->id()!=id){
+        i++;
+    }
+    if(i==res->end()){
+        QFile f(EResursePack::ResursePackDir());
+        if(f.open(QIODevice::ReadOnly)){
+            QDataStream stream(&f);
+            result=new EResurse("",0);
+            stream.device()->seek(id);
+            stream>>*result;
+            f.close();
+        }
+    }else{
+        result=*i;
     }
     return result;
 }
 QList<EResurse*>* EResursePack::getList(){
-    return &source;
+    return source;
 }
 QString EResursePack::getName(const ui id){
     QFile f(EResursePack::ResursePackDir());
@@ -96,8 +117,5 @@ QString EResursePack::getName(const ui id){
     return result;
 }
 EResursePack::~EResursePack(){
-    for(EResurse *res:source){
-        delete res;
-    }
-    source.clear();
+
 }

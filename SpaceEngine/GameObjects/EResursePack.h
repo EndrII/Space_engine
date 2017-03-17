@@ -2,8 +2,9 @@
 #define ERESURSEPACK_H
 #include <QFile>
 #include <QDataStream>
-#include "EResurse.h"
+#include "EItem.h"
 #include <QList>
+#include "SpaceEngine/System/ECore.h"
 //#define RESURSE_PACK_DIR static QString _dir__;
 //#define RESURSE_PACK_DIR_ACSSES _dir__
 /**
@@ -15,7 +16,7 @@ class EResursePack
 private:
     //short _moduleNumber;
     void load();
-    QList<EResurse*> source;
+    QList<EResurse*>* source;
 public:
     EResursePack();
     /**
@@ -26,6 +27,7 @@ public:
     static EResurse* getResurse(const ui id);
     static QString& ResursePackDir();
     void save();
+    static void bufferClear();
     EResurse* add(const QString& url);
     QList<EResurse*>* getList();
     bool remove(const unsigned int id);
