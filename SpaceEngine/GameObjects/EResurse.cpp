@@ -49,8 +49,14 @@ QMap<us,us>* EResurse::getCraft(){
 void EResurse::setName(const ui &IndexName){
     _name=ELanguage::getWord(IndexName,ELanguage::selectedLang());
 }
+void EResurse::setNameId(us id){
+    setName(id_name=id);
+}
 void EResurse::setDescription(const ui &desc){
     _descript=ELanguage::getWord(desc,ELanguage::selectedLang());
+}
+void EResurse::setDescriptionId(us id){
+    setDescription(id_desc=id);
 }
 const QString& EResurse::name(){
     return _name;

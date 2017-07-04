@@ -3,6 +3,7 @@
 EResObjectView::EResObjectView(EItem *res,QWidget *parent) : QWidget(parent)
 {
     this->res=res;
+    this->setToolTip(QString("<b>%1</b>: \n%2").arg(res->getSource()->name(),res->getSource()->desc()));
     img=new EImage(*res->getSource()->picture(),this);
     value=new QLabel(QString::number(res->getValue()),this);
     connect(res,SIGNAL(valueChanged(int)),SLOT(valueChanged(int)));
@@ -10,6 +11,7 @@ EResObjectView::EResObjectView(EItem *res,QWidget *parent) : QWidget(parent)
 void EResObjectView::changeResurs(EItem *res){
     disconnect(this->res,SIGNAL(valueChanged(int)),this,SLOT(valueChanged(int)));
     this->res=res;
+    this->setToolTip(QString("<b>%1</b>: \n%2").arg(res->getSource()->name(),res->getSource()->desc()));
     connect(res,SIGNAL(valueChanged(int)),SLOT(valueChanged(int)));
     img->change(*res->getSource()->picture());
 }
@@ -20,6 +22,15 @@ void EResObjectView::resizeEvent(QResizeEvent *){
 }
 EItem* EResObjectView::getItem(){
     return res;
+}
+void EResObjectView::mousePressEvent(QMouseEvent *event){
+    img->setEnabled(false);
+}
+void EResObjectView::mouseReleaseEvent(QMouseEvent *event){
+    if(!img->isEnabled()){
+        img->setEnabled(true);
+        emit mouseClickEvent(event);
+    }
 }
 void EResObjectView::valueChanged(int i){
     value->setText(QString::number(i));

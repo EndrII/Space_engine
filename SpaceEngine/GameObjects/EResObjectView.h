@@ -20,12 +20,16 @@ private slots:
     void valueChanged(int);
 protected:
     void resizeEvent(QResizeEvent *);
+    void mousePressEvent(QMouseEvent *event);
+    void mouseReleaseEvent(QMouseEvent *event);
 public:
     explicit EResObjectView(EItem *res, QWidget *parent = 0);
     void changeResurs(EItem *res);
     EItem * getItem();
     ~EResObjectView();
 public slots:
+signals:
+    void mouseClickEvent(QMouseEvent*);
 };
 
 #endif // ERESOBJECTVIEW_H

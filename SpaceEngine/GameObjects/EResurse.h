@@ -43,6 +43,7 @@ public:
      * @return вернет количество ресурсов в этом стеке
      */
     ui getMass()const;
+
     /**
      * @brief id вернет ид ресурса
      * @return
@@ -63,6 +64,16 @@ public:
      * @param IndexName индекс нового имени в языковом файле
      */
     void setName(const ui& IndexName);
+    /**
+     * @brief setNameId set a new id of name the object
+     * @param id new id of of name object
+     */
+    void setNameId(us id);
+    /**
+     * @brief setDescription_id this method set a new id to the object
+     * @param id - new id of object description
+     */
+    void setDescriptionId(us id);
     /**
      * @brief setDescription установит новое описание
      * @param desc индекс нового описания в языковом файле

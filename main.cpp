@@ -1,10 +1,16 @@
+#include "widget.h"
 #include <QApplication>
-#include <QMediaPlayer>
-int main( int argv,char** args)
+//vector<ESpriteBase*>* listIncludeFileSprite;
+CORE_DECLARE
+
+int main(int argc, char *argv[])
 {
-   // try {
-    QApplication app(argv,args);
-    return app.exec();
-    //}catch(EError r){std::cout<<r.What()<<std::endl;
-   // }
+    CORE_INITIALIZE
+    QApplication a(argc, argv);
+   // listIncludeFileSprite =new vector<ESpriteBase*>();
+    //qDebug()<<listIncludeFileSprite;
+    Widget w( argc, argv);
+    w.show();
+
+    return a.exec();
 }
