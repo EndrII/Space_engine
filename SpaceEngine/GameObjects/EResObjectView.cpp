@@ -23,7 +23,7 @@ void EResObjectView::resizeEvent(QResizeEvent *){
 EItem* EResObjectView::getItem(){
     return res;
 }
-void EResObjectView::mousePressEvent(QMouseEvent *event){
+void EResObjectView::mousePressEvent(QMouseEvent *){
     img->setEnabled(false);
 }
 void EResObjectView::mouseReleaseEvent(QMouseEvent *event){

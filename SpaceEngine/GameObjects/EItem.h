@@ -1,7 +1,7 @@
 #ifndef EITEM_H
 #define EITEM_H
 #include "SpaceEngine/GameObjects/EResurse.h"
-class EItem :protected QObject
+class EItem :public QObject
 {
     Q_OBJECT
 private:
