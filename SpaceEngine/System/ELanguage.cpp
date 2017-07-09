@@ -1,45 +1,54 @@
 #include "ELanguage.h"
 
-QString& ELanguage::selectedLang(){
-    static QString lang;
-    return lang;
-}
+//QString& ELanguage::selectedLang(){
+//    static QString lang;
+//    return lang;
+//}
 void ELanguage::setLanguage(const QString &patch){
-    selectedLang()=patch;
-    Buffer().clear();
+    SelectedLang=patch;
 }
 void ELanguage::setLanguage(const QUrl &patch){
     QString tempPatch= patch.path();
 #ifdef Q_OS_WIN
     tempPatch=tempPatch.right(tempPatch.size()-1);
 #endif
-    selectedLang()=tempPatch;
-    Buffer().clear();
+    SelectedLang=tempPatch;
 }
-QStringList& ELanguage::Buffer(){
-    static QStringList temp;
-    return temp;
-}
-QString ELanguage::getWord(const int &index,const QString&patch)
-{
-    QFile f((patch==LANG_DEF)?selectedLang():patch);
-    QString tempString;
-    QStringList &buffer = ELanguage::Buffer();
-    if(buffer.size()<=index&&f.open(QIODevice::ReadOnly)){
-        QTextStream stream(&f);
-        stream.setCodec("UTF8");
-        tempString=stream.readAll();
-        buffer.clear();
-        int end=0;
-        while((end=tempString.indexOf('{'))>-1){
-            buffer.push_back(tempString.left(end));
-            tempString.remove(0,tempString.indexOf('}')+2);
-        }
-        f.close();
+//QStringList& ELanguage::Buffer(){
+//    static QStringList temp;
+//    return temp;
+//}
+void ELanguage::WriteToJson(){
+    QFile lang(SelectedLang);
+    if(lang.open(QFile::WriteOnly|QFile::Truncate)){
+        lang.write(QJsonDocument(source).toBinaryData());
     }
-    if(buffer.size()<=index)
+}
+bool ELanguage::ParseJson(const QString &url,bool forse){
+    if(source.size()<=0||SelectedLang!=url||forse){
+        QFile lang(SelectedLang);
+        if(lang.open(QFile::ReadOnly)){
+            source=QJsonDocument(QJsonDocument::fromBinaryData(lang.readAll())).object();
+            return true;
+        }
+        return false;
+    }
+    return true;
+}
+QJsonObject::iterator ELanguage::add(const QString &word){
+    return  source.insert(word,NONE);
+}
+void ELanguage::remove(const QString &word){
+    return source.remove(word);
+}
+QString ELanguage::getWord(const QString &index,const QString&patch)
+{
+    if(ParseJson((patch==LANG_DEF)?SelectedLang:patch))
         return "NO DETECTED";
-    return buffer[index];
+    QJsonValue result(source[index].toString());
+    if(result.isUndefined())
+        return "NO DETECTED";
+    return result.toString();\
 }
 
 

@@ -8,7 +8,6 @@ class EResurse
 {
 private:
     ui _id;//unikalnii id
-    us id_name,id_desc;
 protected:
     QString _name, _descript,_url;
     QImage *Picture;
@@ -27,7 +26,7 @@ public:
      * @param val количество в стеке
      * @param descript индекс описания в языковом файле
      */
-    explicit EResurse(const QString &url, const ui &id, const ui& name=0, const ui val=1, const ui &descript=0);
+    explicit EResurse(const QString &url, const ui &id, const QString &name=0, const ui val=1, const QString &descript=0);
     /**
      * @brief picture
      * @return  вернет пиутограмму
@@ -63,22 +62,22 @@ public:
      * @brief setName установит новое имя
      * @param IndexName индекс нового имени в языковом файле
      */
-    void setName(const ui& IndexName);
+    void setName(const QString &IndexName);
     /**
      * @brief setNameId set a new id of name the object
      * @param id new id of of name object
      */
-    void setNameId(us id);
-    /**
-     * @brief setDescription_id this method set a new id to the object
-     * @param id - new id of object description
-     */
-    void setDescriptionId(us id);
-    /**
-     * @brief setDescription установит новое описание
-     * @param desc индекс нового описания в языковом файле
-     */
-    void setDescription(const ui& desc);
+//    void setNameId(us id);
+//    /**
+//     * @brief setDescription_id this method set a new id to the object
+//     * @param id - new id of object description
+//     */
+//    void setDescriptionId(us id);
+//    /**
+//     * @brief setDescription установит новое описание
+//     * @param desc индекс нового описания в языковом файле
+//     */
+    void setDescription(const QString &desc);
     /**
      * @brief name
      * @return вернет имя ресурса (ткст)
@@ -89,16 +88,16 @@ public:
      * @return
      */
     const QString& desc();
-    /**
-     * @brief idName
-     * @return вернет ид названия в файле языков
-     */
-    us idName()const;
-    /**
-     * @brief idDesc
-     * @return вернет ид описание в файле языков
-     */
-    us idDesc()const;
+//    /**
+//     * @brief idName
+//     * @return вернет ид названия в файле языков
+//     */
+//    us idName()const;
+//    /**
+//     * @brief idDesc
+//     * @return вернет ид описание в файле языков
+//     */
+//    us idDesc()const;
     ~EResurse();
     friend QDataStream& operator >>(QDataStream &stream,EResurse& res);
     friend QDataStream& operator <<(QDataStream &stream,EResurse& res);

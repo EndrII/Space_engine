@@ -6,25 +6,29 @@
 #include <QUrl>
 #include <string>
 #include <vector>
+#include <unordered_map>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonArray>
 //#include "SpaceEngine/System/EError.h"
 #define LANG_ENG "/language/ENG"
 #define LANG_DEF "Default"
+#define NONE "_no_translate_"
 using namespace std;
-/*
- * TEMPLATES
- *
- *  start{comments}
- *  exit{}
-*/
+
 class ELanguage
 {
 protected:
+    static QJsonObject source;
+    static bool ParseJson(const QString &url,bool forse=false);
+    static void WriteToJson();
 public:
-    static QStringList& Buffer();
-    static QString& selectedLang();
+    static QString SelectedLang; //url to source file
     static void setLanguage(const QString& patch);
     static void setLanguage(const QUrl& patch);
-    static QString getWord(const int &index, const QString&patch=LANG_DEF);
+    static QJsonObject::iterator add(const QString&word);
+    static void remove(const QString&word);
+    static QString getWord(const QString &index, const QString&patch=LANG_DEF);
 };
 
 #endif // ELANGUAGE_H
