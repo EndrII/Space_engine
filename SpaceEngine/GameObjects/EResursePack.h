@@ -31,7 +31,7 @@ public:
     EResurse* add(const QString& url);
     QList<EResurse*>* getList();
     bool remove(const unsigned int id);
-    static QString getName(const ui id);
+    static QString getName(const ui id, bool translated=false);
     /**
      * @brief chekName проверит занято ли это имя или нет (в соотвецтвии с выбранным языком)
      * @param name проверяемое имя

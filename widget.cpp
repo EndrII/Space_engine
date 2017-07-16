@@ -4,7 +4,7 @@ Widget::Widget(int argc, char *argv[], QWidget *parent)
     : QMainWindow(parent)
 {
     //qDebug()<<"second="<<listIncludeFileSprite;
-    ELanguage::SelectedLang=LANG_ENG;
+    ELanguage::SelectedLang()=LANG_ENG;
     setMinimumSize(1100,680);
     QWidget *CenterWidget =new QWidget();
     CenterWidget->setObjectName("Main");
@@ -133,7 +133,7 @@ void Widget::OpenModule( QString patch){
         tabs->setEnabled(true);
 
         EResursePack::ResursePackDir()=PrjectPatch+"/Resurses.res";
-        ELanguage::SelectedLang=PrjectPatch+LANG_ENG;
+        ELanguage::SelectedLang()=PrjectPatch+LANG_ENG;
         initializeTabs();
     }
     QFile f("./temp");

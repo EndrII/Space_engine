@@ -48,7 +48,7 @@ void LanguageEditor::click(QPushButton* b){
     }
 }
 void LanguageEditor::FileChangedA(QString name){
-    QString patch=ELanguage::selectedLang();
+    QString &patch=ELanguage::SelectedLang();
     fA=patch.left(patch.lastIndexOf("/"))+"/"+name;
     QFile f(fA);
     if(f.open(QIODevice::ReadOnly)){
@@ -58,7 +58,7 @@ void LanguageEditor::FileChangedA(QString name){
     }
 }
 void LanguageEditor::FileChangedB(QString name){
-    QString patch=ELanguage::selectedLang();
+    QString &patch=ELanguage::SelectedLang();
     fB=patch.left(patch.lastIndexOf("/"))+"/"+name;
     QFile f(fB);
     if(f.open(QIODevice::ReadOnly)){
@@ -68,7 +68,7 @@ void LanguageEditor::FileChangedB(QString name){
     }
 }
 void LanguageEditor::write(QComboBox*b){
-    QString patch=ELanguage::selectedLang();
+    QString &patch=ELanguage::SelectedLang();
     QDir dir(patch.left(patch.lastIndexOf("/")));
     for(QFileInfo f:dir.entryInfoList(QDir::Files)){
         b->addItem(f.fileName());

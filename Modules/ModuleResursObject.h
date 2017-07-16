@@ -16,7 +16,7 @@ class ModuleResursObject : public Module
 private:
     QLineEdit *nameObject;
     QTextEdit *description;
-    QSpinBox *nameIndex,*descIndex,*valueResurse;
+    QSpinBox *valueResurse;
     QDoubleSpinBox *mass_item;
     EGameResurs *item;
     ButtonRegulyar *random;
@@ -32,11 +32,12 @@ private slots:
     void massChanged(double);
     void nameChanged();
     void valueChanged(int);
-    void nameIndexChanged(int i);
+ //   void nameIndexChanged(int i);
     void descChanged();
-    void descIndexChanged(int);
+  //  void descIndexChanged(int);
 public:
     bool setNewObject(EObject *obj);
+    bool saveObject(const QString &patch);
     explicit ModuleResursObject(EGameResurs*ite, QString *projectDir, QWidget *parent = 0);
 signals:
 public slots:

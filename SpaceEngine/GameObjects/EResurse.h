@@ -87,17 +87,17 @@ public:
      * @brief desc вернет описания ресурса (тест)
      * @return
      */
-    const QString& desc();
-//    /**
-//     * @brief idName
-//     * @return вернет ид названия в файле языков
-//     */
-//    us idName()const;
-//    /**
-//     * @brief idDesc
-//     * @return вернет ид описание в файле языков
-//     */
-//    us idDesc()const;
+    const QString &desc();
+    /**
+     * @brief rwaName
+     * @return вернет оригинальное название в файле языков
+     */
+    const QString & rawName()const;
+    /**
+     * @brief idDesc
+     * @return вернет оригинальное название описание в файле языков
+     */
+    const QString & rawDesc()const;
     ~EResurse();
     friend QDataStream& operator >>(QDataStream &stream,EResurse& res);
     friend QDataStream& operator <<(QDataStream &stream,EResurse& res);

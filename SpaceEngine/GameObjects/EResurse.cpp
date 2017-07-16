@@ -48,12 +48,14 @@ QMap<us,us>* EResurse::getCraft(){
 }
 void EResurse::setName(const QString &IndexName){
     _name=IndexName;
+    ELanguage::add(IndexName);
 }
 /*void EResurse::setNameId(us id){
     setName(id_name=id);
 }*/
 void EResurse::setDescription(const QString &desc){
     _descript=desc;
+    ELanguage::add(desc);
 }
 /*void EResurse::setDescriptionId(us id){
     setDescription(id_desc=id);
@@ -61,7 +63,7 @@ void EResurse::setDescription(const QString &desc){
 const QString& EResurse::name(){
     return ELanguage::getWord(_name);
 }
-const QString& EResurse::desc(){
+const QString & EResurse::desc(){
     return ELanguage::getWord(_descript);
 }
 QImage* EResurse::picture(){
@@ -69,12 +71,12 @@ QImage* EResurse::picture(){
         loadImage();*/
     return Picture;
 }
-//us EResurse::idDesc()const{
-//    return id_desc;
-//}
-//us EResurse::idName()const{
-//    return id_name;
-//}
+const QString & EResurse::rawDesc()const{
+    return _descript;
+}
+const QString & EResurse::rawName()const{
+    return _name;
+}
 QDataStream& operator >>(QDataStream &stream,EResurse& res){
     stream>>res._name;
     stream>>res._url;

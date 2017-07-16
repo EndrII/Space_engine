@@ -18,6 +18,7 @@ protected slots:
     void buttonClick(QPushButton*);
 public:
     bool setNewObject(EObject*);
+    bool saveObject(const QString &patch);
     ModuleParalax(EParalax*, QString *patch, QWidget* Widget=0);
 };
 

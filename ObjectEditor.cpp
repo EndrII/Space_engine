@@ -159,15 +159,15 @@ void ObjectEditor::createVerticalMenu(){
     adventSettings->setObjectName("Box");
     ModuleLayout =new QHBoxLayout();
     adventSettings->setLayout(ModuleLayout);
-    Module=new QStackedWidget();
+    module=new QStackedWidget();
    // Module->addWidget(NULL);
     moduleResursObject=new ModuleResursObject(NULL,Projectpatch);
     moduleParalax=new ModuleParalax(NULL,Projectpatch);
-    Module->addWidget(moduleParalax);
-    Module->addWidget(moduleResursObject);
-    Module->addWidget(moduleResursObject);
+    module->addWidget(moduleParalax);
+    module->addWidget(moduleResursObject);
+    module->addWidget(moduleResursObject);
 
-    ModuleLayout->addWidget(Module);
+    ModuleLayout->addWidget(module);
     MainBox->addWidget(adventSettings);
 
     VBoxWidget=new QWidget();
@@ -359,7 +359,8 @@ void ObjectEditor::saveObject(){
     if(!ObjectRender->getContur()){
         QMessageBox::information(getMain(),"Save fail!","Object is not saved, HitBox not detected!");
     }else{
-        ObjectRender->saveObject(tempPatch);
+        //ObjectRender->saveObject(tempPatch);
+        static_cast<Module*>(module->currentWidget())->saveObject(tempPatch);
     }
     /*if(ObjectRender->getEObjectNameClass()==E_GAME_RESURS){
         pack->save();
@@ -383,7 +384,7 @@ void ObjectEditor::retype(EObjectNameClass type){ //repare
             adventSettings->setEnabled(false);
             camera->On();
         }
-        Module->setCurrentWidget(NULL);
+        module->setCurrentWidget(NULL);
         break;
     }
     case E_PARALAX:{
@@ -397,7 +398,7 @@ void ObjectEditor::retype(EObjectNameClass type){ //repare
             camera->On();
         }
         moduleParalax->setNewObject(ObjectRender);
-        Module->setCurrentWidget(moduleParalax);
+        module->setCurrentWidget(moduleParalax);
         adventSettings->setEnabled(true);
         break;
     }
@@ -417,7 +418,7 @@ void ObjectEditor::retype(EObjectNameClass type){ //repare
             camera->On();
         }
         moduleResursObject->setNewObject(ObjectRender);
-        Module->setCurrentWidget(moduleResursObject);
+        module->setCurrentWidget(moduleResursObject);
         adventSettings->setEnabled(true);
     }
     default:break;

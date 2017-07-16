@@ -20,20 +20,12 @@ ModuleResursObject::ModuleResursObject(EGameResurs *ite, QString *projectDir, QW
     nameObject=new QLineEdit();
     connect(nameObject,SIGNAL(editingFinished()),this,SLOT(nameChanged()));
     this->addWidget(new QLabel("name:"));
-    nameIndex=new QSpinBox();
-    //nameIndex->setValue(ite->getRes()->idName());
-    connect(nameIndex,SIGNAL(valueChanged(int)),this,SLOT(nameIndexChanged(int)));
-    this->addWidget(nameIndex);
     this->addWidget(nameObject);
     this->newHorizont();
     this->addWidget(new QLabel("Description Object"));
-    descIndex=new QSpinBox();
-   // descIndex->setValue(ite->getRes()->idDesc());
-    connect(descIndex,SIGNAL(valueChanged(int)),this,SLOT(descIndexChanged(int)));
-    this->addWidget(descIndex);
     this->newHorizont();
     description=new QTextEdit();
-    connect(description,SIGNAL(textChanged()),this,SLOT(descChanged()));
+    connect(description,SIGNAL(editingFinished()),this,SLOT(descChanged()));
     this->addWidget(description);
     this->newHorizont();
     this->addWidget(new QLabel("Craft:"));
@@ -69,17 +61,10 @@ void ModuleResursObject::itemChanged(int row,int column){
     item->getRes()->getSource()->getCraft()->operator[](row)=((QSpinBox*)constructionList->cellWidget(row,column))->value();
 }
 void ModuleResursObject::nameChanged(){
-}
-void ModuleResursObject::descIndexChanged(int i){
-    item->getRes()->getSource()->setDescriptionId(i);
-    description->setText(item->getRes()->getSource()->desc());
-}
-void ModuleResursObject::nameIndexChanged(int i){
-    item->getRes()->getSource()->setNameId(i);
-    nameObject->setText(item->getRes()->getSource()->name());
+    item->getRes()->getSource()->setName(nameObject->text());
 }
 void ModuleResursObject::descChanged(){
-
+    item->getRes()->getSource()->setDescription(description->toPlainText());
 }
 void ModuleResursObject::valueChanged(int v){
     item->getRes()->setValue(v);
@@ -91,10 +76,12 @@ bool ModuleResursObject::setNewObject(EObject *i){
     if(i->getEObjectNameClass()!=E_GAME_RESURS)
         return false;
     item=static_cast<EGameResurs*>(i);
-    nameIndex->setValue(item->getRes()->getSource()->idName());
-    descIndex->setValue(item->getRes()->getSource()->idDesc());
-    description->setText(item->getRes()->getSource()->desc());
-    nameObject->setText(item->getRes()->getSource()->name());
+    description->setText(item->getRes()->getSource()->rawDesc());
+    nameObject->setText(item->getRes()->getSource()->rawName());
+    return true;
+}
+bool ModuleResursObject::saveObject(const QString &patch){
+    item->saveObject(patch);
     return true;
 }
 void ModuleResursObject::buttonClic(QPushButton *b){

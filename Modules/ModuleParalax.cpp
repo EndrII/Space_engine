@@ -39,6 +39,10 @@ bool ModuleParalax::setNewObject(EObject *i){
     item=static_cast<EParalax*>(i);
     return true;
 }
+bool ModuleParalax::saveObject(const QString &patch){
+    item->saveObject(patch);
+    return true;
+}
 void ModuleParalax::factorChanged(double f){
     item->changeUp(f);
 }

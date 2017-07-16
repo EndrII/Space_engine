@@ -26,6 +26,7 @@ protected:
     void end();
 public:
     explicit Module(QString* patchProject,QWidget* ptr=0);
+    virtual bool saveObject(const QString &);
     //addObject
     ~Module();
 };

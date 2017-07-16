@@ -104,14 +104,19 @@ EResurse* EResursePack::getResurse(const ui id){
 QList<EResurse*>* EResursePack::getList(){
     return source;
 }
-QString EResursePack::getName(const ui id){
+QString EResursePack::getName(const ui id, bool translated){
     QFile f(EResursePack::ResursePackDir());
-    QString result; us nametemp;
+    QString result("");
     if(f.open(QIODevice::ReadOnly)){
         QDataStream stream(&f);
         stream.device()->seek(id);
-        stream>>nametemp;
-        result=ELanguage::getWord(nametemp,ELanguage::selectedLang());
+        if(translated){
+            QString nametemp;
+            stream>>nametemp;
+            result=ELanguage::getWord(nametemp);
+        }else{
+            stream>>result;
+        }
         f.close();
     }
     return result;

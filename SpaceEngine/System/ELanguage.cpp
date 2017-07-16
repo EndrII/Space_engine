@@ -1,54 +1,75 @@
 #include "ELanguage.h"
 
-//QString& ELanguage::selectedLang(){
-//    static QString lang;
-//    return lang;
-//}
+
+QString& ELanguage::SelectedLang(){
+    static QString lang;
+    return lang;
+}
 void ELanguage::setLanguage(const QString &patch){
-    SelectedLang=patch;
+    SelectedLang()=patch;
 }
 void ELanguage::setLanguage(const QUrl &patch){
     QString tempPatch= patch.path();
 #ifdef Q_OS_WIN
     tempPatch=tempPatch.right(tempPatch.size()-1);
 #endif
-    SelectedLang=tempPatch;
+    SelectedLang()=tempPatch;
 }
-//QStringList& ELanguage::Buffer(){
-//    static QStringList temp;
-//    return temp;
-//}
+ELanguage::SourceMap& ELanguage::source(){
+    static ELanguage::SourceMap temp;
+    return temp;
+}
+const QString& ELanguage::empty(){
+    static QString temp("NO DETECTED");
+    return temp;
+}
 void ELanguage::WriteToJson(){
-    QFile lang(SelectedLang);
+    QFile lang(SelectedLang());
     if(lang.open(QFile::WriteOnly|QFile::Truncate)){
-        lang.write(QJsonDocument(source).toBinaryData());
+        ELanguage::SourceMap::iterator i=source().begin();
+        QJsonObject object;
+        while(i!=source().end()){
+            object.insert(i.key(),i.value());
+            i++;
+        }
+        lang.write(QJsonDocument(object).toJson());
+        lang.close();
     }
 }
 bool ELanguage::ParseJson(const QString &url,bool forse){
-    if(source.size()<=0||SelectedLang!=url||forse){
-        QFile lang(SelectedLang);
+    if(source().size()<=0||SelectedLang()!=url||forse){
+        QFile lang(SelectedLang());
         if(lang.open(QFile::ReadOnly)){
-            source=QJsonDocument(QJsonDocument::fromBinaryData(lang.readAll())).object();
+            QJsonObject obj(QJsonDocument::fromJson(lang.readAll()).object());
+            source().clear();
+            QJsonObject::iterator i=obj.begin();
+            while(i!=obj.end()){
+                source().insert(i.key(),i.value().toString());
+                i++;
+            }
+            lang.close();
             return true;
         }
         return false;
     }
     return true;
 }
-QJsonObject::iterator ELanguage::add(const QString &word){
-    return  source.insert(word,NONE);
+void ELanguage::save(){
+    WriteToJson();
+}
+ELanguage::SourceMap::iterator ELanguage::add(const QString &word){
+    return  source().insert(word,NONE);
 }
 void ELanguage::remove(const QString &word){
-    return source.remove(word);
+    source().remove(word);
 }
-QString ELanguage::getWord(const QString &index,const QString&patch)
+const QString& ELanguage::getWord(const QString &index,const QString&patch)
 {
-    if(ParseJson((patch==LANG_DEF)?SelectedLang:patch))
-        return "NO DETECTED";
-    QJsonValue result(source[index].toString());
-    if(result.isUndefined())
-        return "NO DETECTED";
-    return result.toString();\
+    if(ParseJson((patch==LANG_DEF)?SelectedLang():patch)&&
+            source().find(index)!=source().end())
+        return source()[index];
+    else
+        return empty();
 }
 
 

@@ -33,7 +33,7 @@ private:
     QHBoxLayout* ModuleLayout;
 
     /***********************************modules*************************************************/
-    QStackedWidget *Module;
+    QStackedWidget *module;
     ModuleParalax * moduleParalax;
     ModuleResursObject * moduleResursObject;
     /***********************************endmodules*************************************************/

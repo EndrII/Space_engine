@@ -28,6 +28,9 @@ void Module::end(){
 bool Module::setNewObject(EObject *){
     return false;
 }
+bool Module::saveObject(const QString &){
+    return false;
+}
 Module::~Module(){
 
 }
