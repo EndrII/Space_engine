@@ -133,7 +133,7 @@ void Widget::OpenModule( QString patch){
         tabs->setEnabled(true);
 
         EResursePack::ResursePackDir()=PrjectPatch+"/Resurses.res";
-        ELanguage::SelectedLang()=PrjectPatch+LANG_ENG;
+        ELanguage::setLanguage(PrjectPatch+LANG_ENG);
         initializeTabs();
     }
     QFile f("./temp");

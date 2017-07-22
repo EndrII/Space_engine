@@ -18,14 +18,12 @@ ModuleResursObject::ModuleResursObject(EGameResurs *ite, QString *projectDir, QW
     connect(valueResurse,SIGNAL(valueChanged(int)),SLOT(valueChanged(int)));
     this->newHorizont();
     nameObject=new QLineEdit();
-    connect(nameObject,SIGNAL(editingFinished()),this,SLOT(nameChanged()));
     this->addWidget(new QLabel("name:"));
     this->addWidget(nameObject);
     this->newHorizont();
     this->addWidget(new QLabel("Description Object"));
     this->newHorizont();
     description=new QTextEdit();
-    connect(description,SIGNAL(editingFinished()),this,SLOT(descChanged()));
     this->addWidget(description);
     this->newHorizont();
     this->addWidget(new QLabel("Craft:"));
@@ -60,12 +58,6 @@ void ModuleResursObject::showTable(){
 void ModuleResursObject::itemChanged(int row,int column){
     item->getRes()->getSource()->getCraft()->operator[](row)=((QSpinBox*)constructionList->cellWidget(row,column))->value();
 }
-void ModuleResursObject::nameChanged(){
-    item->getRes()->getSource()->setName(nameObject->text());
-}
-void ModuleResursObject::descChanged(){
-    item->getRes()->getSource()->setDescription(description->toPlainText());
-}
 void ModuleResursObject::valueChanged(int v){
     item->getRes()->setValue(v);
 }
@@ -81,7 +73,10 @@ bool ModuleResursObject::setNewObject(EObject *i){
     return true;
 }
 bool ModuleResursObject::saveObject(const QString &patch){
+    item->getRes()->getSource()->setDescription(description->toPlainText());
+    item->getRes()->getSource()->setName(nameObject->text());
     item->saveObject(patch);
+
     return true;
 }
 void ModuleResursObject::buttonClic(QPushButton *b){

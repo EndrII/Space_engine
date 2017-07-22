@@ -303,7 +303,9 @@ bool ObjectEditor::createObject(const QString &patch ){
     return true;
 }
 void ObjectEditor::openObject(const QString &patch){
+    camera->Off();
     QUrl createname=QFileDialog::getOpenFileUrl(SpaceEngineEvents,"Select opened object",QUrl::fromLocalFile(patch),OBJECTS_FILTERS);
+    camera->On();
     if(createname.isEmpty())
         return;
     QString tempPatch= createname.path();

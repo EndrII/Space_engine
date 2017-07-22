@@ -30,10 +30,8 @@ private slots:
     void buttonClic(QPushButton*);
     void itemChanged(int row, int column);
     void massChanged(double);
-    void nameChanged();
     void valueChanged(int);
  //   void nameIndexChanged(int i);
-    void descChanged();
   //  void descIndexChanged(int);
 public:
     bool setNewObject(EObject *obj);
