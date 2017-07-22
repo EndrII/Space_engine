@@ -143,7 +143,7 @@ SOURCES += \
     SpaceEngine/GameObjects/EItem.cpp \
     Modules/ResObjectsView.cpp
 
-#LIBS += -lopengl32
+LIBS += -lopengl32
 
 RESOURCES += \
     ress.qrc
