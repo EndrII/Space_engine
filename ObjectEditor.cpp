@@ -162,7 +162,7 @@ void ObjectEditor::createVerticalMenu(){
     module=new QStackedWidget();
    // Module->addWidget(NULL);
     moduleResursObject=new ModuleResursObject(NULL,Projectpatch);
-    moduleParalax=new ModuleParalax(NULL,Projectpatch);
+    moduleParalax=new ModuleParalax(NULL,this,Projectpatch);
     module->addWidget(moduleParalax);
     module->addWidget(moduleResursObject);
     module->addWidget(moduleResursObject);
@@ -277,7 +277,9 @@ bool ObjectEditor::createObject(const QString &patch ){
     bool test=true;
     while(test){
         test=false;
+        OffAll();
         QUrl createname=QFileDialog::getOpenFileUrl(SpaceEngineEvents,"Select base sprite for creating object",QUrl::fromLocalFile(patch),"*.spr");
+        OnAll();
         if(createname.isEmpty()) //(*Projectpatch)+"/"+SPRITE_DIR
             return false;
         QString tempPatch= createname.path();
@@ -353,7 +355,9 @@ bool ObjectEditor::patchTypes(const QString &patch){
     return false;
 }
 void ObjectEditor::saveObject(){
+    this->OffAll();
     QUrl patch=QFileDialog::getSaveFileUrl(SpaceEngineEvents,"Save object",QUrl::fromLocalFile(*Projectpatch+"/"+OBJECT_DIR+"/"+ObjectRender->getName()),OBJECTS_FILTERS);
+    this->OnAll();
     QString tempPatch=patch.path();
 #ifdef Q_OS_WIN
     tempPatch=tempPatch.right(tempPatch.size()-1);

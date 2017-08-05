@@ -1,7 +1,8 @@
 #include "Module.h"
-Module::Module(QString *patchProject, QWidget *ptr):
+Module::Module(SpaceEngine* parent,QString *patchProject, QWidget *ptr):
     QWidget(ptr){
     patch=patchProject;
+    this->parent=parent;
    // this->setObjectName("Box");
     box=new QHBoxLayout;
     vbox=new QVBoxLayout;

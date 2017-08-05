@@ -11,6 +11,7 @@
 #include "SpaceEngine/Objects/EObject.h"
 #include <QLabel>
 #include <QCheckBox>
+class SpaceEngine;
 class Module: public QWidget{
     Q_OBJECT
 private:
@@ -19,13 +20,14 @@ private:
     QVBoxLayout *vbox;
 protected:
     QString *patch;
+    SpaceEngine *parent;
     void setTitle(const QString& titl);
     void newHorizont();
     virtual bool setNewObject(EObject * obj);
     void addWidget(QWidget*);
     void end();
 public:
-    explicit Module(QString* patchProject,QWidget* ptr=0);
+    explicit Module(SpaceEngine* parent,QString* patchProject,QWidget* ptr=0);
     virtual bool saveObject(const QString &);
     //addObject
     ~Module();

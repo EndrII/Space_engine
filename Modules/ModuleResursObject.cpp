@@ -1,7 +1,7 @@
 #include "ModuleResursObject.h"
 
 ModuleResursObject::ModuleResursObject(EGameResurs *ite, QString *projectDir, QWidget *parent) :
-    Module(projectDir,parent)
+    Module(nullptr,projectDir,parent)
 {
     item=ite;
     this->setTitle("Resurce");

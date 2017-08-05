@@ -354,7 +354,9 @@ void SpriteEditor::ClikedButton(QPushButton *b){
         CreateSprite();
     }
     if(b==AddAnimation&&ObjectRender!=NULL){
+        OffAll();
         QString name=QFileDialog::getOpenFileName(SpaceEngineEvents,"Select Gif Animation","","*.gif");
+        OnAll();
         if(name!=""){
             ObjectRender->Append(name,"newAnimation");
             updateAnimationsList();
@@ -379,7 +381,9 @@ void SpriteEditor::ClikedButton(QPushButton *b){
         updateAnimationsList();
     }
     if(b==AddFrame&&ObjectRender!=NULL&&AnimationsIndex->count()){
+        OffAll();
         QStringList temp= QFileDialog::getOpenFileNames(this->getMain(),"Select image fles");
+        OnAll();
         int tem=0;
         log->setmax(temp.size(),"Add frmes");
         for(QString i:temp){
@@ -447,7 +451,9 @@ void SpriteEditor::ClikedButton(QPushButton *b){
         camera->setBackgroundColor(temp);
     }
     if(b==OpenSpriteButton){
+        OffAll();
         QString tempPatch= QFileDialog::getOpenFileUrl(SpaceEngineEvents,"Selected Sprite",QUrl::fromLocalFile((*Projectpatch)+"/"+SPRITE_DIR),"*.spr").path();
+        OnAll();
 #ifdef Q_OS_WIN
     tempPatch=tempPatch.right(tempPatch.size()-1);
 #endif

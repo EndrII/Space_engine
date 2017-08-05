@@ -1,7 +1,7 @@
 #include "ModuleParalax.h"
-
-ModuleParalax::ModuleParalax(EParalax *i, QString *patch, QWidget *Widget):
-    Module(patch,Widget)
+#include "SpaceEngine/SpaceEngine.h"
+ModuleParalax::ModuleParalax(EParalax *i, SpaceEngine *parent, QString *patch, QWidget *Widget):
+    Module(parent,patch,Widget)
 {
     item=i;
     setTitle("Paralax");
@@ -48,7 +48,9 @@ void ModuleParalax::factorChanged(double f){
 }
 void ModuleParalax::buttonClick(QPushButton *b){
     if(b==add){
+        parent->OffAll();
         QList<QUrl> list= QFileDialog::getOpenFileUrls(this,"selected sprite(s) for fons",*patch+"/"+SPRITE_DIR,"*.spr");
+        parent->OnAll();
         for(QUrl url:list){
             QString tempPatch=url.path();
 #ifdef Q_OS_WIN
