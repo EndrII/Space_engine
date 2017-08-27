@@ -8,7 +8,7 @@ AddResurse::AddResurse(QWidget *parent) : QDialog(parent)
     QVBoxLayout *box=new QVBoxLayout();
     QHBoxLayout *hbox=new QHBoxLayout();
     ok=new ButtonGreen("Add");
-    item_id=-1;
+    item_id=0;
     cancel=new ButtonRegulyar("Сancel");
     hbox->addWidget(cancel);
     hbox->addWidget(ok);
@@ -21,12 +21,12 @@ AddResurse::AddResurse(QWidget *parent) : QDialog(parent)
     connect(obj,SIGNAL(itemChanged(int)),SLOT(itemChanged(int)));
 }
 void AddResurse::complit(bool){
-    if(obj->getSize()>0)
+    if(!obj->getSize())
         item_id=0;
     this->close();
 }
 void AddResurse::clos(bool){
-    item_id=-1;
+    item_id=0;
     this->close();
 }
 void AddResurse::itemChanged(int id){

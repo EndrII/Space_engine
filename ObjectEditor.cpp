@@ -161,11 +161,12 @@ void ObjectEditor::createVerticalMenu(){
     adventSettings->setLayout(ModuleLayout);
     module=new QStackedWidget();
    // Module->addWidget(NULL);
-    moduleResursObject=new ModuleResursObject(NULL,Projectpatch);
+    moduleResursObject=new ModuleResursObject(NULL,this,Projectpatch);
     moduleParalax=new ModuleParalax(NULL,this,Projectpatch);
+    cleanWindow=new QWidget();
     module->addWidget(moduleParalax);
     module->addWidget(moduleResursObject);
-    module->addWidget(moduleResursObject);
+    module->addWidget(cleanWindow);
 
     ModuleLayout->addWidget(module);
     MainBox->addWidget(adventSettings);
@@ -390,7 +391,7 @@ void ObjectEditor::retype(EObjectNameClass type){ //repare
             adventSettings->setEnabled(false);
             camera->On();
         }
-        module->setCurrentWidget(NULL);
+        module->setCurrentWidget(cleanWindow);
         break;
     }
     case E_PARALAX:{

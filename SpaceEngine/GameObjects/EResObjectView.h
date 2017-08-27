@@ -15,7 +15,7 @@ class EResObjectView : public QWidget
 private:
     EItem *res;
     EImage *img;
-    QLabel *desc,*value;
+    QLabel *value;
 private slots:
     void valueChanged(int);
 protected:

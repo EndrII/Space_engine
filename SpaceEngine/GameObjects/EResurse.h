@@ -4,6 +4,7 @@
 #include "SpaceEngine/System/ELanguage.h"
 #include <QMap>
 #define FROM_NAME 0
+typedef QMap<us,us> craftList;
 class EResurse
 {
 private:
@@ -11,13 +12,15 @@ private:
 protected:
     QString _name, _descript,_url;
     QImage *Picture;
-    QMap<us,us> craft;// te elementi kotorie nugni dlya sozdaniya etogo elementa
+    craftList craft;// te elementi kotorie nugni dlya sozdaniya etogo elementa
     ui mass;
     /**
      * @brief loadImage загрузит картинку
      */
+
     void loadImage();
     void deleteImage();
+
 public:
     /**
      * @brief EResurse rонструктор
@@ -26,12 +29,17 @@ public:
      * @param val количество в стеке
      * @param descript индекс описания в языковом файле
      */
-    explicit EResurse(const QString &url, const ui &id, const QString &name=0, const ui val=1, const QString &descript=0);
+    explicit EResurse(const QString &url, const ui &id, const QString &name="none", const ui val=1, const QString &descript=0);
     /**
      * @brief picture
      * @return  вернет пиутограмму
      */
     QImage* picture();
+    /**
+     * @brief setUrl new url for the resurs
+     * @param url
+     */
+    void setUrl(const QString& url);
     /**
      * @brief setmass установит новое число данного ресурса
      * @param val
@@ -57,26 +65,22 @@ public:
      * @brief getCraft элементы для создания этого элемента
      * @return вернет списов для создания (если он пуст значит предмет оздать нельзя)
      */
-    QMap<us,us> * getCraft();
+    craftList * getCraft();
     /**
      * @brief setName установит новое имя
      * @param IndexName индекс нового имени в языковом файле
      */
     void setName(const QString &IndexName);
     /**
-     * @brief setNameId set a new id of name the object
-     * @param id new id of of name object
+     * @brief setPicture установит ресурсу новое изображение
+     * @param _default
      */
-//    void setNameId(us id);
-//    /**
-//     * @brief setDescription_id this method set a new id to the object
-//     * @param id - new id of object description
-//     */
-//    void setDescriptionId(us id);
-//    /**
-//     * @brief setDescription установит новое описание
-//     * @param desc индекс нового описания в языковом файле
-//     */
+    void setPicture(const QString& url, bool _default=false);
+
+    /**
+     * @brief setDescription установит новое описание
+     * @param desc индекс нового описания в языковом файле
+     */
     void setDescription(const QString &desc);
     /**
      * @brief name
@@ -98,6 +102,11 @@ public:
      * @return вернет оригинальное название описание в файле языков
      */
     const QString & rawDesc()const;
+    /**
+     * @brief isValid
+     * @return true if the object valid
+     */
+    bool isValid()const;
     ~EResurse();
     friend QDataStream& operator >>(QDataStream &stream,EResurse& res);
     friend QDataStream& operator <<(QDataStream &stream,EResurse& res);

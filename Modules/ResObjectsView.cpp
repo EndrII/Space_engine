@@ -6,9 +6,10 @@ ResObjectsView::ResObjectsView(QWidget *parent) : QWidget(parent)
     resPack=new EResursePack();
     combo=new QComboBox();
     for(EResurse *res:*resPack->getList()){
-        combo->addItem(QIcon(QPixmap::fromImage(*res->picture())),res->name());
+        if(res->isValid())
+            combo->addItem(QIcon(QPixmap::fromImage(*res->picture())),res->name());
     }
-    view=new EResObjectView(new EItem((*resPack->getList())[combo->currentIndex()]));
+    view=new EResObjectView(nullptr);
     desc=new QLabel("None");
     desc->setMinimumSize(300,75);
     hbox->addWidget(combo);
@@ -21,11 +22,12 @@ int ResObjectsView::getSize(){
     return combo->count();
 }
 void ResObjectsView::comboChanged(int i){
-    if(i>0){
-        desc->setText((*resPack->getList())[i]->desc());
+    resursMap::iterator iter=resPack->getList()->begin()+i;
+    if(iter!=resPack->getList()->end()){
+        desc->setText(iter.value()->desc());
         delete view->getItem();
-        view->changeResurs(new EItem((*resPack->getList())[i]));
-        emit itemChanged((*resPack->getList())[i]->id());
+        view->changeResurs(new EItem(iter.value()));
+        emit itemChanged(iter.key());
     }
 }
 ResObjectsView::~ResObjectsView(){

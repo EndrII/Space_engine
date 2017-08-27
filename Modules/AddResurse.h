@@ -11,7 +11,7 @@ class AddResurse : public QDialog
 private:
     ResObjectsView *obj;
     ButtonGreen *ok;
-    int item_id;
+    unsigned int item_id;
     ButtonRegulyar *cancel;
 private slots:
     void complit(bool);

@@ -6,10 +6,25 @@
 #include <QTextEdit>
 #include <QList>
 #include <QTableWidget>
+#include <QTableView>
+#include <QStandardItemModel>
 //#include <QListView>
 #include <QSpinBox>
+#include <QMessageBox>
 #include "Modules/AddResurse.h"
 #include "SpaceEngine/GameObjects/EGameResurs.h"
+class CraftTableModel : public QStandardItemModel{
+    Q_OBJECT
+protected:
+    craftList *craftlist;
+public:
+    CraftTableModel(craftList *craft);
+    void setNew(craftList* craft);
+    QVariant data(const QModelIndex &index, int role) const;
+    bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) ;
+    void refresh();
+    ~CraftTableModel();
+};
 class ModuleResursObject : public Module
 {
     Q_OBJECT
@@ -21,22 +36,20 @@ private:
     EGameResurs *item;
     ButtonRegulyar *random;
     EResObjectView *view;
-    QTableWidget *constructionList;
-    //QLabel *name,*decript;
+    QTableView *constructionList;
+    CraftTableModel *model;
     ButtonPlay *addCraft;
     ButtonRemove *deleteCraft;
-    void showTable();
+    QPushButton *icon;
 private slots:
     void buttonClic(QPushButton*);
-    void itemChanged(int row, int column);
+    void iconChange(bool);
     void massChanged(double);
     void valueChanged(int);
- //   void nameIndexChanged(int i);
-  //  void descIndexChanged(int);
 public:
     bool setNewObject(EObject *obj);
     bool saveObject(const QString &patch);
-    explicit ModuleResursObject(EGameResurs*ite, QString *projectDir, QWidget *parent = 0);
+    explicit ModuleResursObject(EGameResurs*ite,SpaceEngine*engine, QString *projectDir, QWidget *parent = 0);
 signals:
 public slots:
 };

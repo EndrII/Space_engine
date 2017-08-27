@@ -637,7 +637,7 @@ QImage* ESprite::getHeidImage(const QString &patch, const QSize &size){
     if(f.open(QIODevice::ReadOnly)){
         QDataStream stream_(&f);
         QImage * img_temp=new QImage;
-        stream_.device()->seek(8);
+        stream_.device()->seek(6);
         stream_>>*img_temp;
         f.close();
         img_temp->scaled(size);

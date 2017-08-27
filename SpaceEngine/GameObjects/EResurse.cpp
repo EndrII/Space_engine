@@ -46,20 +46,26 @@ const QString& EResurse::url() const{
 QMap<us,us>* EResurse::getCraft(){
     return &craft;
 }
+void EResurse::setUrl(const QString &url){
+    _url=url;
+}
 void EResurse::setName(const QString &IndexName){
     _name=IndexName;
     ELanguage::add(IndexName);
 }
-/*void EResurse::setNameId(us id){
-    setName(id_name=id);
-}*/
 void EResurse::setDescription(const QString &desc){
     _descript=desc;
     ELanguage::add(desc);
 }
-/*void EResurse::setDescriptionId(us id){
-    setDescription(id_desc=id);
-}*/
+void EResurse::setPicture(const QString &url, bool _default){
+    if(_default){
+        loadImage();
+    }else{
+        if(Picture)
+            delete Picture;
+        Picture=new QImage(url);
+    }
+}
 const QString& EResurse::name(){
     return ELanguage::getWord(_name);
 }
@@ -67,8 +73,6 @@ const QString & EResurse::desc(){
     return ELanguage::getWord(_descript);
 }
 QImage* EResurse::picture(){
-    /*if(!Picture)
-        loadImage();*/
     return Picture;
 }
 const QString & EResurse::rawDesc()const{
@@ -77,13 +81,15 @@ const QString & EResurse::rawDesc()const{
 const QString & EResurse::rawName()const{
     return _name;
 }
+bool EResurse::isValid()const{
+    return QFile(_url).exists();
+}
 QDataStream& operator >>(QDataStream &stream,EResurse& res){
     stream>>res._name;
     stream>>res._url;
     stream>>res._descript;
     stream>>res._id;
     stream>>res.mass;
-    res.Picture=new QImage();
     stream>>*res.Picture;
     ui temp=0;
     stream>>temp;
@@ -103,7 +109,7 @@ QDataStream& operator <<(QDataStream &stream,EResurse& res){
     stream<<res.mass;
     if(!res.Picture)
         res.loadImage();
-    stream<<*res.Picture;
+    stream<<(*res.Picture);
     stream<<(ui)res.craft.size();
     for(QMap<us,us>::const_iterator i=res.craft.begin();i!=res.craft.end();i++){
         stream<<i.key();

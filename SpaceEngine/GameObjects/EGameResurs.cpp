@@ -36,6 +36,7 @@ void EGameResurs::saveObject(QString patch){
     if(patch.mid(patch.size()-4)!="robj")
         patch+=".robj";
     Objectpatch=patch;
+    description->getSource()->setUrl(Objectpatch);
     QFile f(patch);
     if(!f.open(QIODevice::WriteOnly|QIODevice::Truncate)){
         throw EError("file not detected!","void EGameResurs::saveObject(QString patch)");

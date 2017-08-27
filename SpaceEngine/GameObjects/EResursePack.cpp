@@ -34,7 +34,7 @@ void EResursePack::load(){
            for(int i=0;i<size;i++){
                EResurse *temp=new EResurse("",0);
                stream>>*temp;
-               source->push_back(temp);
+               source->operator[](temp->id())=temp;
            }
            f.close();
         }else{
@@ -45,19 +45,17 @@ void EResursePack::load(){
     isLoad=true;
 }
 bool EResursePack::remove(const unsigned int id){
-    for(QList<EResurse*>::iterator i=source->begin();i!=source->end();i++){
-        if((*i)->id()==id){
-            source->erase(i);
-            return true;
-        }
-    }
-    return false;
+    return source->remove(id);
 }
 EResurse *EResursePack::add(const QString& url){
     QFile f(EResursePack::ResursePackDir());
     if(f.exists()){
-        source->push_back(new EResurse(url,f.size()));
-        return source->last();
+        ui id=(f.size())?f.size():sizeof(int);
+        if(source->count(id)){
+            delete source->operator [](id);
+            source->remove(id);
+        }
+        return source->operator [](id)=new EResurse(url,id);
     }else{
         throw EError("Error RESURSE_PACK_DIR, this dir is not detected","EResurse *EResursePack::add(const QString& url)");
     }
@@ -83,11 +81,8 @@ QString& EResursePack::ResursePackDir(){
 EResurse* EResursePack::getResurse(const ui id){
     EResurse* result=NULL;
     auto res=CORE_GET_RES;
-    auto i=res->begin();
-    while(i!=res->end()&&(*i)->id()!=id){
-        i++;
-    }
-    if(i==res->end()){
+    result=res->operator [](id);
+    if(!result){
         QFile f(EResursePack::ResursePackDir());
         if(f.open(QIODevice::ReadOnly)){
             QDataStream stream(&f);
@@ -96,12 +91,10 @@ EResurse* EResursePack::getResurse(const ui id){
             stream>>*result;
             f.close();
         }
-    }else{
-        result=*i;
     }
     return result;
 }
-QList<EResurse*>* EResursePack::getList(){
+resursMap *EResursePack::getList(){
     return source;
 }
 QString EResursePack::getName(const ui id, bool translated){

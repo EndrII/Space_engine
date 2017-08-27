@@ -36,6 +36,7 @@ private:
     QStackedWidget *module;
     ModuleParalax * moduleParalax;
     ModuleResursObject * moduleResursObject;
+    QWidget *cleanWindow;
     /***********************************endmodules*************************************************/
 
     ButtonRemove *Delete;

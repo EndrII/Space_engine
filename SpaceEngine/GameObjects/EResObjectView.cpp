@@ -3,10 +3,14 @@
 EResObjectView::EResObjectView(EItem *res,QWidget *parent) : QWidget(parent)
 {
     this->res=res;
-    this->setToolTip(QString("<b>%1</b>: \n%2").arg(res->getSource()->name(),res->getSource()->desc()));
-    img=new EImage(*res->getSource()->picture(),this);
-    value=new QLabel(QString::number(res->getValue()),this);
-    connect(res,SIGNAL(valueChanged(int)),SLOT(valueChanged(int)));
+    value=new QLabel(this);
+    img=new EImage(this);
+    if(res){
+        this->setToolTip(QString("<b>%1</b>: \n%2").arg(res->getSource()->name(),res->getSource()->desc()));
+        img->change(*res->getSource()->picture());
+        value->setText(QString::number(res->getValue()));
+        connect(res,SIGNAL(valueChanged(int)),SLOT(valueChanged(int)));
+    }
 }
 void EResObjectView::changeResurs(EItem *res){
     disconnect(this->res,SIGNAL(valueChanged(int)),this,SLOT(valueChanged(int)));
