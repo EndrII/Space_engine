@@ -10,9 +10,9 @@ EImage::EImage(QWidget *ptr):
     EImage(NULL,ptr){}
 EImage::EImage(QPixmap *im,QWidget *ptr):
     QLabel(ptr),
-    _policy(EImage::fixed),
     fixedSize(10,10)
 {
+    _policy = EImage::fixed;
     this->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
     img=im;
     _resize();
