@@ -79,7 +79,8 @@ HEADERS += \
     SpaceEngine/System/EThreadObject.h \
     SpaceEngine/System/ECore.h \
     SpaceEngine/GameObjects/EItem.h \
-    Modules/ResObjectsView.h
+    Modules/ResObjectsView.h \
+    SpaceEngine/System/EBase.h
 
 SOURCES += \
     SpaceEngine/Objects/EButton.cpp \
@@ -141,7 +142,8 @@ SOURCES += \
     SpaceEngine/System/EThreadObject.cpp \
     SpaceEngine/System/ECore.cpp \
     SpaceEngine/GameObjects/EItem.cpp \
-    Modules/ResObjectsView.cpp
+    Modules/ResObjectsView.cpp \
+    SpaceEngine/System/EBase.cpp
 
 #LIBS += -lopengl32
 
