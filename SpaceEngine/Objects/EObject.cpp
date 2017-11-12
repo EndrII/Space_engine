@@ -139,6 +139,7 @@ QDataStream& operator<<(QDataStream&stream,const EObject&obj){
     stream<<obj._w;
     stream<<obj.Objectpatch;
     stream<<obj._name;
+    ELanguage::save();
     return stream;
 }
 

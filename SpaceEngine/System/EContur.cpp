@@ -21,6 +21,7 @@ EContur& EContur::operator =(const EContur&right ){
         points=new QVector<EKord>;
     *points=*right.points;
     edge=points->data()[FindEdge()];
+    return *this;
 }
 void EContur::setPoints(QVector<EKord> *p){
     if(points!=NULL)

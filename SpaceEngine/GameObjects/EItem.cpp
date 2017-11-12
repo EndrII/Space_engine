@@ -2,6 +2,7 @@
 
 EItem::EItem(EResurse *base){
     res=base;
+    value=0;
 }
 void EItem::setValue(ui newValue){
     value=newValue;

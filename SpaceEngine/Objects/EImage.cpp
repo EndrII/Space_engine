@@ -1,20 +1,25 @@
 #include "EImage.h"
+
 EImage::EImage(const QString &url, QWidget *ptr):
     EImage(new QPixmap(url),ptr){}
 EImage::EImage(const QPixmap &im, QWidget *ptr):
     EImage(new QPixmap(im),ptr){}
 EImage::EImage(const QImage &im, QWidget *ptr):
     EImage(QPixmap::fromImage(im),ptr){}
+EImage::EImage(QWidget *ptr):
+    EImage(NULL,ptr){}
 EImage::EImage(QPixmap *im,QWidget *ptr):
-    QLabel(ptr)
+    QLabel(ptr),
+    _policy(EImage::fixed),
+    fixedSize(10,10)
 {
+    this->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
     img=im;
-    this->setPixmap(img->scaled(this->size()));
     _resize();
 }
 void EImage::change(QPixmap *im)
 {
-    delete img;
+    if(img)delete img;
     img=im;
     _resize();
 }
@@ -32,13 +37,44 @@ void EImage::change(const QImage &im)
 }
 void EImage::_resize()
 {
-    this->setPixmap(img->scaled(this->size()));
+    if(!img) return;
+    switch (_policy) {
+    case EImage::fixed:
+        this->setPixmap(img->scaled(fixedSize));
+        break;
+    case EImage::horizontal:{
+        float praportion=(float)img->height()/img->width();
+        this->setPixmap(img->scaled(QSize(this->height()*praportion,this->height())));
+        break;
+    }
+    case EImage::vertical:{
+        float praportion=(float)img->height()/img->width();
+        this->setPixmap(img->scaled(QSize(this->width(),this->width()*praportion)));
+        break;
+    }
+    case EImage::fill:
+        this->setPixmap(img->scaled(this->size()));
+        break;
+    default:
+        break;
+    }
 }
 void EImage::resizeEvent(QResizeEvent *){
     _resize();
 }
+EImage::resize_policy EImage::resizepolicy()const{
+    return _policy;
+}
+void EImage::setResizepolicy(EImage::resize_policy policy){
+    _policy=policy;
+}
+QSize EImage::FixedSize()const{
+    return fixedSize;
+}
+void EImage::setFixedSize(const QSize &size){
+    fixedSize=size;
+}
 EImage::~EImage()
 {
-    delete img;
+    if(img)delete img;
 }
-

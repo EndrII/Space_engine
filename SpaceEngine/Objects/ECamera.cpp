@@ -38,6 +38,7 @@ ECamera::ECamera(const EKord &kord, const EKord &size,EConfig *cfg,EPool*pool_, 
       krai[1].Y=kord.Y+siz.Y/2;
       connect(&timer,SIGNAL(timeout()),this,SLOT(Render()));
       timer.setInterval(1000/60);
+      //timer.thread()->setPriority(QThread::LowestPriority);
       idintyMatrix[0][0]=-0.0;
       idintyMatrix[0][1]=-0.0;
 

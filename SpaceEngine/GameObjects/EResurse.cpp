@@ -1,10 +1,10 @@
 #include "EResurse.h"
 
-EResurse::EResurse(const QString &url,const ui&id, const ui& name, const ui val, const ui &descript)
+EResurse::EResurse(const QString &url,const ui&id, const QString& name, const ui val, const QString &descript)
 {
     _url=url;
-    _name=ELanguage::getWord(id_name=name,ELanguage::selectedLang());
-    _descript=ELanguage::getWord(id_desc=descript,ELanguage::selectedLang());
+    _name=name;
+    _descript=descript;
     if(val>0)
        mass=val;
     Picture=NULL;
@@ -46,38 +46,50 @@ const QString& EResurse::url() const{
 QMap<us,us>* EResurse::getCraft(){
     return &craft;
 }
-void EResurse::setName(const ui &IndexName){
-    _name=ELanguage::getWord(IndexName,ELanguage::selectedLang());
+void EResurse::setUrl(const QString &url){
+    _url=url;
 }
-void EResurse::setDescription(const ui &desc){
-    _descript=ELanguage::getWord(desc,ELanguage::selectedLang());
+void EResurse::setName(const QString &IndexName){
+    _name=IndexName;
+    ELanguage::add(IndexName);
+}
+void EResurse::setDescription(const QString &desc){
+    _descript=desc;
+    ELanguage::add(desc);
+}
+void EResurse::setPicture(const QString &url, bool _default){
+    if(_default){
+        loadImage();
+    }else{
+        if(Picture)
+            delete Picture;
+        Picture=new QImage(url);
+    }
 }
 const QString& EResurse::name(){
-    return _name;
+    return ELanguage::getWord(_name);
 }
-const QString& EResurse::desc(){
-    return _descript;
+const QString & EResurse::desc(){
+    return ELanguage::getWord(_descript);
 }
 QImage* EResurse::picture(){
-    /*if(!Picture)
-        loadImage();*/
     return Picture;
 }
-us EResurse::idDesc()const{
-    return id_desc;
+const QString & EResurse::rawDesc()const{
+    return _descript;
 }
-us EResurse::idName()const{
-    return id_name;
+const QString & EResurse::rawName()const{
+    return _name;
+}
+bool EResurse::isValid()const{
+    return QFile(_url).exists();
 }
 QDataStream& operator >>(QDataStream &stream,EResurse& res){
-    stream>>res.id_name;
-    res._name=ELanguage::getWord(res.id_name,ELanguage::selectedLang());
+    stream>>res._name;
     stream>>res._url;
-    stream>>res.id_desc;
-    res._name=ELanguage::getWord(res.id_desc,ELanguage::selectedLang());
+    stream>>res._descript;
     stream>>res._id;
     stream>>res.mass;
-    res.Picture=new QImage();
     stream>>*res.Picture;
     ui temp=0;
     stream>>temp;
@@ -90,14 +102,14 @@ QDataStream& operator >>(QDataStream &stream,EResurse& res){
     return stream;
 }
 QDataStream& operator <<(QDataStream &stream,EResurse& res){
-    stream<<res.id_name;
+    stream<<res._name;
     stream<<res._url;
-    stream<<res.id_desc;
+    stream<<res._descript;
     stream<<res._id;
     stream<<res.mass;
     if(!res.Picture)
         res.loadImage();
-    stream<<*res.Picture;
+    stream<<(*res.Picture);
     stream<<(ui)res.craft.size();
     for(QMap<us,us>::const_iterator i=res.craft.begin();i!=res.craft.end();i++){
         stream<<i.key();

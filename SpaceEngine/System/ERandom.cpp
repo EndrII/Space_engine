@@ -8,7 +8,7 @@ double ERandom::Next() //+++++
 {
     return sin(rand());
 }
-int ERandom::RanBit() //++++++
+bool ERandom::RanBit() //++++++
 {
     return rand()%2;
 }

@@ -5,6 +5,7 @@
 #include <QDataStream>
 #include <QSize>
 #include "EError.h"
+#include <cmath>
 enum Operation{plus_,minus_,mul_,div_};
 class EKord //soderget 2 znacheniya x i y
 {

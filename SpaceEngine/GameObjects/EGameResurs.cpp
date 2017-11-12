@@ -33,9 +33,10 @@ void EGameResurs::generateThisObject(EResurse *r){
 }
 void EGameResurs::saveObject(QString patch){
     if(patch.isEmpty()) patch=Objectpatch;
-    Objectpatch=patch;
     if(patch.mid(patch.size()-4)!="robj")
         patch+=".robj";
+    Objectpatch=patch;
+    description->getSource()->setUrl(Objectpatch);
     QFile f(patch);
     if(!f.open(QIODevice::WriteOnly|QIODevice::Truncate)){
         throw EError("file not detected!","void EGameResurs::saveObject(QString patch)");
@@ -53,14 +54,17 @@ void EGameResurs::RandomValue(int max){
 }
 QDataStream& operator<<(QDataStream&stream,EGameResurs&obj){
     stream<<*((EObject*)&obj);
+    stream<<(ui)obj.description->getValue();
     stream<<(us)obj.description->getSource()->id();
     return stream;
 }
 QDataStream& operator>>(QDataStream&stream,EGameResurs&obj){
     stream>>*((EObject*)&obj);
-    us temp;
-    stream>>temp;
-    obj.description=new EItem(EResursePack::getResurse(temp));
+    ui temp1; us temp2;
+    stream>>temp1;
+    stream>>temp2;
+    obj.description=new EItem(EResursePack::getResurse(temp2));
+    obj.description->setValue(temp1);
     return stream;
 }
 EGameResurs::~EGameResurs(){
